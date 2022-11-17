@@ -1,10 +1,16 @@
 package it.aps.whistler;
 
+import it.aps.whistler.domain.Whistler;
+import it.aps.whistler.ui.text.console.WhistlerConsole;
+
 public class WhistlerMainAppText {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		@SuppressWarnings("unused")
+		Whistler whistler = Whistler.getInstance();
+		
+		WhistlerConsole console = new WhistlerConsole();
+		console.start();
 	}
 
 }
