@@ -25,7 +25,7 @@ public class Whistler {
 			System.out.println("<<Spaces are not allowed in \"@nickname\". Please choose another one.>>");
 			return false;
 		}
-		if(this.searchAccount(nickname) != null) {
+		if(this.getAccount(nickname) != null) {
 			System.out.println("\n<<Sorry! The Nickname you chose is already taken. Please retry and choose another one.>>\n");
 			return false;
 		}
@@ -40,7 +40,7 @@ public class Whistler {
 	
 	public boolean login(String nickname, String password) {
 		
-		if (this.searchAccount(nickname) == null) {
+		if (this.getAccount(nickname) == null) {
 			System.out.println("\n<<The Nickname is incorrect or non-existent! Please Sign-up first or enter a correct one>>");
 			return false;
 		}
@@ -58,7 +58,7 @@ public class Whistler {
 		return false;
 	}
 		
-	public Account searchAccount(String nickname){
+	public Account getAccount(String nickname){
 		Account account = null;
 		for(Account a : whistlerAccounts) {
 			if(a.getNickname().equals(nickname)){

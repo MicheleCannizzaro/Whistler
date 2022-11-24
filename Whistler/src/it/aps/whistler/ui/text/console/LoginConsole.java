@@ -68,7 +68,7 @@ public class LoginConsole {
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter your Nickname:");
 		
 		//UI preventive checks for better user experience
-		while (whistler.searchAccount(nickname)==null) {
+		while (whistler.getAccount(nickname)==null) {
 			System.out.println("\n<<The Nickname is incorrect or non-existent! Please Sign-up first or enter a correct one>>");
 			
 			printAvailableCommandsLoginError(Page.LOGIN_CONSOLE);

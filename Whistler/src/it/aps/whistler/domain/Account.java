@@ -40,8 +40,9 @@ public class Account {
 		this.followers = new ArrayList<>();
 	}
 	
-	public void followAccount(Account accountToFollow) {
-		followedAccounts.add(accountToFollow);
+	public void followAccount(String nickname) {
+		Account whistleblower = Whistler.getInstance().getAccount(nickname);
+		followedAccounts.add(whistleblower);
 	}
 
 	//Getter and Setter

@@ -44,7 +44,7 @@ public class ConfirmCommand implements Command{
 				loginConsole.start();
 			}
 			
-			HomeConsole homeConsole = new HomeConsole(whistler.searchAccount(enteredInputs.get(0))); //Pass the correct  the logged account to the HomeConsole
+			HomeConsole homeConsole = new HomeConsole(whistler.getAccount(enteredInputs.get(0))); //Pass the correct  the logged account to the HomeConsole
 			homeConsole.start();
 					
 		}

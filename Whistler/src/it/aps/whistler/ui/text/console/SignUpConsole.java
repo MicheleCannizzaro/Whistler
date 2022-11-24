@@ -23,7 +23,7 @@ public class SignUpConsole {
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter a new shiny Nickname:");
 	
 		//UI preventive checks for better user experience
-		while (!isNicknameCorrect(nickname) || whistler.searchAccount(nickname) != null) {
+		while (!isNicknameCorrect(nickname) || whistler.getAccount(nickname) != null) {
 			String message = null;
 			if (!isNicknameCorrect(nickname)) message = "\n<<Sorry! Spaces are not allowed in \"@nickname\".>>\n Please choose another one:";
 			else message = "\n<<Sorry! The Nickname you chose is already taken.>>\n Please choose another one:";
