@@ -13,8 +13,10 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtil {
+	
 	public static SecretKey generateKey(int n){
 	    SecretKey key = null;
 		try {
@@ -27,11 +29,32 @@ public class AESUtil {
 	    return key;
 	}
 	
-	public static IvParameterSpec generateIv() {
-	    byte[] iv = new byte[16];
+	public static String generateEncodedKey() {
+		SecretKey secretKey = AESUtil.generateKey(128);
+		
+		//Base64 encoding after AES 128 key generation
+		String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+		
+		return encodedKey;
+	}
+	
+	public static SecretKey getSecretKeyFromEncodedKey(String encodedKey) {
+		byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
+		SecretKey secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+		return secretKey;
+	}
+	
+	public static String generateEncodedIv() {
+		byte[] iv = new byte[16];
 		new SecureRandom().nextBytes(iv);
 		//byte[] iv ={ 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8 }; //Use this to have always the same iv - (not secure) //it's fine though for simulation reasons
-	    return new IvParameterSpec(iv);								 
+		String encodedIv = new String(Base64.getEncoder().encode(iv));
+		return encodedIv;
+	}
+	
+	public static IvParameterSpec getIvParameterSpec(String encodedIv) {
+		byte[] decodedIv = Base64.getDecoder().decode(encodedIv);	
+		return new IvParameterSpec(decodedIv);								 
 	}
 	
 	public static String encrypt(String algorithm, String input, SecretKey key,IvParameterSpec iv) 

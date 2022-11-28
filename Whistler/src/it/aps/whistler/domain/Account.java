@@ -1,9 +1,7 @@
 package it.aps.whistler.domain;
 
+import it.aps.whistler.persistence.dao.AccountDao;
 import it.aps.whistler.util.AESUtil;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -19,21 +17,22 @@ public class Account {
 	private String encryptedPassword;
 	private Visibility visibility;
 	
-	private SecretKey secretKey;
-	private IvParameterSpec iv;
+	private String encodedKey;
+	private String encodedIv;
 	
-	private ArrayList<Account> followedAccounts;
-	private ArrayList<Account> followers;
+	private ArrayList<String> followedAccounts;
+	private ArrayList<String> followers;
 
+	public Account() {}
 	
 	public Account(String nickname, String name, String surname, String email, String plainTextPassword) {
 		this.nickname = nickname;
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
-		this.secretKey = AESUtil.generateKey(128);
-		this.iv = AESUtil.generateIv();
-		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, this.secretKey, this.iv );
+		this.encodedKey = AESUtil.generateEncodedKey();
+		this.encodedIv = AESUtil.generateEncodedIv();
+		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
 		this.visibility = Visibility.PRIVATE;
 		
 		this.followedAccounts = new ArrayList<>();
@@ -41,11 +40,31 @@ public class Account {
 	}
 	
 	public void followAccount(String nickname) {
-		Account whistleblower = Whistler.getInstance().getAccount(nickname);
-		followedAccounts.add(whistleblower);
+		
+		if(!followedAccounts.contains(nickname)) {
+			
+			followedAccounts.add(nickname);
+			AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+			
+		}else{
+			
+			System.out.println("You already follow: "+nickname);
+			
+			System.out.println("\nThat's your cyrcle of interests:");
+			for (String accountNickname: followedAccounts) {
+				System.out.println(accountNickname);
+			}
+		}
 	}
 
 	//Getter and Setter
+	public String getNickname() {
+		return nickname;
+	}
+	
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 
 	public String getName() {
 		return name;
@@ -78,29 +97,56 @@ public class Account {
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
 	}
-
-	public String getNickname() {
-		return nickname;
+	
+	public String getEncodedIv() {
+		return encodedIv;
 	}
 
-	public ArrayList<Account> getFollowedAccounts() {
-		return followedAccounts;
+	public void setEncodedIv(String encodedIv) {
+		this.encodedIv = encodedIv;
 	}
 
-	public ArrayList<Account> getFollowers() {
-		return followers;
+	public String getEncodedKey() {
+		return encodedKey;
+	}
+
+	public void setEncodedKey(String encodedKey) {
+		this.encodedKey = encodedKey;
 	}
 	
+	public String getEncryptedPassword() {
+		return encryptedPassword;
+	}
+
+	public void setEncryptedPassword(String encryptedPassword) {
+		this.encryptedPassword = encryptedPassword;
+	}
+
 	public void setPassword(String plainTextPassword) {
-		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, this.secretKey, this.iv );
+		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
 	}
-	
-	
+		
 	public String getPassword() {
-		String plainTextPassword = AESUtil.decryptPassword(this.encryptedPassword, this.secretKey, this.iv);
+		String plainTextPassword = AESUtil.decryptPassword(this.encryptedPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
 		return plainTextPassword;
 	}
 	
+	public ArrayList<String> getFollowedAccounts() {
+		return followedAccounts;
+	}
+
+	public ArrayList<String> getFollowers() {
+		return followers;
+	}
+	
+	public void setFollowedAccounts(ArrayList<String> followedAccounts) {
+		this.followedAccounts = followedAccounts;
+	}
+
+	public void setFollowers(ArrayList<String> followers) {
+		this.followers = followers;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;			//self check

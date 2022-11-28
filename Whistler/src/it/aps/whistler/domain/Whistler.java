@@ -2,6 +2,8 @@ package it.aps.whistler.domain;
 
 import java.util.ArrayList;
 
+import it.aps.whistler.persistence.dao.AccountDao;
+
 public class Whistler {
 	
 	private static Whistler instance;
@@ -33,23 +35,29 @@ public class Whistler {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
 			return false;
 		}
+			//create account
 			Account account = new Account(nickname, name, surname, email, passwordPlainText);
+			
+			//save it in database using persistence stratum
+			AccountDao.getInstance().saveAccount(account);
+			
+			//load account in cache
 			whistlerAccounts.add(account);
 			return true;
 	}
 	
 	public boolean login(String nickname, String password) {
+		//get Account from cache or from database
+		Account account = this.getAccount(nickname);
 		
-		if (this.getAccount(nickname) == null) {
+		if (account == null) {
 			System.out.println("\n<<The Nickname is incorrect or non-existent! Please Sign-up first or enter a correct one>>");
 			return false;
 		}
 		
 		if (password.length()>=8) {
 			
-			for (Account a : whistlerAccounts) {
-				if (a.getNickname().equals(nickname) && a.getPassword().equals(password)) return true;
-			}
+			if (account.getNickname().equals(nickname) && account.getPassword().equals(password)) return true;
 			
 		}else {
 			System.out.println("\n<<The password length cannot be less than 8 characters>>");
@@ -60,11 +68,22 @@ public class Whistler {
 		
 	public Account getAccount(String nickname){
 		Account account = null;
+		
+		//check if account is in cache
 		for(Account a : whistlerAccounts) {
 			if(a.getNickname().equals(nickname)){
 				account=a;
 			}
 		}
+		
+		//if account not present in cache search it in database and load it to cache
+		if (account == null) {
+			account = AccountDao.getInstance().getAccountByNickname(nickname);
+			if (account != null) {
+				whistlerAccounts.add(account);
+			}
+		}
+		
 		return account;
 	}
 	

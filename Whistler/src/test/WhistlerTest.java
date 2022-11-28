@@ -5,125 +5,161 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Whistler;
+import it.aps.whistler.persistence.dao.AccountDao;
 
 class WhistlerTest {
 	
-	//SignUp Tests
-	@Test
-	void testSignUp_ValidNicknameAndPassword() { //CE //VE //CF
-		//Nickname without spaces and password length>8 
-		Whistler w = Whistler.getInstance();									//length=9
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
-	
-		w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
-		
-		assertTrue(w.getWhistlerAccounts().contains(a));
-	}
-	
-	@Test
-	void testSignUp_NicknameAlreadyExists() {  //CF
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao22");
-		w.getWhistlerAccounts().add(a);
-		
-		assertFalse(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao22"));
-	}
-	
-	@Test
-	void testSignUp_NicknameWithSpaces() { //CE
-		Whistler w = Whistler.getInstance();
+	  @Nested
+	  class StandaloneTests {
+		  	
+		  	//Sign-up Tests
+		  	@Test
+		  	void testSignUp_ValidNicknameAndPassword() { //CE //VE //CF
+				Whistler w = Whistler.getInstance();
+																					//length = 9
+				assertTrue(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"));
+			}
+		  
+			@Test
+			void testSignUp_PasswordLengthEqualEight() {  //VE
+				Whistler w = Whistler.getInstance();
+																					//length = 8
+				assertTrue(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao"));
+			}
 			
-		assertFalse(w.signUp("@elo nmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao22"));
-	}
-	
-	@Test
-	void testSignUp_PasswordLengthEqualEight() {  //VE
-		Whistler w = Whistler.getInstance();
+			@Test
+			void testSignUp_PasswordLengthLessThanEight() { //VE
+				Whistler w = Whistler.getInstance();
+																							//length = 7
+				assertFalse(w.signUp("@alanturing", "Alan", "Turing", "alanturing@gmail.com", "ciaocie"));
+			}
 		
-		assertTrue(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao"));
-	}
+			@AfterEach
+			public void cleanUpWhistlerAccounts() {
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				//removing fake account from whistler_db and cache
+				if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
+					AccountDao.getInstance().deleteAccount("@elonmsk");
+					w.getWhistlerAccounts().clear();
+				}
+			}
+	  }
 	
-	@Test
-	void testSignUp_PasswordLengthLessThanEight() { //VE
-		Whistler w = Whistler.getInstance();
-																			//length = 7
-		assertFalse(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaocie"));
-	}
-
-	//Login Tests	
-	@Test
-	void testLogin_InvalidNicknameAndPassword() { //CF
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao");
-		w.getWhistlerAccounts().add(a);
-		
-		assertFalse(w.login("@elon","ciaociao9"));
-	}
+	  @Nested
+	  class InitializedTests{
+		  
+		    @BeforeEach
+			public void init() {
+				Whistler w = Whistler.getInstance();
+				w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
+			}
+		  
+		    //Sign-up Tests
+		    @Test
+			void testSignUp_NicknameAlreadyExists() {  //CF
+				Whistler w = Whistler.getInstance();
+				
+				//the user @elonmsk was previously added to the database 
+				assertFalse(w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao22"));
+			}
+			
+			@Test
+			void testSignUp_NicknameWithSpaces() { //CE
+				Whistler w = Whistler.getInstance();
+					
+				assertFalse(w.signUp("@alan turing", "Alan", "Turing", "alanturing@gmail.com", "ciaociao22"));
+			}
+			
+			//Login Tests	
+			@Test
+			void testLogin_InvalidNicknameAndPassword() { //CF
+				Whistler w = Whistler.getInstance();
+				
+				//correct Account details: ["@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"]
+				assertFalse(w.login("@elon","ciaociao9"));
+			}
+			
+			@Test
+			void testLogin_InvalidNickname() { //CF
+				Whistler w = Whistler.getInstance();
+				
+				//correct Account details: ["@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"]
+				assertFalse(w.login("@elon","ciaociao2"));
+			}
+			
+			@Test 
+			void testLogin_InvalidPasswordLength() {  //CF //VE 
+				Whistler w = Whistler.getInstance();
+				
+				//correct Account details: ["@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"]
+											  //length = 4
+				assertFalse(w.login("@elonmsk","ciao"));
+			}
+			
+			@Test
+			void testLogin_ValidNicknameAndPasswordLenghtButNotValidPassword() { //CF //VE
+				Whistler w = Whistler.getInstance();
+				//correct Account details: ["@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"]
+												//length = 9
+				assertFalse(w.login("@elonmsk","ciaociao3"));
+			}
+			
+			@Test
+			void testLogin_ValidNicknameAndPassword() { //CF //VE
+				Whistler w = Whistler.getInstance();
+				//correct Account details: ["@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2"]
+											  //Length = 8
+				assertTrue(w.login("@elonmsk","ciaociao2"));
+			}
+			 
+			//SearchAccount Tests
+			@Test
+			void testSearchAccount_IsPresent() { //CE //CF
+				Whistler w = Whistler.getInstance();
+				Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
+				
+				assertEquals(a,w.getAccount("@elonmsk"));
+			}
+			
+			@Test
+			void testSearchAccount_NotPresent() { //CE //CF
+				Whistler w = Whistler.getInstance();
+				
+				assertNull(w.getAccount("@elonnotpresent"));
+			}
+			
+			
+			@AfterEach
+			public void cleanUpWhistlerAccounts() {
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				//removing fake account from whistler_db and cache
+				if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
+					AccountDao.getInstance().deleteAccount("@elonmsk");
+					w.getWhistlerAccounts().clear();
+				}
+			}
+	  }
+	  
+	  @AfterEach
+		public void cleanUpWhistlerAccounts() {
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			//removing fake account from whistler_db and cache
+			if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
+				AccountDao.getInstance().deleteAccount("@elonmsk");
+				w.getWhistlerAccounts().clear();
+			}
+		}
 	
-	@Test
-	void testLogin_InvalidNickname() { //CF
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao");
-		w.getWhistlerAccounts().add(a);
-		
-		assertFalse(w.login("@elon","ciaociao"));
-	}
-	
-	@Test 
-	void testLogin_InvalidPasswordLength() {  //CF //VE 
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao");
-		w.getWhistlerAccounts().add(a);
-									  //length = 4
-		assertFalse(w.login("@elonmsk","ciao"));
-	}
-	
-	@Test
-	void testLogin_ValidNicknameAndPasswordLenghtButNotValidPassword() { //CF //VE
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
-		w.getWhistlerAccounts().add(a);
-										//length = 9
-		assertFalse(w.login("@elonmsk","ciaociao3"));
-	}
-	
-	@Test
-	void testLogin_ValidNicknameAndPassword() { //CF //VE
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao");
-		w.getWhistlerAccounts().add(a);
-									  //Length = 8
-		assertTrue(w.login("@elonmsk","ciaociao"));
-	}
-	 
-	//SearchAccount Tests
-	@Test
-	void testSearchAccount_IsPresent() { //CE //CF
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciao");
-		w.getWhistlerAccounts().add(a);
-		
-		assertEquals(a,w.getAccount("@elonmsk"));
-	}
-	
-	@Test
-	void testSearchAccount_NotPresent() { //CE //CF
-		Whistler w = Whistler.getInstance();
-		Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciao");
-		w.getWhistlerAccounts().add(a);
-		
-		assertNull(w.getAccount("@elon"));
-	}
-	
-	
-	@AfterEach
-	public void cleanUpWhistlerAccounts() {
-		Whistler w = Whistler.getInstance();
-		w.getWhistlerAccounts().clear();
-	}
-
 }
