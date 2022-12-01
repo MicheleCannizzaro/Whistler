@@ -4,6 +4,7 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
+import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class WhistlerConsole{
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.WHISTLER_CONSOLE);
-			command.run(userInputs);
+			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
 			System.out.println("BYE...");          
 			System.exit(0);						// Terminate the program (EXIT)
@@ -33,11 +34,11 @@ public class WhistlerConsole{
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
 		System.out.println(
-				 " ╔═════════════════╗  \n"
-				+" ║ "+commands[0]+"          ║  \n"
-				+" ║ "+commands[1]+"         ║  \n"
-				+" ║ "+commands[2]+"        ║  \n"
-				+" ╚═════════════════╝  \n");
+				" ╔══════════════════════╗               \n"
+			   +" ║  "+Util.padRight(commands[0],20)+"║  \n"
+			   +" ║  "+Util.padRight(commands[1],20)+"║  \n"
+			   +" ║  "+Util.padRight(commands[2],20)+"║  \n"
+			   +" ╚══════════════════════╝               \n");
 	}
 	
 	private void welcomePage() {

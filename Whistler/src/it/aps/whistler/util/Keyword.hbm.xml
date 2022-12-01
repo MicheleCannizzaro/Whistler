@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="it.aps.whistler.domain.Keyword" table="keyword">
+	
+		<id name="word" type="string">
+			<column name="word"/> <!--unique="true"-->
+		</id>
+		
+		<property name="diffusionRate" column="diffusionRate"/>
+		
+		<set name="posts" table="post_keyword" fetch="join" inverse="true" lazy="true">
+			<key>
+				<column name="word" not-null="true" />
+			</key>
+			<many-to-many entity-name="it.aps.whistler.domain.Post">
+				<column name="pid" not-null="true"/>
+			</many-to-many>
+		</set>
+		
+	</class>
+</hibernate-mapping>

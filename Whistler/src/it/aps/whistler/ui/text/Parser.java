@@ -3,11 +3,15 @@ package it.aps.whistler.ui.text;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import it.aps.whistler.ui.text.command.CircleCommand;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.ui.text.command.ConfirmCommand;
+import it.aps.whistler.ui.text.command.FollowCommand;
 import it.aps.whistler.ui.text.command.LoginCommand;
+import it.aps.whistler.ui.text.command.PublishCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
+import it.aps.whistler.ui.text.command.UnFollowCommand;
 
 public class Parser {
 	
@@ -99,6 +103,70 @@ public class Parser {
 							case EXIT_BACK:
 								System.out.println("[Parser] - HomeConsole turn back to ExitConsole");
 								command = new TurnBackCommand(Page.HOME_CONSOLE);
+								break;
+							case CIRCLE_OF_INTERESTS:
+								System.out.println("[Parser] - HomeConsole takes to CircleConsole");
+								command = new CircleCommand();
+								break;
+							case PUBLISH:
+								System.out.println("[Parser] - HomeConsole takes to PublishConsole");
+								command = new PublishCommand();
+								break;
+						}
+						break;
+						
+					case PUBLISH_CONSOLE:	
+						switch(PageCommands.Publish.values()[inputCommand]) {
+							case EXIT_BACK:
+								System.out.println("[Parser] - PublishConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.PUBLISH_CONSOLE);
+								break;
+							case CONFIRM:
+								System.out.println("[Parser] - PublishConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.PUBLISH_CONSOLE);
+								break;
+						}
+						break;
+					
+					case CIRCLE_CONSOLE:	
+						switch(PageCommands.Circle.values()[inputCommand]) {
+							case EXIT_BACK:
+								System.out.println("[Parser] - CircleConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.CIRCLE_CONSOLE);
+								break;
+							case FOLLOW:
+								System.out.println("[Parser] - CircleConsole takes to FollowConsole");
+								command = new FollowCommand();
+								break;
+							case UNFOLLOW:
+								System.out.println("[Parser] - CircleConsole takes to unFollowConsole");
+								command = new UnFollowCommand();
+								break;
+						}
+						break;
+					
+					case FOLLOW_CONSOLE:	
+						switch(PageCommands.Follow.values()[inputCommand]) {
+							case EXIT_BACK:
+								System.out.println("[Parser] - FollowConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.FOLLOW_CONSOLE);
+								break;
+							case CONFIRM:
+								System.out.println("[Parser] - FollowConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.FOLLOW_CONSOLE);
+								break;
+						}
+						break;
+						
+					case UNFOLLOW_CONSOLE:	
+						switch(PageCommands.Unfollow.values()[inputCommand]) {
+							case EXIT_BACK:
+								System.out.println("[Parser] - unFollowConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.UNFOLLOW_CONSOLE);
+								break;
+							case CONFIRM:
+								System.out.println("[Parser] - unFollowConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.UNFOLLOW_CONSOLE);
 								break;
 						}
 						break;

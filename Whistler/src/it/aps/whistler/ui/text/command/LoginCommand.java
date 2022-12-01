@@ -7,10 +7,10 @@ import it.aps.whistler.ui.text.console.LoginConsole;
 public class LoginCommand implements Command{
 	
 	public String getCommandDescription() {
-		String descripition = "LoginCommand gets you to the LoginConsole";
+		String descripition = "LoginCommand takes you to the LoginConsole";
 		return descripition;
 	}
-	public void run(ArrayList<String> enteredInputs) {
+	public void run(ArrayList<String> enteredInputs, String userNickname) {
 		LoginConsole loginConsole= new LoginConsole();
 		loginConsole.start();
 	}

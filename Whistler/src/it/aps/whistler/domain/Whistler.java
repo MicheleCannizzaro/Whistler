@@ -2,6 +2,7 @@ package it.aps.whistler.domain;
 
 import java.util.ArrayList;
 
+import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
 
 public class Whistler {
@@ -23,14 +24,17 @@ public class Whistler {
 	}
 
 	public boolean signUp(String nickname, String name, String surname, String email, String passwordPlainText) {
+		
 		if(!nickname.matches("\\S+")) {
 			System.out.println("<<Spaces are not allowed in \"@nickname\". Please choose another one.>>");
 			return false;
 		}
+		
 		if(this.getAccount(nickname) != null) {
 			System.out.println("\n<<Sorry! The Nickname you chose is already taken. Please retry and choose another one.>>\n");
 			return false;
 		}
+		
 		if (passwordPlainText.length()<8) {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
 			return false;
@@ -87,8 +91,34 @@ public class Whistler {
 		return account;
 	}
 	
+	public boolean isPresent(String nickname) {           //checks if an account with the nickname provided exists on Whistler
+		if (this.getAccount(nickname)!=null) return true;
+		return false;
+	}
+	
 	public ArrayList<Account> getWhistlerAccounts() {
 		return whistlerAccounts;
+	}
+	
+	public ArrayList<Post> getAccountPublicPosts(String nickname){
+		ArrayList<Post> publicPosts = new ArrayList<>();
+		ArrayList<Post> posts = new ArrayList<>();;
+		
+		try {
+			posts = this.getAccount(nickname).getPosts(); 
+		}catch(Exception ex) {
+			System.out.println("<<Something went wrong while gathering account post: "+ex);
+		}
+		
+		if(!posts.isEmpty()) {
+			for (Post p: posts) {
+				if (p.getPostVisibility()==Visibility.PUBLIC) {
+					publicPosts.add(p);
+				}
+			}
+		}
+		
+		return publicPosts;
 	}
 
 }

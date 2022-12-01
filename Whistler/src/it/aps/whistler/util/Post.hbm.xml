@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="it.aps.whistler.domain.Post" table="post">
+		
+		<id name="pid"  type="string">
+			<column name="pid" unique="true"/>
+			<generator class="assigned"/> 
+		</id>
+		
+		<property name="title" column="title"/>
+		<property name="body" column="body"/>
+		
+		<set name="postKeywords" table="post_keyword" inverse="false" lazy="true" fetch="select" cascade="all">
+			<key>
+				<column name="pid" not-null="true"/>
+			</key>
+			<many-to-many entity-name="it.aps.whistler.domain.Keyword">
+				<column name="word" not-null="true"/>
+			</many-to-many>
+		</set>
+		
+		<property name="postVisibility" column="visibility">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">it.aps.whistler.Visibility</param>
+			</type> 
+		</property>
+		<property name="timestamp" column="timestamp"/>
+		<property name="owner" column="owner"/>
+	</class>
+</hibernate-mapping>
+
+<!--<list name="postKeywords" table="keyword" inverse="true" cascade="all"> si usa list per mantenere l'ordine bag se non è importante-->
+<!--<one-to-many class="it.aps.whistler.domain.Keyword"/>-->

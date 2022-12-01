@@ -15,18 +15,29 @@
 		
 		<property name="connection.username">whistler</property>
 		<property name="connection.password">Whistlerdbpass2!</property>
-		<property name="connection.pool_size">1</property>
+		<!--<property name="connection.pool_size">5</property>-->
+		
+		<property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">30</property>
+		<property name="hibernate.c3p0.acquire_increment">5</property>
+		<property name="hibernate.c3p0.timeout">1800</property>
 
-		<!-- Show and print nice SQL on stdout -->
-		<!-- <property name="hibernate.hbm2ddl.auto">create</property>-->
+
+		<!--<property name="hibernate.hbm2ddl.auto">create</property>-->
 		<!--<property name="hbm2ddl.auto">create-drop</property> -->
 		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+				<!-- Show and print nice SQL on stdout -->
 		<property name="show_sql">false</property> <!-- if true shows the generated queries>-->
-		<property name="log4j.logger.org.hibernate">info</property>
+		<!--<property name="log4j.logger.org.hibernate">info</property>-->
+		<property name="log4j.logger.org.hibernate">debug</property>
 		<property name="format_sql">true</property>
 		<property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+		<!--<property name="globally_quoted_identifiers">true</property>-->
 		
 		<!-- List of XML mapping files -->
 		<mapping resource="/it/aps/whistler/util/Account.hbm.xml" />
+		<mapping resource="/it/aps/whistler/util/Post.hbm.xml" />
+		<mapping resource="/it/aps/whistler/util/Keyword.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

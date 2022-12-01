@@ -1,12 +1,12 @@
 package it.aps.whistler.domain;
 
+import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
+import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.AESUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-enum Visibility{PUBLIC,PRIVATE}
 
 public class Account {
 	
@@ -22,6 +22,9 @@ public class Account {
 	
 	private ArrayList<String> followedAccounts;
 	private ArrayList<String> followers;
+	
+	private Post currentPost;
+	private ArrayList<Post> posts;
 
 	public Account() {}
 	
@@ -37,24 +40,95 @@ public class Account {
 		
 		this.followedAccounts = new ArrayList<>();
 		this.followers = new ArrayList<>();
+		this.posts = new ArrayList<>();
 	}
 	
+	//UC2 
 	public void followAccount(String nickname) {
 		
-		if(!followedAccounts.contains(nickname)) {
-			
-			followedAccounts.add(nickname);
-			AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to follow
+		
+		if (Whistler.getInstance().isPresent(nickname)) {
+		
+			if(!followedAccounts.contains(nickname)) {
+				
+				followedAccounts.add(nickname);
+				AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+				
+				whistleblowerAccount.addFollower(this.nickname);       //adding the user to the whistleblower's followers
+				
+			}else{
+				System.out.println("<<You already follow the Account with nickname: \""+nickname+"\">>");
+				}
 			
 		}else{
-			
-			System.out.println("You already follow: "+nickname);
-			
-			System.out.println("\nThat's your cyrcle of interests:");
-			for (String accountNickname: followedAccounts) {
-				System.out.println(accountNickname);
-			}
+			System.out.println("\n<<Sorry the Account with nickname: \""+nickname+"\" does not exists in Whistler>>");
 		}
+	}
+	
+	//UC2_1a
+	public void unFollowAccount(String nickname) {
+		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to unfollow
+		
+		if (Whistler.getInstance().isPresent(nickname)) {
+			
+			if(followedAccounts.contains(nickname)) {
+				
+				followedAccounts.remove(nickname);
+				AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+				
+				whistleblowerAccount.removeFollower(this.nickname);		//removing the user to the whistleblower's followers
+			}else{
+				System.out.println("\n<<You don't follow already the Account with nickname: \""+nickname+"\">>");
+			}
+			
+		}else {
+			System.out.println("\n<<Sorry you can't unfollow the Account with nickname: \""+nickname+"\" because it does not exists in Whistler>>");
+		}
+
+	}
+
+	public void addFollower(String Nickname) {
+		if (this.followers==null) {
+			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
+		}
+		this.followers.add(Nickname);
+		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+		
+	}
+	
+	public void removeFollower(String Nickname) {
+		if (this.followers==null) {
+			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
+		}
+		this.followers.remove(Nickname);
+		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+		
+	}
+
+	//UC3
+	public void enterNewPost(String title, String body) {
+		this.currentPost = new Post(title,body);
+	}
+	
+	//UC3
+	public void addPostKeyword(String word) {
+		this.currentPost.addPostKeyword(word);
+	}
+	
+	//UC3
+	public void setPostVisibility(Visibility vis) {
+		this.currentPost.setPostVisibility(vis);
+	}
+	
+	//UC3
+	public void setPostOwner() {
+		this.currentPost.setOwner(this.nickname);
+	}
+	
+	//UC3
+	public void confirmPost() {
+		PostDao.getInstance().savePost(this.currentPost);
 	}
 
 	//Getter and Setter
@@ -122,9 +196,9 @@ public class Account {
 		this.encryptedPassword = encryptedPassword;
 	}
 
-	public void setPassword(String plainTextPassword) {
-		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
-	}
+	//private void setPassword(String plainTextPassword) {
+		//this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
+	//}
 		
 	public String getPassword() {
 		String plainTextPassword = AESUtil.decryptPassword(this.encryptedPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
@@ -134,17 +208,32 @@ public class Account {
 	public ArrayList<String> getFollowedAccounts() {
 		return followedAccounts;
 	}
-
-	public ArrayList<String> getFollowers() {
-		return followers;
-	}
 	
 	public void setFollowedAccounts(ArrayList<String> followedAccounts) {
 		this.followedAccounts = followedAccounts;
 	}
 
+	public ArrayList<String> getFollowers() {
+		return followers;
+	}
+
 	public void setFollowers(ArrayList<String> followers) {
 		this.followers = followers;
+	}
+
+	public ArrayList<Post> getPosts() {
+		if (this.posts == null) {
+			this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
+		}
+		return this.posts;
+	}
+
+	public void setPosts(ArrayList<Post> posts) {
+		this.posts = posts;
+	}
+	
+	public String getCurrePostPid() {
+		return this.currentPost.getPid();
 	}
 
 	@Override

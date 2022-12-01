@@ -7,7 +7,7 @@ public class WhistlerMainAppText {
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
-		Whistler whistler = Whistler.getInstance();
+		Whistler whistler = Whistler.getInstance();   //Initialization of whistler
 		
 		WhistlerConsole console = new WhistlerConsole();
 		console.start();

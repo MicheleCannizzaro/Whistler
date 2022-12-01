@@ -5,6 +5,7 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
+import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
 
@@ -48,8 +49,13 @@ public class SignUpConsole {
 		userInputs.add(passwordPlainText);
 		
 		printAvailableCommands(Page.SIGNUP_CONSOLE);
-		Command command= Parser.getInstance().getCommand(Page.SIGNUP_CONSOLE);
-		command.run(userInputs);	
+		
+		try {
+			Command command= Parser.getInstance().getCommand(Page.SIGNUP_CONSOLE);
+			command.run(userInputs,null);
+		}catch(java.lang.NullPointerException ex){
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole"+ex);
+		}
 	}
 	
 	private boolean isNicknameCorrect(String nickname) {
@@ -62,10 +68,10 @@ public class SignUpConsole {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
 		System.out.println(
-				 " ╔══════════════════════════════════╗  \n"
-				+" ║   "+commands[0]+"          ║  \n"
-				+" ║   "+commands[1]+"                      ║  \n"
-				+" ╚══════════════════════════════════╝  \n");
+				 " ╔════════════════════════╗               \n"
+				+" ║  "+Util.padRight(commands[0],22)+"║    \n"
+				+" ║  "+Util.padRight(commands[1],22)+"║    \n"
+				+" ╚════════════════════════╝               \n");
 	}
 	
 	private void welcomePage() {

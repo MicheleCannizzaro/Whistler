@@ -7,6 +7,7 @@ import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
+import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
 
@@ -34,8 +35,13 @@ public class LoginConsole {
 		userInputs.add(passwordPlainText);
 		
 		printAvailableCommands(Page.LOGIN_CONSOLE);
-		command= Parser.getInstance().getCommand(Page.LOGIN_CONSOLE);
-		command.run(userInputs);
+		
+		try {
+			command= Parser.getInstance().getCommand(Page.LOGIN_CONSOLE);
+			command.run(userInputs,null);
+		}catch(java.lang.NullPointerException ex){
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException LoginConsole"+ex);
+		}
 	}
 	
 	private void manageLoginErrorCommands(String nickname){
@@ -46,10 +52,10 @@ public class LoginConsole {
 			
 			switch (choice) {
 				case 0: command = new TurnBackCommand(Page.LOGIN_CONSOLE);
-						command.run(userInputs);
+						command.run(userInputs,null);
 						break;
 				case 1: command = new SignUpCommand();
-						command.run(userInputs);
+						command.run(userInputs,null);
 						break;
 				case 2: 
 						nickname = getNicknameFromStandardInput();
@@ -82,10 +88,10 @@ public class LoginConsole {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("  Commands:");
 		System.out.println(
-				 " ╔══════════════════════════════════╗  \n"
-				+" ║   "+commands[0]+"          ║  \n"
-				+" ║   "+commands[1]+"                      ║  \n"
-				+" ╚══════════════════════════════════╝  \n");
+				 " ╔════════════════════════╗               \n"
+				+" ║  "+Util.padRight(commands[0],22)+"║    \n"
+				+" ║  "+Util.padRight(commands[1],22)+"║    \n"
+				+" ╚════════════════════════╝               \n");
 	}
 	
 	private void printAvailableCommandsLoginError(Page page) {
@@ -93,11 +99,11 @@ public class LoginConsole {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("  Commands:");
 		System.out.println(
-				 " ╔══════════════════════════════════╗  \n"
-				+" ║   "+commands[0]+"          ║  \n"
-				+" ║   "+"1:SignUp"+"                       ║  \n"
-				+" ║   "+"2:Retry"+"                        ║  \n"
-				+" ╚══════════════════════════════════╝  \n");
+				" ╔════════════════════════╗             \n"
+			   +" ║  "+Util.padRight(commands[0],22)+"║  \n"
+			   +" ║  "+Util.padRight("1:Signup",22)+ "║  \n"
+			   +" ║  "+Util.padRight("2:Retry",22)+  "║  \n"
+			   +" ╚════════════════════════╝             \n");
 	}
 	
 	private void welcomePage() {

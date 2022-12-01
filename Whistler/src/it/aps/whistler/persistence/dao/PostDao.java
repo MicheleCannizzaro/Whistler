@@ -1,53 +1,61 @@
 package it.aps.whistler.persistence.dao;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import it.aps.whistler.domain.Account;
+import it.aps.whistler.Visibility;
+import it.aps.whistler.domain.Post;
 import it.aps.whistler.util.HibernateUtil;
 
-public class AccountDao {
+public class PostDao {
 	
-	private static AccountDao instance;
+	private static PostDao instance;
 	
 	//Singleton pattern created by static method - Lazy Initialization
-	public static synchronized AccountDao getInstance() {
+	public static synchronized PostDao getInstance() {
 		if (instance == null) { 
-			instance = new AccountDao();
+			instance = new PostDao();
 		}
 		return instance;
 	}
 	
-	public void saveAccount(Account account) {
+	public boolean savePost(Post post) {
         Transaction transaction = null;
-        // try with resource statement auto-close session and shutdown HibernateUtil - in this way the "finally" clause can be avoid
+        
+        // try with resource statement auto-close session and shutdown HibernateUtil - in this way we can avoid finally
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			
 			transaction = session.beginTransaction();
 			
-			session.save(account);
+			session.save(post);
 			
 			transaction.commit();
-        
+			return true;
+			
 		}catch(HibernateException e) {
             if (transaction!=null) {
             	transaction.rollback();
             }
+            return false;
         }
 	}	
 	
-	public void updateAccount(Account account) {
+	public void updatePost(Post post) {
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
-			// update account object
-			session.saveOrUpdate(account);
+			// update post object
+			session.merge(post);
 			
 			// commit transaction
 			transaction.commit();
@@ -59,18 +67,18 @@ public class AccountDao {
         }
 	}
 	
-	public void deleteAccount(String nickname) {
+	public void deletePost(String pid) {
 		Transaction transaction = null;
-		Account account = null;
+		Post post = null;
 		
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
-			// retrieve account object by nickname
-			account = session.get(Account.class, nickname);
-			// remove account object
-			session.delete(account);
+			// retrieve post object by pid
+			post = session.get(Post.class, pid);
+			// remove post object
+			session.delete(post);
 			
 			// commit transaction
 			transaction.commit();
@@ -82,16 +90,16 @@ public class AccountDao {
         }
 	}
 	
-	public Account getAccountByNickname(String nickname) {
+	public Post getPostByPid(String pid) {
 		Transaction transaction = null;
-		Account account = null;
+		Post post = null;
 		
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
-			// get account object by nickname
-			account = session.get(Account.class, nickname);
+			// get post object by pid
+			post = session.get(Post.class, pid);
 			
 			// commit transaction
 			transaction.commit();
@@ -101,22 +109,39 @@ public class AccountDao {
             	transaction.rollback();
             }
         }
-		return account;
+		return post;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ArrayList<Account> getAllWhistlerAccounts() {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Post> getAllPostsFromOwner(String owner) {
 		Transaction transaction = null;
-		List<Account> accountsList = null;
-		ArrayList<Account> accounts = null;
+		
+		List<Object[]> postFieldList = null;
+		ArrayList<Post> posts = new ArrayList();
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 		
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
-			// start the transaction 
-			transaction = session.beginTransaction();
+			 //start the transaction 
+			 transaction = session.beginTransaction();
 			
-			// get all account in a list and put it in an ArrayList
-			accountsList = session.createQuery("from Account").list();  //it uses Hibernate SQL language, not native SQL
-			accounts = new ArrayList<>(accountsList);
+			// get all post in a list and put it in an HashSet
+			postFieldList = session.createNativeQuery("select * from post where owner =\'"+owner+"\'").list();  //it uses native SQL language for query
+			Set<Object[]> fields = new HashSet<>(postFieldList); 
+			
+			
+			for(Object[] field: fields) {
+				Post p=new Post();
+				p.setPid(field[0].toString());
+				p.setTitle(field[1].toString());
+				p.setBody(field[2].toString());
+				p.setPostVisibility(Visibility.values()[(int)field[3]]);
+				LocalDateTime t = LocalDateTime.parse(field[4].toString(), formatter);
+				p.setTimestamp(t);
+				p.setOwner(field[5].toString());
+		
+				posts.add(p);	
+			}
 			
 			// commit transaction
 			transaction.commit();
@@ -126,6 +151,7 @@ public class AccountDao {
             	transaction.rollback();
             }
         }
-		return accounts;
+		return posts;
 	}
+
 }
