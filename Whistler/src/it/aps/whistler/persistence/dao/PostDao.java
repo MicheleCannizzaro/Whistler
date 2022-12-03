@@ -28,10 +28,10 @@ public class PostDao {
 	}
 	
 	public boolean savePost(Post post) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         
-        // try with resource statement auto-close session and shutdown HibernateUtil - in this way we can avoid finally
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			
 			transaction = session.beginTransaction();
 			
@@ -45,12 +45,16 @@ public class PostDao {
             	transaction.rollback();
             }
             return false;
-        }
+        } finally {
+      	   session.close();
+         }
 	}	
 	
 	public void updatePost(Post post) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -64,14 +68,17 @@ public class PostDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+       	   session.close();
+          }
 	}
 	
 	public void deletePost(String pid) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Post post = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -87,14 +94,17 @@ public class PostDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+        	   session.close();
+           }
 	}
 	
 	public Post getPostByPid(String pid) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Post post = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -108,12 +118,15 @@ public class PostDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
+        } finally {
+     	   session.close();
         }
 		return post;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ArrayList<Post> getAllPostsFromOwner(String owner) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		
 		List<Object[]> postFieldList = null;
@@ -121,7 +134,7 @@ public class PostDao {
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			 //start the transaction 
 			 transaction = session.beginTransaction();
 			
@@ -150,7 +163,9 @@ public class PostDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+      	   session.close();
+         }
 		return posts;
 	}
 

@@ -24,9 +24,9 @@ public class KeywordDao {
 	}
 	
 	public void saveKeyword(Keyword keyword) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
-        // try with resource statement auto-close session and shutdown HibernateUtil - in this way we can avoid finally
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			
 			transaction = session.beginTransaction();
 			
@@ -38,12 +38,15 @@ public class KeywordDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
+        } finally {
+     	   session.close();
         }
 	}	
 	
 	public void updateKeyword(Keyword keyword) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -57,14 +60,17 @@ public class KeywordDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+      	   session.close();
+         }
 	}
 	
 	public void deleteKeyword(String word) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Keyword keyword = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -80,14 +86,17 @@ public class KeywordDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+       	   session.close();
+          }
 	}
 	
 	public Keyword getKeywordByWord(String word) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Keyword keyword = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -101,17 +110,21 @@ public class KeywordDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+        	   session.close();
+           }
 		return keyword;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Set<Keyword> getAllWhistlerKeywords() {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
+		
 		List<Keyword> keywordsList = null;
 		Set<Keyword> keywords = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -126,6 +139,8 @@ public class KeywordDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
+        } finally {
+     	   session.close();
         }
 		return keywords;
 	}

@@ -23,9 +23,9 @@ public class AccountDao {
 	}
 	
 	public void saveAccount(Account account) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
-        // try with resource statement auto-close session and shutdown HibernateUtil - in this way the "finally" clause can be avoid
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			
 			transaction = session.beginTransaction();
 			
@@ -37,12 +37,15 @@ public class AccountDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
+        } finally {
+        	   session.close();
         }
 	}	
 	
 	public void updateAccount(Account account) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -56,14 +59,17 @@ public class AccountDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
+        } finally {
+     	   session.close();
         }
 	}
 	
 	public void deleteAccount(String nickname) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Account account = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -79,14 +85,17 @@ public class AccountDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+      	   session.close();
+         }
 	}
 	
 	public Account getAccountByNickname(String nickname) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		Account account = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -100,17 +109,21 @@ public class AccountDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+       	   session.close();
+          }
 		return account;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public ArrayList<Account> getAllWhistlerAccounts() {
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
+		
 		List<Account> accountsList = null;
 		ArrayList<Account> accounts = null;
 		
-		try (Session session = HibernateUtil.getSessionFactory().openSession()){
+		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
@@ -125,7 +138,9 @@ public class AccountDao {
             if (transaction!=null) {
             	transaction.rollback();
             }
-        }
+        } finally {
+        	   session.close();
+           }
 		return accounts;
 	}
 }
