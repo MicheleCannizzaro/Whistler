@@ -105,6 +105,19 @@ public class Account {
 		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
 		
 	}
+	
+	//UC1_1b
+	public void removeAccount() {
+		//Delete Posts
+		this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
+		for (Post p : posts) {
+			PostDao.getInstance().deletePost(p.getPid());
+		}
+		
+		//Delete Account
+		Whistler.getInstance().removeAccountFromCache(this.nickname);
+		AccountDao.getInstance().deleteAccount(this.nickname);
+	}
 
 	//UC3
 	public void enterNewPost(String title, String body) {
@@ -144,6 +157,7 @@ public class Account {
 		return name;
 	}
 
+	//UC1_1a
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -151,7 +165,7 @@ public class Account {
 	public String getSurname() {
 		return surname;
 	}
-
+	//UC1_1a
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
@@ -159,7 +173,7 @@ public class Account {
 	public String getEmail() {
 		return email;
 	}
-
+	//UC1_1a
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -167,7 +181,7 @@ public class Account {
 	public Visibility getVisibility() {
 		return visibility;
 	}
-
+	//UC1_1a
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
 	}
@@ -196,9 +210,15 @@ public class Account {
 		this.encryptedPassword = encryptedPassword;
 	}
 
-	//private void setPassword(String plainTextPassword) {
-		//this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
-	//}
+	public boolean setPassword(String plainTextPassword) {
+		if (plainTextPassword.length()<8) {
+			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
+			return false;
+		}
+		
+		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
+		return true;
+	}
 		
 	public String getPassword() {
 		String plainTextPassword = AESUtil.decryptPassword(this.encryptedPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
@@ -221,10 +241,11 @@ public class Account {
 		this.followers = followers;
 	}
 
+	//UC8
 	public ArrayList<Post> getPosts() {
-		if (this.posts == null) {
+		//if (this.posts == null) {
 			this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
-		}
+		//}
 		return this.posts;
 	}
 

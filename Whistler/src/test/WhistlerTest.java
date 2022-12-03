@@ -120,9 +120,9 @@ class WhistlerTest {
 				assertTrue(w.login("@elonmsk","ciaociao2"));
 			}
 			 
-			//SearchAccount Tests
+			//GetAccount Tests
 			@Test
-			void testSearchAccount_IsPresent() { //CE //CF
+			void testGetAccount_IsPresent() { //CE //CF
 				Whistler w = Whistler.getInstance();
 				Account a = new Account("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
 				
@@ -130,7 +130,7 @@ class WhistlerTest {
 			}
 			
 			@Test
-			void testSearchAccount_NotPresent() { //CE //CF
+			void testGetAccount_NotPresent() { //CE //CF
 				Whistler w = Whistler.getInstance();
 				
 				assertNull(w.getAccount("@elonnotpresent"));

@@ -14,12 +14,12 @@ import it.aps.whistler.util.Util;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
-public class HomeConsole implements Console {
+public class ProfileTimelineConsole implements Console{
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
 	
-	public HomeConsole(String nickname) {
+	public ProfileTimelineConsole(String nickname) {
 		this.userInputs = new ArrayList<>();
 		this.userNickname = nickname;
 	}
@@ -27,15 +27,15 @@ public class HomeConsole implements Console {
 	public void start() {
 		welcomePage();
 		
-		homeTimeline();
+		profileTimeline();
 		
-		printAvailableCommands(Page.HOME_CONSOLE);
+		printAvailableCommands(Page.PROFILE_TIMELINE_CONSOLE);
 		
 		try {
-			Command command= Parser.getInstance().getCommand(Page.HOME_CONSOLE);
+			Command command= Parser.getInstance().getCommand(Page.PROFILE_TIMELINE_CONSOLE);
 			command.run(userInputs, userNickname);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException HomeConsole "+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ProfileTimelineConsole "+ex);
 		}
 	}
 
@@ -48,38 +48,31 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
-				+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	
 	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-		System.out.println("                               ██╗  ██╗ ██████╗ ███╗   ███╗███████╗                                         \n"
-					     + "                               ██║  ██║██╔═══██╗████╗ ████║██╔════╝        USER: "+      userNickname     +"\n"
-					     + "                               ███████║██║   ██║██╔████╔██║█████╗          Updated until "+Util.getTimeString(LocalDateTime.now())+"\n"
-				         + "                               ██╔══██║██║   ██║██║╚██╔╝██║██╔══╝                                           \n"
-				         + "                               ██║  ██║╚██████╔╝██║ ╚═╝ ██║███████╗                                         \n"
-				         + "                               ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝                                         \n");
+		System.out.println("                               ╔═╗╦═╗╔═╗╔═╗╦╦  ╔═╗  ╔╦╗╦╔╦╗╔═╗╦  ╦╔╗╔╔═╗                                    \n"
+					     + "                               ╠═╝╠╦╝║ ║╠╣ ║║  ║╣    ║ ║║║║║╣ ║  ║║║║║╣                                     \n"
+					     + "                               ╩  ╩╚═╚═╝╚  ╩╩═╝╚═╝   ╩ ╩╩ ╩╚═╝╩═╝╩╝╚╝╚═╝                                    \n"
+				         + "        USER: "+userNickname+"                                                                              \n"
+				         + "        Updated until: "+Util.getTimeString(LocalDateTime.now())+"                                          \n"
+				         + "                                                                                                            \n");
 	}
 
-	private void homeTimeline() {
+	private void profileTimeline() {
 		Account userAccount = Whistler.getInstance().getAccount(this.userNickname);
-		ArrayList<String> followedAccount = userAccount.getFollowedAccounts();
-		ArrayList<Post> homeTimeline = new ArrayList<>();
+		ArrayList<Post> profileTimeline = userAccount.getPosts();
 		
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		
-		if (followedAccount.isEmpty()) {
-			System.out.println(Util.padLeft("Your Timeline is Empty, because you still don't follow anyone, please follow someone.\n", 97));
+		if (profileTimeline.isEmpty()) {
+			System.out.println(Util.padLeft("Your ProfileTimeline is Empty, start to post something on Whistler.\n", 85));
 		}
 		
-		//Adding public posts of followedAccount to homeTimeline
-		for (String accountNickname: followedAccount) {
-			homeTimeline.addAll(Whistler.getInstance().getAccountPublicPosts(accountNickname)); 
-		}
-		
-		//printing post of homeTimeline
-		for (Post p : homeTimeline) {	
+		//printing post of profileTimeline
+		for (Post p : profileTimeline) {	
 			Util.printDetailedPost(p);
 		}
 	}

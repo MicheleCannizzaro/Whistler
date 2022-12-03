@@ -9,7 +9,7 @@ import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
 
-public class SignUpConsole {
+public class SignUpConsole implements Console {
 	
 	private ArrayList<String> userInputs;
 	
@@ -54,7 +54,7 @@ public class SignUpConsole {
 			Command command= Parser.getInstance().getCommand(Page.SIGNUP_CONSOLE);
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole"+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole "+ex);
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class SignUpConsole {
 		return true;
 	}
 	
-	private void printAvailableCommands(Page page) {
+	public void printAvailableCommands(Page page) {
 		String[] commands = PageCommands.getCommands(page);
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
@@ -74,7 +74,7 @@ public class SignUpConsole {
 				+" ╚════════════════════════╝               \n");
 	}
 	
-	private void welcomePage() {
+	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
 				  "                                           ╔═╗╦╔═╗╔╗╔╦ ╦╔═╗                                  \n"

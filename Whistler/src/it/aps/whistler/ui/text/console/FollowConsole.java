@@ -8,7 +8,7 @@ import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
-public class FollowConsole {
+public class FollowConsole implements Console {
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -33,11 +33,11 @@ public class FollowConsole {
 			Command command= Parser.getInstance().getCommand(Page.FOLLOW_CONSOLE);
 			command.run(userInputs, this.userNickname);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException FollowConsole"+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException FollowConsole "+ex);
 		}
 	}
 
-	private void welcomePage() {
+	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
 				  "                                           ╔═╗╔═╗╦  ╦  ╔═╗╦ ╦                                                        \n"
@@ -46,7 +46,7 @@ public class FollowConsole {
 				+ "                                          ╚══════════════════╝                                                       \n");
 	}
 	
-	private void printAvailableCommands(Page page) {
+	public void printAvailableCommands(Page page) {
 		String[] commands = PageCommands.getCommands(page);
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");

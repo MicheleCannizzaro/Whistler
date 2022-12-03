@@ -1,6 +1,8 @@
 package it.aps.whistler.ui.text.command;
 
 import java.util.ArrayList;
+
+import it.aps.whistler.ui.text.console.Console;
 import it.aps.whistler.ui.text.console.UnFollowConsole;
 
 public class UnFollowCommand implements Command{
@@ -11,7 +13,7 @@ public class UnFollowCommand implements Command{
 	}
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname) {
-		UnFollowConsole unFollowConsole= new UnFollowConsole(userNickname);
+		Console unFollowConsole= new UnFollowConsole(userNickname);
 		unFollowConsole.start();
 	}
 }

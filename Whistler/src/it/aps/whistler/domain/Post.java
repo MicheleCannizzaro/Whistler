@@ -80,6 +80,10 @@ public class Post implements java.io.Serializable {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+	
+	public void setPostKeywords(Set<Keyword> postKeywords) {
+		this.postKeywords = postKeywords;
+	}
 
 	public Set<Keyword> getPostKeywords() {
 		if (this.postKeywords.isEmpty()) {
@@ -89,11 +93,8 @@ public class Post implements java.io.Serializable {
 		}
 		return postKeywords;
 	}
-
-	public void setPostKeywords(Set<Keyword> postKeywords) {
-		this.postKeywords = postKeywords;
-	}
 	
+	//UC3
 	public void addPostKeyword(String word) {
 		Keyword keyword = null;
 		Keyword result = KeywordDao.getInstance().getKeywordByWord(word);
@@ -114,6 +115,10 @@ public class Post implements java.io.Serializable {
 		
 	}
 	
+	//UC3_1a
+	public void clearKeyword() {
+		this.postKeywords.clear();
+	}
 
 	@Override
 	public String toString() {

@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 //import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,6 +98,16 @@ class AccountTest {
 		assertEquals(expectedBody,fakeAccountPosts.get(0).getBody());
 		assertTrue(isPidPresent);
 		
+	}
+	
+	@Test
+	void testRemoveAccount() {
+		Whistler w = Whistler.getInstance();
+		w.signUp("@johnneumann", "John", "von Neumann", "johnneumann@gmail.com", "ciaociao2");
+		Account fakeAccount = w.getAccount("@johnneumann");
+		
+		fakeAccount.removeAccount();
+		assertNull(w.getAccount("@johnneumann"));
 	}
 	
 	@AfterEach

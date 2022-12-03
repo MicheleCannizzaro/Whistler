@@ -8,7 +8,7 @@ import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
-public class PublishConsole {
+public class PublishConsole implements Console {
 
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -63,7 +63,7 @@ public class PublishConsole {
 		userInputs.add(postVisibility);
 		userInputs.addAll(postKeywordsFromInput);
 		
-		postPreview(title, body, postKeywordsFromInput, postVisibility);
+		Util.postPreview(title, body, postKeywordsFromInput, postVisibility);
 		
 		printAvailableCommands(Page.PUBLISH_CONSOLE);
 		
@@ -71,11 +71,11 @@ public class PublishConsole {
 			Command command= Parser.getInstance().getCommand(Page.PUBLISH_CONSOLE);
 			command.run(userInputs,userNickname);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException PublishConsole"+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException PublishConsole "+ex);
 		}
 	}
 	
-	private void printAvailableCommands(Page page) {
+	public void printAvailableCommands(Page page) {
 		String[] commands = PageCommands.getCommands(page);
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
@@ -87,67 +87,12 @@ public class PublishConsole {
 	}
 	
 
-	private void welcomePage() {
+	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
 				  "                              ╦╔╗╔╔═╗╔═╗╦═╗╔╦╗  ╔╗╔╔═╗╦ ╦  ╔═╗╔═╗╔═╗╔╦╗                                              \n"
 				+ "                              ║║║║╚═╗║╣ ╠╦╝ ║   ║║║║╣ ║║║  ╠═╝║ ║╚═╗ ║                                               \n"
 			    + "                              ╩╝╚╝╚═╝╚═╝╩╚═ ╩   ╝╚╝╚═╝╚╩╝  ╩  ╚═╝╚═╝ ╩                                               \n"
 				+ "                            ╚══════════════════════════════════════════╝                                             \n");
-	}
-	
-	private void postPreview(String title, String body, ArrayList<String> postKeywordsFromInput, String postVisibility) {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-		System.out.println(
-				  "                                ┌─┐┌─┐┌─┐┌┬┐  ┌─┐┬─┐┌─┐┬  ┬┬┌─┐┬ ┬                                                   \n"
-				+ "                                ├─┘│ │└─┐ │   ├─┘├┬┘├┤ └┐┌┘│├┤ │││                                                   \n"
-			    + "                                ┴  └─┘└─┘ ┴   ┴  ┴└─└─┘ └┘ ┴└─┘└┴┘                                                   \n"
-				+ "                              ╚════════════════════════════════════╝                                                 \n");
-		
-		System.out.println("         ╔═══════════════════════════════════════════════════════════════════════════════╗");
-		
-		if (title.length()<=70) {
-			System.out.println("         ║ TITLE: "+Util.padRight(title, 71)+"║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");  
-		}
-		
-		if (body.length()<=70) {
-			System.out.println("         ║ Body:"+Util.padRight(body.substring(0,body.length()), 73)+"║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║"); 
-		}
-		
-		if (body.length()>70 && body.length()<=140 ) {
-			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(70, body.length()), 73)+"║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		}
-		
-		if (body.length()>140 && body.length()<=209) {
-			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(140,body.length()), 73)+"║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		}
-		
-		if (body.length()>209 && body.length()<=280) {
-			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(140, 210), 73)+"║");
-			System.out.println("         ║      "+Util.padRight(body.substring(210, body.length()), 73)+"║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		}
-		
-		if (postVisibility.equals("0")) {
-			System.out.println("         ║ Visibility: PUBLIC                                                            ║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		}
-		
-		if (postVisibility.equals("1")) {
-			System.out.println("         ║ Visibility: PRIVATE                                                           ║");
-			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		}
-		
-		System.out.println("         ║ Keywords:"+Util.padRight(postKeywordsFromInput.toString(), 69)+"║");
-		System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
 	}
 }

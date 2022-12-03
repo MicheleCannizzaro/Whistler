@@ -11,7 +11,7 @@ import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
 
-public class LoginConsole {
+public class LoginConsole implements Console{
 	
 	private ArrayList<String> userInputs;
 	
@@ -40,7 +40,7 @@ public class LoginConsole {
 			command= Parser.getInstance().getCommand(Page.LOGIN_CONSOLE);
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException LoginConsole"+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException LoginConsole "+ex);
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class LoginConsole {
         	}
 	}		
 	
-	private String getNicknameFromStandardInput() {
+	public String getNicknameFromStandardInput() {
 		Whistler whistler = Whistler.getInstance();
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter your Nickname:");
 		
@@ -83,7 +83,7 @@ public class LoginConsole {
 		return nickname;
 	}
 	
-	private void printAvailableCommands(Page page) {
+	public void printAvailableCommands(Page page) {
 		String[] commands = PageCommands.getCommands(page);
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("  Commands:");
@@ -106,7 +106,7 @@ public class LoginConsole {
 			   +" ╚════════════════════════╝             \n");
 	}
 	
-	private void welcomePage() {
+	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
 				  "                                           ╦  ╔═╗╔═╗╦╔╗╔                                     \n"

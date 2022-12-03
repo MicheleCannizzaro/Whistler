@@ -22,7 +22,8 @@ public class Whistler {
 		}
 		return instance;
 	}
-
+	
+	//UC1
 	public boolean signUp(String nickname, String name, String surname, String email, String passwordPlainText) {
 		
 		if(!nickname.matches("\\S+")) {
@@ -100,6 +101,16 @@ public class Whistler {
 		return whistlerAccounts;
 	}
 	
+	public void setWhistlerAccounts(ArrayList<Account> whistlerAccounts) {
+		this.whistlerAccounts = whistlerAccounts;
+	}
+	
+	public void removeAccountFromCache(String nickname) {
+		Account userAccount = AccountDao.getInstance().getAccountByNickname(nickname);
+		this.whistlerAccounts.remove(userAccount);
+	}
+
+	//UC6 //UC8
 	public ArrayList<Post> getAccountPublicPosts(String nickname){
 		ArrayList<Post> publicPosts = new ArrayList<>();
 		ArrayList<Post> posts = new ArrayList<>();;
@@ -107,7 +118,7 @@ public class Whistler {
 		try {
 			posts = this.getAccount(nickname).getPosts(); 
 		}catch(Exception ex) {
-			System.out.println("<<Something went wrong while gathering account post: "+ex);
+			System.out.println("<<Something went wrong while gathering account posts: "+ex);
 		}
 		
 		if(!posts.isEmpty()) {

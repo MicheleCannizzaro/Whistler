@@ -8,7 +8,7 @@ import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
-public class ExitConsole {
+public class ExitConsole implements Console{
 	
 	private ArrayList<String> userInputs;
 	
@@ -24,12 +24,12 @@ public class ExitConsole {
 			Command command= Parser.getInstance().getCommand(Page.EXIT_CONSOLE);
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
-			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ExitConsole"+ex);
+			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ExitConsole "+ex);
 		}
 		
 	}
 	
-	private void printAvailableCommands(Page page) {
+	public void printAvailableCommands(Page page) {
 		String[] commands = PageCommands.getCommands(page);
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
@@ -40,7 +40,7 @@ public class ExitConsole {
 				+" ╚══════════════════════╝               \n");
 	}
 	
-	private void welcomePage() {
+	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("          ╔╦╗╔═╗   ╦ ╦╔═╗╦ ╦  ╦═╗╔═╗╔═╗╦  ╦  ╦ ╦  ╦ ╦╔═╗╔╗╔╔╦╗  ╔╦╗╔═╗  ╦  ╔═╗╔═╗╦  ╦╔═╗  ╦ ╦╔═╗┌─┐         \n"
 				          +"           ║║║ ║   ╚╦╝║ ║║ ║  ╠╦╝║╣ ╠═╣║  ║  ╚╦╝  ║║║╠═╣║║║ ║    ║ ║ ║  ║  ║╣ ╠═╣╚╗╔╝║╣   ║ ║╚═╗ ┌┘         \n"
