@@ -8,13 +8,15 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.command.Command;
-
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.time.LocalDateTime;
 
 public class HomeConsole implements Console {
+	private final static Logger logger = Logger.getLogger(HomeConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -35,6 +37,7 @@ public class HomeConsole implements Console {
 			Command command= Parser.getInstance().getCommand(Page.HOME_CONSOLE);
 			command.run(userInputs, userNickname);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, HomeConsole.class.getSimpleName(),"start","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException HomeConsole "+ex);
 		}
 	}

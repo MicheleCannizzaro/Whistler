@@ -1,6 +1,8 @@
 package it.aps.whistler.ui.text.console;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.PageCommands;
@@ -9,6 +11,7 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 public class FollowConsole implements Console {
+	private final static Logger logger = Logger.getLogger(FollowConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -33,6 +36,7 @@ public class FollowConsole implements Console {
 			Command command= Parser.getInstance().getCommand(Page.FOLLOW_CONSOLE);
 			command.run(userInputs, this.userNickname);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, FollowConsole.class.getSimpleName(),"start","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException FollowConsole "+ex);
 		}
 	}

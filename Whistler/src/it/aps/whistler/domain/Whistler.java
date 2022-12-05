@@ -1,11 +1,14 @@
 package it.aps.whistler.domain;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
 
 public class Whistler {
+	private final static Logger logger = Logger.getLogger(Whistler.class.getName());
 	
 	private static Whistler instance;
 	private ArrayList<Account> whistlerAccounts;
@@ -28,16 +31,19 @@ public class Whistler {
 		
 		if(!nickname.matches("\\S+")) {
 			System.out.println("<<Spaces are not allowed in \"@nickname\". Please choose another one.>>");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"signUp", "nickname with spaces: "+nickname);
 			return false;
 		}
 		
 		if(this.getAccount(nickname) != null) {
 			System.out.println("\n<<Sorry! The Nickname you chose is already taken. Please retry and choose another one.>>\n");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"signUp", "nickname already taken: "+nickname);
 			return false;
 		}
 		
 		if (passwordPlainText.length()<8) {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"signUp", nickname+" entered password with lenght<8.");
 			return false;
 		}
 			//create account
@@ -57,6 +63,7 @@ public class Whistler {
 		
 		if (account == null) {
 			System.out.println("\n<<The Nickname is incorrect or non-existent! Please Sign-up first or enter a correct one>>");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"login","Incorrect nickname was entered: "+nickname);
 			return false;
 		}
 		
@@ -66,6 +73,7 @@ public class Whistler {
 			
 		}else {
 			System.out.println("\n<<The password length cannot be less than 8 characters>>");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"login","Incorrect password lenght was entered by: "+nickname);
 		}
 		
 		return false;
@@ -119,6 +127,7 @@ public class Whistler {
 			posts = this.getAccount(nickname).getPosts(); 
 		}catch(Exception ex) {
 			System.out.println("<<Something went wrong while gathering account posts: "+ex);
+			logger.logp(Level.SEVERE, Whistler.class.getSimpleName(),"getAccountPublicPosts","Something went wrong while gathering "+nickname+" account's posts: "+ex);
 		}
 		
 		if(!posts.isEmpty()) {

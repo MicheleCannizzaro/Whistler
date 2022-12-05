@@ -1,6 +1,8 @@
 package it.aps.whistler.ui.text.console;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.persistence.dao.PostDao;
@@ -12,6 +14,7 @@ import it.aps.whistler.ui.text.command.TurnBackCommand;
 import it.aps.whistler.util.Util;
 
 public class EditPostConsole implements Console {
+	private final static Logger logger = Logger.getLogger(EditPostConsole.class.getName());
 	
 	private enum editPostField{ TITLE, BODY, KEYWORDS, POST_VISIBILITY }
 	
@@ -46,6 +49,7 @@ public class EditPostConsole implements Console {
 			command= Parser.getInstance().getCommand(Page.EDIT_POST_CONSOLE);
 			command.run(userInputs,this.userNickname);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, EditPostConsole.class.getSimpleName(),"manageEditPostConsoleCommand","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException EditPostConsole "+ex);
 		}
 	}
@@ -60,12 +64,14 @@ public class EditPostConsole implements Console {
 			
 			switch (PageCommands.Error.values()[choice]) {
 			
-				case EXIT: 
-						command = new TurnBackCommand(Page.PROFILE_TIMELINE_CONSOLE);
+				case EXIT:
+						logger.log(Level.INFO, "[manageEditPostConsoleCommandError] - EditPostConsole turn back to ProfileConsole");
+						command = new TurnBackCommand(Page.EDIT_POST_CONSOLE);
 						command.run(userInputs,this.userNickname);
 						break;
 						
-				case RETRY: 
+				case RETRY:
+						logger.log(Level.INFO, "[manageEditPostConsoleCommandError] - EditPostConsole (Retry)");
 						String postPid = getPostPidFromStandardInput();
 						System.out.println("<<Ok, you are allowed to edit this post>>");
 						ArrayList<String> inputs =  getNewFieldValueToEdit(postPid); 
@@ -75,6 +81,7 @@ public class EditPostConsole implements Console {
 			
 		}catch(java.lang.NumberFormatException | java.lang.ArrayIndexOutOfBoundsException ex) {
         	System.out.println ("\n<<You must enter a command in the list \"Commands\" [digit format]>>");
+        	logger.logp(Level.WARNING, EditPostConsole.class.getSimpleName(),"manageEditPostConsoleCommandError","("+userNickname+")"+" Command entered not in digit format or out of bounds: "+ex);
         	manageEditPostConsoleCommandError();
         	}
 	}
@@ -86,6 +93,7 @@ public class EditPostConsole implements Console {
 		
 		while (p==null) {
 			System.out.println("<<Sorry wrong PID, no post has this PID on Whistler. Retry or come back to Profile.>>");
+			logger.logp(Level.INFO, EditPostConsole.class.getSimpleName(),"getPostPidFromStandardInput", userNickname+" entered wrong PID, no post has this PID on Whistler");
 			
 			printAvailableCommandsEditPostError(Page.EDIT_POST_CONSOLE);
 			manageEditPostConsoleCommandError();
@@ -93,6 +101,7 @@ public class EditPostConsole implements Console {
 		
 		while(!p.getOwner().equals(this.userNickname)) {
 			System.out.println("<<You can't edit post of other users! Retry or come back to Profile.>>");
+			logger.logp(Level.INFO, EditPostConsole.class.getSimpleName(),"getPostPidFromStandardInput", userNickname+" has entered PID of a post that does not belong to him");
 			
 			printAvailableCommandsEditPostError(Page.EDIT_POST_CONSOLE);
 			manageEditPostConsoleCommandError();
@@ -155,6 +164,7 @@ public class EditPostConsole implements Console {
 		}catch(java.lang.NumberFormatException | java.lang.ArrayIndexOutOfBoundsException ex) {
 			
         	System.out.println ("\n<<You must enter a command in the list \"Commands\" [digit format]>>");
+        	logger.logp(Level.WARNING, EditPostConsole.class.getSimpleName(),"getNewFieldValueToEdit","("+userNickname+")"+" Command entered not in digit format or out of bounds: "+ex);
     		ArrayList<String> inputs =  getNewFieldValueToEdit(postPid);
     		manageEditPostConsoleCommand(postPid, inputs);
         }

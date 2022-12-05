@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -16,6 +18,7 @@ import it.aps.whistler.domain.Post;
 import it.aps.whistler.util.HibernateUtil;
 
 public class PostDao {
+	private final static Logger logger = Logger.getLogger(PostDao.class.getName());
 	
 	private static PostDao instance;
 	
@@ -40,9 +43,13 @@ public class PostDao {
 			transaction.commit();
 			return true;
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"savePost","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"savePost","Transaction Rollback");
             }
             return false;
         } finally {
@@ -64,9 +71,13 @@ public class PostDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"updatePost","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"updatePost","Transaction Rollback");
             }
         } finally {
        	   session.close();
@@ -90,9 +101,13 @@ public class PostDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"deletePost","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"deletePost","Transaction Rollback");
             }
         } finally {
         	   session.close();
@@ -114,9 +129,13 @@ public class PostDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getPostByPid","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getPostByPid","Transaction Rollback");
             }
         } finally {
      	   session.close();
@@ -159,9 +178,13 @@ public class PostDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getAllPostsFromOwner","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getAllPostsFromOwner","Transaction Rollback");
             }
         } finally {
       	   session.close();

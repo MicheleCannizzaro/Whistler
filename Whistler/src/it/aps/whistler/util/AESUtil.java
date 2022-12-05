@@ -5,6 +5,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,6 +18,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtil {
+	private final static Logger logger = Logger.getLogger(AESUtil.class.getName());
 	
 	public static SecretKey generateKey(int n){
 	    SecretKey key = null;
@@ -24,7 +27,7 @@ public class AESUtil {
 		    keyGenerator.init(n);
 		    key = keyGenerator.generateKey();
 	    }catch(NoSuchAlgorithmException ex) {
-	    	System.out.println("[AESUtil]: Error in SecretKey generation "+ex);
+	    	logger.logp(Level.SEVERE, AESUtil.class.getSimpleName(),"generateKey","[AESUtil]: Error in SecretKey generation - NoSuchAlgorithmException: "+ex);
 	    }
 	    return key;
 	}
@@ -90,7 +93,7 @@ public class AESUtil {
 			
 		}catch(NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException |
 			   BadPaddingException| IllegalBlockSizeException ex) {
-			System.out.println("[AESUtil] - Error in Password Encryption "+ex);
+			logger.logp(Level.SEVERE, AESUtil.class.getSimpleName(),"encryptPassword","[AESUtil] - Error in Password Encryption: "+ex);
 		} 
 	
 		return encryptedPassword;
@@ -103,6 +106,7 @@ public class AESUtil {
 		}catch(NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException |
 			   BadPaddingException| IllegalBlockSizeException ex) {
 			System.out.println("[AESUtil] - Error in deciphering encryptedPassword " + ex);
+			logger.logp(Level.SEVERE, AESUtil.class.getSimpleName(),"decryptPassword","[AESUtil] - Error in Deciphering encryptedPassword: "+ex);
 		}
 		return plainTextPassword;
 	}

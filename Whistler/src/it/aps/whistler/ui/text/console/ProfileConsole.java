@@ -11,9 +11,12 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.time.LocalDateTime;
 
 public class ProfileConsole implements Console{
+	private final static Logger logger = Logger.getLogger(ProfileConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -36,6 +39,7 @@ public class ProfileConsole implements Console{
 			Command command= Parser.getInstance().getCommand(Page.PROFILE_CONSOLE);
 			command.run(userInputs, userNickname);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, ProfileConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ProfileConsole "+ex);
 		}
 	}
@@ -64,17 +68,16 @@ public class ProfileConsole implements Console{
 	}
 	
 	private void personalInfo() {
-		System.out.println("                 PERSONAL INFO                                                                              \n"
-						  +"       ╔════════════════════════════════╗                                                                   \n"
-						  +"       ║  "+Util.padRight("Name: "+userAccount.getName(), 30)+"║                                            \n"
-						  +"       ║  "+Util.padRight("Surname: "+userAccount.getSurname(), 30)+"║                                      \n"
-						  +"       ║  "+Util.padRight("E-mail: "+userAccount.getEmail(), 30)+"║                                         \n"
-					  	  +"       ║  "+Util.padRight("Info Visibility: "+userAccount.getVisibility().toString(), 30)+"║                \n"
-			  			  +"       ║════════════════════════════════║                                                                   \n"
-			  			  +"       ║  "+Util.padRight("Number of posts: "+userAccount.getPosts().size(), 30)+"║                         \n"
-	  					  +"       ║  "+Util.padRight("Followers: "+userAccount.getFollowers().size(), 30)+"║                           \n"
-	  					  +"       ║  "+Util.padRight("Followed: "+userAccount.getFollowedAccounts().size(), 30)+"║                     \n"
-						  +"       ╚════════════════════════════════╝                                                                   \n"                                                   
+		System.out.println("                      PERSONAL INFO                                                                         \n"
+						  +"       ╔══════════════════════════════════════════╗                                                         \n"
+						  +"       ║  "+Util.padRight("Name: "+userAccount.getName(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(0).toString()+")",10)+"║      \n"
+						  +"       ║  "+Util.padRight("Surname: "+userAccount.getSurname(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(1).toString()+")",10)+"║\n"
+						  +"       ║  "+Util.padRight("E-mail: "+userAccount.getEmail(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(2).toString()+")",10)+"║   \n"
+			  			  +"       ║══════════════════════════════════════════║                                                         \n"
+			  			  +"       ║  "+Util.padRight("Number of posts: "+userAccount.getPosts().size(), 40)+"║                         \n"
+	  					  +"       ║  "+Util.padRight("Followers: "+userAccount.getFollowers().size(), 40)+"║                           \n"
+	  					  +"       ║  "+Util.padRight("Followed: "+userAccount.getFollowedAccounts().size(), 40)+"║                     \n"
+						  +"       ╚══════════════════════════════════════════╝                                                         \n"                                                   
 				          +"                                                                                                            \n");
 	}
 }

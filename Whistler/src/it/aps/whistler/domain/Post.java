@@ -89,7 +89,7 @@ public class Post implements java.io.Serializable {
 		if (this.postKeywords.isEmpty()) {
 			Post p = PostDao.getInstance().getPostByPid(pid);
 			p.getPostKeywords();
-			this.postKeywords =p.getPostKeywords();
+			this.postKeywords = p.getPostKeywords();
 		}
 		return postKeywords;
 	}

@@ -7,15 +7,18 @@ import it.aps.whistler.util.AESUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Account {
+	private final static Logger logger = Logger.getLogger(Account.class.getName());
 	
 	private String nickname;
 	private String name;
 	private String surname;
 	private String email;
 	private String encryptedPassword;
-	private Visibility visibility;
+	private ArrayList<Visibility> visibility;   
 	
 	private String encodedKey;
 	private String encodedIv;
@@ -36,7 +39,11 @@ public class Account {
 		this.encodedKey = AESUtil.generateEncodedKey();
 		this.encodedIv = AESUtil.generateEncodedIv();
 		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
-		this.visibility = Visibility.PRIVATE;
+		
+		this.visibility = new ArrayList<>();
+		this.visibility.add(0, Visibility.PRIVATE);   //index 0 -> name visibility;
+		this.visibility.add(1,Visibility.PRIVATE);	 //index 1 -> surname visibility;
+		this.visibility.add(2,Visibility.PUBLIC);	//index 2 -> email visibility;
 		
 		this.followedAccounts = new ArrayList<>();
 		this.followers = new ArrayList<>();
@@ -59,10 +66,12 @@ public class Account {
 				
 			}else{
 				System.out.println("<<You already follow the Account with nickname: \""+nickname+"\">>");
-				}
+				logger.logp(Level.INFO, Account.class.getSimpleName(),"followAccount","The user with account "+this.nickname+" wants to follow "+nickname+" but he already follows it.");
+			}
 			
 		}else{
-			System.out.println("\n<<Sorry the Account with nickname: \""+nickname+"\" does not exists in Whistler>>");
+			System.out.println("\n<<Sorry the Account with nickname: \""+nickname+"\" does not exists on Whistler>>");
+			logger.logp(Level.INFO, Account.class.getSimpleName(),"followAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exists on Whistler.");
 		}
 	}
 	
@@ -79,11 +88,13 @@ public class Account {
 				
 				whistleblowerAccount.removeFollower(this.nickname);		//removing the user to the whistleblower's followers
 			}else{
-				System.out.println("\n<<You don't follow already the Account with nickname: \""+nickname+"\">>");
+				System.out.println("\n<<You can't unfollow the Account with nickname: \""+nickname+"\" because you already don't follow it.>>");
+				logger.logp(Level.INFO, Account.class.getSimpleName(),"unFollowAccount","The user with account "+this.nickname+" entered "+nickname+" to unfollow it, but he already don't follows it.");
 			}
 			
 		}else {
 			System.out.println("\n<<Sorry you can't unfollow the Account with nickname: \""+nickname+"\" because it does not exists in Whistler>>");
+			logger.logp(Level.INFO, Account.class.getSimpleName(),"unFollowAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exists on Whistler.");
 		}
 
 	}
@@ -177,15 +188,16 @@ public class Account {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public Visibility getVisibility() {
+	
+	public ArrayList<Visibility> getVisibility() {
 		return visibility;
 	}
+	
 	//UC1_1a
-	public void setVisibility(Visibility visibility) {
+	public void setVisibility(ArrayList<Visibility> visibility) {
 		this.visibility = visibility;
 	}
-	
+
 	public String getEncodedIv() {
 		return encodedIv;
 	}
@@ -213,6 +225,7 @@ public class Account {
 	public boolean setPassword(String plainTextPassword) {
 		if (plainTextPassword.length()<8) {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
+			logger.logp(Level.WARNING, Account.class.getSimpleName(),"setPassword","The user with account "+this.nickname+" entered a password with lenght < 8 characters.");
 			return false;
 		}
 		

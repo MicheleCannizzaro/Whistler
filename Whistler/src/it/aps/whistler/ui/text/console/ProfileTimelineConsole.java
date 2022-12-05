@@ -12,9 +12,12 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.time.LocalDateTime;
 
 public class ProfileTimelineConsole implements Console{
+	private final static Logger logger = Logger.getLogger(ProfileTimelineConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -35,6 +38,7 @@ public class ProfileTimelineConsole implements Console{
 			Command command= Parser.getInstance().getCommand(Page.PROFILE_TIMELINE_CONSOLE);
 			command.run(userInputs, userNickname);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, ProfileTimelineConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ProfileTimelineConsole "+ex);
 		}
 	}

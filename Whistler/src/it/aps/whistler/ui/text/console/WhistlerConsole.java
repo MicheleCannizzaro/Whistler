@@ -8,8 +8,11 @@ import it.aps.whistler.util.HibernateUtil;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WhistlerConsole implements Console{
+	private final static Logger logger = Logger.getLogger(WhistlerConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	
@@ -25,6 +28,7 @@ public class WhistlerConsole implements Console{
 			Command command= Parser.getInstance().getCommand(Page.WHISTLER_CONSOLE);
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, WhistlerConsole.class.getSimpleName(),"start","(BYE): NullPointerException: "+ex);
 			System.out.println("BYE...");
 			HibernateUtil.shutdown();
 			System.exit(0);						// Terminate the program (EXIT)

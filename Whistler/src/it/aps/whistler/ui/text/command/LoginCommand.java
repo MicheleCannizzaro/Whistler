@@ -11,6 +11,7 @@ public class LoginCommand implements Command{
 		String descripition = "LoginCommand takes you to the LoginConsole";
 		return descripition;
 	}
+	
 	public void run(ArrayList<String> enteredInputs, String userNickname) {
 		Console loginConsole= new LoginConsole();
 		loginConsole.start();

@@ -2,6 +2,8 @@ package it.aps.whistler.persistence.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -11,6 +13,7 @@ import it.aps.whistler.domain.Account;
 import it.aps.whistler.util.HibernateUtil;
 
 public class AccountDao {
+	private final static Logger logger = Logger.getLogger(AccountDao.class.getName());
 	
 	private static AccountDao instance;
 	
@@ -33,9 +36,13 @@ public class AccountDao {
 			
 			transaction.commit();
         
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"saveAccount","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"saveAccount","Transaction Rollback");
             }
         } finally {
         	   session.close();
@@ -55,9 +62,13 @@ public class AccountDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"updateAccount","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"updateAccount","Transaction Rollback");
             }
         } finally {
      	   session.close();
@@ -81,9 +92,13 @@ public class AccountDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"deleteAccount","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"deleteAccount","Transaction Rollback");
             }
         } finally {
       	   session.close();
@@ -105,9 +120,13 @@ public class AccountDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"getAccountByNickname","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"getAccountByNickname","Transaction Rollback");
             }
         } finally {
        	   session.close();
@@ -134,9 +153,13 @@ public class AccountDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"getAllWhistlerAccounts","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, AccountDao.class.getSimpleName(),"getAllWhistlerAccounts","Transaction Rollback");
             }
         } finally {
         	   session.close();

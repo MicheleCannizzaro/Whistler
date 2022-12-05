@@ -3,6 +3,8 @@ package it.aps.whistler.persistence.dao;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -12,6 +14,7 @@ import it.aps.whistler.domain.Keyword;
 import it.aps.whistler.util.HibernateUtil;
 
 public class KeywordDao {
+	private final static Logger logger = Logger.getLogger(KeywordDao.class.getName());
 	
 	private static KeywordDao instance;
 	
@@ -34,9 +37,13 @@ public class KeywordDao {
 			
 			transaction.commit();
         
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"saveKeyword","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"saveKeyword","Transaction Rollback");
             }
         } finally {
      	   session.close();
@@ -56,9 +63,13 @@ public class KeywordDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"updateKeyword","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"updateKeyword","Transaction Rollback");
             }
         } finally {
       	   session.close();
@@ -82,9 +93,13 @@ public class KeywordDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"deleteKeyword","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"deleteKeyword","Transaction Rollback");
             }
         } finally {
        	   session.close();
@@ -106,9 +121,13 @@ public class KeywordDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"getKeywordByWord","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"getKeywordByWord","Transaction Rollback");
             }
         } finally {
         	   session.close();
@@ -135,9 +154,13 @@ public class KeywordDao {
 			// commit transaction
 			transaction.commit();
 			
-		}catch(HibernateException e) {
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"getAllWhistlerKeywords","HibernateException: "+ex);
+			
             if (transaction!=null) {
             	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, KeywordDao.class.getSimpleName(),"getAllWhistlerKeywords","Transaction Rollback");
             }
         } finally {
      	   session.close();

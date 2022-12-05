@@ -8,8 +8,11 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SignUpConsole implements Console {
+	private final static Logger logger = Logger.getLogger(SignUpConsole.class.getName());
 	
 	private ArrayList<String> userInputs;
 	
@@ -54,6 +57,7 @@ public class SignUpConsole implements Console {
 			Command command= Parser.getInstance().getCommand(Page.SIGNUP_CONSOLE);
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
+			logger.logp(Level.WARNING, SignUpConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole "+ex);
 		}
 	}

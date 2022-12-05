@@ -12,7 +12,7 @@ public class HibernateUtil {
     private static SessionFactory sessionFactory = initHibernateUtil();
 
     private static SessionFactory initHibernateUtil() {
-    	//java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+    	java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
         try {
             return new Configuration().configure("/it/aps/whistler/util/hibernate.cfg.xml").buildSessionFactory();
         } catch (HibernateException ex) {
