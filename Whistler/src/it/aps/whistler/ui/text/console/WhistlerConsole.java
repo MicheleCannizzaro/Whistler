@@ -29,8 +29,9 @@ public class WhistlerConsole implements Console{
 			command.run(userInputs,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, WhistlerConsole.class.getSimpleName(),"start","(BYE): NullPointerException: "+ex);
-			System.out.println("BYE...");
+			System.out.println("closing...");
 			HibernateUtil.shutdown();
+			System.out.println("BYE!");
 			System.exit(0);						// Terminate the program (EXIT)
 		}
 	}

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Whistler;
-import it.aps.whistler.persistence.dao.AccountDao;
 
 class WhistlerTest {
 	
@@ -46,9 +45,8 @@ class WhistlerTest {
 				Account fakeAccount = w.getAccount("@elonmsk");
 				
 				//removing fake account from whistler_db and cache
-				if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
-					AccountDao.getInstance().deleteAccount("@elonmsk");
-					w.getWhistlerAccounts().clear();
+				if (w.getWhistlerAccounts().contains(fakeAccount)) {
+					w.removeAccount("@elonmsk");
 				}
 			}
 	  }
@@ -143,9 +141,8 @@ class WhistlerTest {
 				Account fakeAccount = w.getAccount("@elonmsk");
 				
 				//removing fake account from whistler_db and cache
-				if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
-					AccountDao.getInstance().deleteAccount("@elonmsk");
-					w.getWhistlerAccounts().clear();
+				if (w.getWhistlerAccounts().contains(fakeAccount)) {
+					w.removeAccount("@elonmsk");
 				}
 			}
 	  }
@@ -156,9 +153,8 @@ class WhistlerTest {
 			Account fakeAccount = w.getAccount("@elonmsk");
 			
 			//removing fake account from whistler_db and cache
-			if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount)) {
-				AccountDao.getInstance().deleteAccount("@elonmsk");
-				w.getWhistlerAccounts().clear();
+			if (w.getWhistlerAccounts().contains(fakeAccount)) {
+				w.removeAccount("@elonmsk");
 			}
 		}
 	

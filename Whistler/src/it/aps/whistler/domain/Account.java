@@ -116,19 +116,6 @@ public class Account {
 		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
 		
 	}
-	
-	//UC1_1b
-	public void removeAccount() {
-		//Delete Posts
-		this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
-		for (Post p : posts) {
-			PostDao.getInstance().deletePost(p.getPid());
-		}
-		
-		//Delete Account
-		Whistler.getInstance().removeAccountFromCache(this.nickname);
-		AccountDao.getInstance().deleteAccount(this.nickname);
-	}
 
 	//UC3
 	public void enterNewPost(String title, String body) {
@@ -153,6 +140,19 @@ public class Account {
 	//UC3
 	public void confirmPost() {
 		PostDao.getInstance().savePost(this.currentPost);
+	}
+	
+	//UC3
+	public void removePost(String postPid) {
+		Post p = PostDao.getInstance().getPostByPid(postPid);
+		
+		if (this.nickname.equals(p.getOwner())) {
+			this.posts.remove(p);
+			PostDao.getInstance().deletePost(postPid);
+		}else {
+			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost", this.nickname+" wants to remove post ("+postPid+") of other user!");
+		}
+		
 	}
 
 	//Getter and Setter

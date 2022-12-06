@@ -13,7 +13,7 @@ public class ProfileCommand implements Command {
 	}
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname) {
-		Console profileConsole= new ProfileConsole(userNickname);
+		Console profileConsole= new ProfileConsole(userNickname,true, null); //isOwner == true
 		profileConsole.start();
 	}
 }

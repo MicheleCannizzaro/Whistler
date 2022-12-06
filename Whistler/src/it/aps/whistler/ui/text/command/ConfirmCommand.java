@@ -5,9 +5,6 @@ import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 
-import it.aps.whistler.persistence.dao.AccountDao;
-import it.aps.whistler.persistence.dao.PostDao;
-
 import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.console.CircleConsole;
 import it.aps.whistler.ui.text.console.Console;
@@ -67,13 +64,16 @@ public class ConfirmCommand implements Command{
 				confirmSettingsConsole(whistler,enteredInputs,userNickname);
 				break;
 			case EDIT_POST_CONSOLE:
-				confirmEditPostConsole(enteredInputs,userNickname);
+				confirmEditPostConsole(whistler,enteredInputs,userNickname);
 				break;
 			case REMOVE_POST_CONSOLE:
-				confirmRemovePostConsole(enteredInputs,userNickname);
+				confirmRemovePostConsole(whistler,enteredInputs,userNickname);
 				break;
 			case REMOVE_ACCOUNT_CONSOLE:
 				confirmRemoveAccountConsole(whistler,enteredInputs,userNickname);
+				break;
+			case SEARCH_ACCOUNT_CONSOLE:
+				confirmSearchAccountConsole(enteredInputs,userNickname);
 				break;
 			default:
 				break;
@@ -159,17 +159,14 @@ public class ConfirmCommand implements Command{
 			case NAME: 
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Name");
 				userAccount.setName(enteredInputs.get(1));
-				AccountDao.getInstance().updateAccount(userAccount);
 				break;
 			case SURNAME: 
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Surname");
 				userAccount.setSurname(enteredInputs.get(1));
-				AccountDao.getInstance().updateAccount(userAccount);
 				break;
 			case EMAIL:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits E-mail");
 				userAccount.setEmail(enteredInputs.get(1));
-				AccountDao.getInstance().updateAccount(userAccount);
 				break;
 			case INFO_VISIBILITY:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Info Visibility");
@@ -181,7 +178,6 @@ public class ConfirmCommand implements Command{
 				}
 				
 				userAccount.setVisibility(visibility);
-				AccountDao.getInstance().updateAccount(userAccount);
 				break;
 			case PASSWORD:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Password");
@@ -189,38 +185,35 @@ public class ConfirmCommand implements Command{
 					Console settingsConsole = new SettingsConsole(userNickname);
 					settingsConsole.start();
 				}
-				AccountDao.getInstance().updateAccount(userAccount);
 				break;
 		}
+		
+		whistler.updateAccount(userAccount);
 		
 		if (editFieldSettings.values()[fieldToEdit]==editFieldSettings.PASSWORD) {
 			Console whistlerConsole = new WhistlerConsole();
 			whistlerConsole.start();
 		}
 		
-		Console profileConsole= new ProfileConsole(userNickname);
+		Console profileConsole= new ProfileConsole(userNickname, true, null);  //isOwner == true
 		profileConsole.start();
 			
 	}
 	
-	private void confirmEditPostConsole(ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmEditPostConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
 		
 		String postPid = enteredInputs.get(0);   //enteredInputs.get(0) - contains the pid
-		Post postToEdit = PostDao.getInstance().getPostByPid(postPid);
+		Post postToEdit = whistler.getPost(postPid);
 		int fieldToEdit = Integer.parseInt(enteredInputs.get(1)); //enteredInputs.get(1) - contains the choice made about the field to edit
 		
 		switch(editFieldPost.values()[fieldToEdit]) {
 			case TITLE:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits post's Title ("+postPid+")");
 				postToEdit.setTitle(enteredInputs.get(2));  //enteredInputs.get(2) - contains the field value
-				postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-				PostDao.getInstance().updatePost(postToEdit);
 				break;
 			case BODY: 
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits post's Body ("+postPid+")");
 				postToEdit.setBody(enteredInputs.get(2));
-				postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-				PostDao.getInstance().updatePost(postToEdit);
 				break;
 			case KEYWORDS:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits post's Keywords ("+postPid+")");
@@ -240,32 +233,33 @@ public class ConfirmCommand implements Command{
 					for (String keyword : keywords) {
 						postToEdit.addPostKeyword(keyword);
 					}
-					postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-					PostDao.getInstance().updatePost(postToEdit);
+					
 				}
 				break;
 			case POST_VISIBILITY:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits pos's visibility ("+postPid+")");
 				int visibilityIndex = Integer.valueOf(enteredInputs.get(2)); ////enteredInputs.get(2) - contains the  visibility value
 				postToEdit.setPostVisibility(Visibility.values()[visibilityIndex]);
-				postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-				PostDao.getInstance().updatePost(postToEdit);
 				break;
 		}
+		postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+		whistler.updatePost(postToEdit);
 		
-		Console profileTimelineConsole = new ProfileTimelineConsole(userNickname); 
+		Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
 		profileTimelineConsole.start();
 	}
 	
-	private void confirmRemovePostConsole(ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmRemovePostConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
 		
 		String postPid = enteredInputs.get(0);   //enteredInputs.get(0) - contains the pid of the post to remove
-		PostDao.getInstance().deletePost(postPid);
+		whistler.getAccount(userNickname).removePost(postPid);
+		
 		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemovePostConsole",userNickname+" deleted post with PID: "+postPid);
 		
-		Console profileTimelineConsole = new ProfileTimelineConsole(userNickname); 
+		Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
 		profileTimelineConsole.start();
 	}
+	
 	
 	private void confirmRemoveAccountConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
 
@@ -275,13 +269,26 @@ public class ConfirmCommand implements Command{
 			removeAccountConsole.start();
 		}
 		
-		Account userAccount = whistler.getAccount(userNickname);
-		userAccount.removeAccount();
+		whistler.removeAccount(userNickname);
 		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemoveAccountConsole",userNickname+"'s account was deleted.");
 		
 		Console whistlerConsole = new WhistlerConsole();
 		whistlerConsole.start();
 			
+	}
+	
+	
+	private void confirmSearchAccountConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Console profileConsole;
+		
+		if (!enteredInputs.get(0).equals(userNickname)) { //enteredInputs.get(0) is the whistleblower searched
+			
+			profileConsole= new ProfileConsole(userNickname, false, enteredInputs.get(0)); // isOwner == false 
+		}else {
+			
+			profileConsole= new ProfileConsole(userNickname, true, null); // isOwner == true
+		}
+		profileConsole.start();
 	}
 	
 }

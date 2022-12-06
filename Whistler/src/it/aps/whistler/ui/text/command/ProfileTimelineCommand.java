@@ -13,7 +13,16 @@ public class ProfileTimelineCommand implements Command {
 	}
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname) {
-		Console profileTimelineConsole= new ProfileTimelineConsole(userNickname);
+		Console profileTimelineConsole;
+		
+		if (enteredInputs.isEmpty()) {
+																	//isOwner == true		
+			profileTimelineConsole= new ProfileTimelineConsole(userNickname,true, null); 
+		}else {			
+																		//isOwner == false
+			profileTimelineConsole = new ProfileTimelineConsole(userNickname,false, enteredInputs.get(0)); //enteredInputs.get(0) is whistleblowerNickname
+		}
+		
 		profileTimelineConsole.start();
 	}
 }

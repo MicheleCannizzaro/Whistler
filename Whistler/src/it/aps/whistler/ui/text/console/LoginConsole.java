@@ -28,6 +28,7 @@ public class LoginConsole implements Console{
 		welcomePage();
 		
 		String nickname = getNicknameFromStandardInput();
+		System.out.println(Util.padLeft("ok!", 21));
 		String passwordPlainText = Parser.getInstance().readCommand(" Enter your Password:");
 		manageLoginConsoleCommand(nickname, passwordPlainText);
 		
@@ -70,6 +71,7 @@ public class LoginConsole implements Console{
 				case RETRY: 
 						logger.log(Level.INFO, "[manageLoginErrorCommands] - LoginConsole (Retry)");
 						nickname = getNicknameFromStandardInput();
+						System.out.println(Util.padLeft("ok!", 21));
 						String passwordPlainText = Parser.getInstance().readCommand(" Enter your Password:");
 						manageLoginConsoleCommand(nickname, passwordPlainText);	
 						break;
@@ -84,6 +86,7 @@ public class LoginConsole implements Console{
 	public String getNicknameFromStandardInput() {
 		Whistler whistler = Whistler.getInstance();
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter your Nickname:");
+		System.out.println(Util.padLeft("checking...", 21));
 		
 		//UI preventive checks for better user experience
 		while (whistler.getAccount(nickname)==null) {

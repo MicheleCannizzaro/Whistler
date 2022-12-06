@@ -14,6 +14,7 @@ public class WhistlerMainAppText {
 	public static void main(String[] args) {
 		
 		WhistlerLogger log = new WhistlerLogger();
+		
 		Whistler whistler = Whistler.getInstance();   //Initialization of whistler
 		logger.logp(Level.INFO,WhistlerMainAppText.class.getSimpleName(),"main","Whistler initialization");
 		

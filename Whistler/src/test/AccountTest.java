@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-//import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
@@ -17,8 +16,6 @@ import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
-import it.aps.whistler.persistence.dao.AccountDao;
-import it.aps.whistler.persistence.dao.PostDao;
 
 class AccountTest {
 
@@ -84,7 +81,8 @@ class AccountTest {
 		String expectedBody = "rosso di sera bel tempo si spera";
 		
 		boolean isPidPresent=false;
-		ArrayList<Post> fakeAccountPosts= PostDao.getInstance().getAllPostsFromOwner(fakeAccount.getNickname());
+		//ArrayList<Post> fakeAccountPosts= PostDao.getInstance().getAllPostsFromOwner(fakeAccount.getNickname());
+		ArrayList<Post> fakeAccountPosts=fakeAccount.getPosts();
 		
 		for (Post post : fakeAccountPosts) {
 			if (post.getTitle().equals(expectedTitle) && post.getBody().equals(expectedBody) && post.getOwner().equals("@elonmsk")) {
@@ -104,9 +102,8 @@ class AccountTest {
 	void testRemoveAccount() {
 		Whistler w = Whistler.getInstance();
 		w.signUp("@johnneumann", "John", "von Neumann", "johnneumann@gmail.com", "ciaociao2");
-		Account fakeAccount = w.getAccount("@johnneumann");
 		
-		fakeAccount.removeAccount();
+		w.removeAccount("@johnneumann");
 		assertNull(w.getAccount("@johnneumann"));
 	}
 	
@@ -117,19 +114,11 @@ class AccountTest {
 		Account fakeAccount2 = w.getAccount("@alanturing");
 		
 		//removing fake account from whistler_db and cache
-		if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount1)) {
-			AccountDao.getInstance().deleteAccount("@elonmsk");
+		if (w.getWhistlerAccounts().contains(fakeAccount1)) {
+			w.removeAccount("@elonmsk");
 		}
-		if (AccountDao.getInstance().getAllWhistlerAccounts().contains(fakeAccount2)) {
-			AccountDao.getInstance().deleteAccount("@alanturing");
-		}
-		w.getWhistlerAccounts().clear();
-		
-		ArrayList<Post> posts = PostDao.getInstance().getAllPostsFromOwner("@elonmsk");
-		if (posts.size()>0) {
-			for (Post p : posts ) {
-				PostDao.getInstance().deletePost(p.getPid());
-			}
+		if (w.getWhistlerAccounts().contains(fakeAccount2)) {
+			w.removeAccount("@alanturing");
 		}
 	}
 

@@ -21,10 +21,14 @@ public class ProfileTimelineConsole implements Console{
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
+	private String whistleblowerNickname;
+	private boolean isOwner;
 	
-	public ProfileTimelineConsole(String nickname) {
+	public ProfileTimelineConsole(String nickname, boolean isOwner, String whistleblowerNickname) {
 		this.userInputs = new ArrayList<>();
 		this.userNickname = nickname;
+		this.whistleblowerNickname = whistleblowerNickname;
+		this.isOwner = isOwner;
 	}
 		
 	public void start() {
@@ -32,10 +36,20 @@ public class ProfileTimelineConsole implements Console{
 		
 		profileTimeline();
 		
-		printAvailableCommands(Page.PROFILE_TIMELINE_CONSOLE);
+		if(isOwner) {
+			printAvailableCommands(Page.PROFILE_TIMELINE_CONSOLE);
+		}else {
+			printAvailableCommands(Page.ACCOUNT_TIMELINE_CONSOLE);
+		}
 		
 		try {
-			Command command= Parser.getInstance().getCommand(Page.PROFILE_TIMELINE_CONSOLE);
+			Page page = Page.PROFILE_TIMELINE_CONSOLE;
+			
+			if(!isOwner) {
+				page = Page.ACCOUNT_TIMELINE_CONSOLE;
+			}
+			
+			Command command= Parser.getInstance().getCommand(page);
 			command.run(userInputs, userNickname);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, ProfileTimelineConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
@@ -44,30 +58,62 @@ public class ProfileTimelineConsole implements Console{
 	}
 
 	public void printAvailableCommands(Page page) {
-		String[] commands = PageCommands.getCommands(page);
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-		System.out.println(" Commands:");
-		System.out.println(
-				 " ╔═════════════════════════╗             \n"
-				+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
-				+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
-				+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
-				+" ╚═════════════════════════╝             \n");
+		if (page == Page.PROFILE_TIMELINE_CONSOLE) {
+			String[] commands = PageCommands.getCommands(page);
+			System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+			System.out.println(" Commands:");
+			System.out.println(
+					 " ╔═════════════════════════╗             \n"
+					+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
+					+" ╚═════════════════════════╝             \n");
+		}
+		if (page.equals(Page.ACCOUNT_TIMELINE_CONSOLE)){
+			String[] commands = PageCommands.getCommands(page);
+			System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+			System.out.println(" Commands:");
+			System.out.println(
+					 " ╔═════════════════════════╗             \n"
+					+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
+					+" ╚═════════════════════════╝             \n");
+		}
 	}
 	
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-		System.out.println("                               ╔═╗╦═╗╔═╗╔═╗╦╦  ╔═╗  ╔╦╗╦╔╦╗╔═╗╦  ╦╔╗╔╔═╗                                    \n"
-					     + "                               ╠═╝╠╦╝║ ║╠╣ ║║  ║╣    ║ ║║║║║╣ ║  ║║║║║╣                                     \n"
-					     + "                               ╩  ╩╚═╚═╝╚  ╩╩═╝╚═╝   ╩ ╩╩ ╩╚═╝╩═╝╩╝╚╝╚═╝                                    \n"
-				         + "        USER: "+userNickname+"                                                                              \n"
-				         + "        Updated until: "+Util.getTimeString(LocalDateTime.now())+"                                          \n"
-				         + "                                                                                                            \n");
+		if(isOwner) {
+			System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+			System.out.println("                               ╔═╗╦═╗╔═╗╔═╗╦╦  ╔═╗  ╔╦╗╦╔╦╗╔═╗╦  ╦╔╗╔╔═╗                                    \n"
+						     + "                               ╠═╝╠╦╝║ ║╠╣ ║║  ║╣    ║ ║║║║║╣ ║  ║║║║║╣                                     \n"
+						     + "                               ╩  ╩╚═╚═╝╚  ╩╩═╝╚═╝   ╩ ╩╩ ╩╚═╝╩═╝╩╝╚╝╚═╝                                    \n"
+					         + "        USER: "+userNickname+"                                                                              \n"
+					         + "        Updated until: "+Util.getTimeString(LocalDateTime.now())+"                                          \n"
+					         + "                                                                                                            \n");
+		}else {
+			System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+			System.out.println("                             ╔═╗╔═╗╔═╗╔═╗╦ ╦╔╗╔╔╦╗  ╔╦╗╦╔╦╗╔═╗╦  ╦╔╗╔╔═╗                                    \n"
+						     + "                             ╠═╣║  ║  ║ ║║ ║║║║ ║    ║ ║║║║║╣ ║  ║║║║║╣                                     \n"
+						     + "                             ╩ ╩╚═╝╚═╝╚═╝╚═╝╝╚╝ ╩    ╩ ╩╩ ╩╚═╝╩═╝╩╝╚╝╚═╝                                    \n"
+					         + "        USER: "+whistleblowerNickname+"                                                                     \n"
+					         + "        Updated until: "+Util.getTimeString(LocalDateTime.now())+"                                          \n"
+					         + "                                                                                                            \n");
+		}
 	}
 
 	private void profileTimeline() {
-		Account userAccount = Whistler.getInstance().getAccount(this.userNickname);
+		String nickname = this.userNickname;
+		
+		if (!isOwner) {
+			nickname = this.whistleblowerNickname;
+		}
+		
+		Account userAccount = Whistler.getInstance().getAccount(nickname);
+		
 		ArrayList<Post> profileTimeline = userAccount.getPosts();
+		
+		if(!isOwner) {
+			profileTimeline = Whistler.getInstance().getAccountPublicPosts(nickname);
+		}
 		
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		
@@ -80,4 +126,6 @@ public class ProfileTimelineConsole implements Console{
 			Util.printDetailedPost(p);
 		}
 	}
+	
+	
 }

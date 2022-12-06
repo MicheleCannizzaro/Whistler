@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.aps.whistler.domain.Post;
-import it.aps.whistler.persistence.dao.PostDao;
+import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.Parser;
@@ -35,7 +35,7 @@ public class RemovePostConsole implements Console {
 	private String getPostPidFromStandardInput() {
 		String postPid = Parser.getInstance().readCommand("\n Enter post's PID you wish to edit:");
 		
-		Post p = PostDao.getInstance().getPostByPid(postPid);
+		Post p = Whistler.getInstance().getPost(postPid);
 		
 		while (p==null) {
 			System.out.println("<<Sorry wrong PID, no post has this PID on Whistler. Retry or come back to Profile.>>");

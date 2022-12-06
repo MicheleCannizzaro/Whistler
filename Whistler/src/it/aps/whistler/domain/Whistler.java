@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
+import it.aps.whistler.persistence.dao.PostDao;
 
 public class Whistler {
 	private final static Logger logger = Logger.getLogger(Whistler.class.getName());
@@ -15,7 +16,7 @@ public class Whistler {
 	
 	private Whistler(){
 		this.whistlerAccounts = new ArrayList<>();
-		System.out.println("[Whistler] - Whistler was succesfully created.");
+		logger.logp(Level.INFO, Whistler.class.getSimpleName(), "Whistler constructor", "[Whistler] - Whistler was succesfully created.");
 	}
 	
 	//Singleton pattern created by static method - Lazy Initialization
@@ -100,22 +101,39 @@ public class Whistler {
 		return account;
 	}
 	
+	public Post getPost(String postPid) {
+		Post post = PostDao.getInstance().getPostByPid(postPid);
+		return post;
+	}
+	
 	public boolean isPresent(String nickname) {           //checks if an account with the nickname provided exists on Whistler
 		if (this.getAccount(nickname)!=null) return true;
 		return false;
 	}
 	
 	public ArrayList<Account> getWhistlerAccounts() {
-		return whistlerAccounts;
+		this.whistlerAccounts = AccountDao.getInstance().getAllWhistlerAccounts();
+		return this.whistlerAccounts;
 	}
 	
 	public void setWhistlerAccounts(ArrayList<Account> whistlerAccounts) {
 		this.whistlerAccounts = whistlerAccounts;
 	}
 	
-	public void removeAccountFromCache(String nickname) {
+	//UC1_1b
+	public void removeAccount(String nickname) {
+		//Delete Posts
+		ArrayList<Post> posts = PostDao.getInstance().getAllPostsFromOwner(nickname);
+		for (Post p : posts) {
+			PostDao.getInstance().deletePost(p.getPid());
+		}
+		
+		//Delete Account
 		Account userAccount = AccountDao.getInstance().getAccountByNickname(nickname);
+			//from cache
 		this.whistlerAccounts.remove(userAccount);
+			//from db
+		AccountDao.getInstance().deleteAccount(nickname);
 	}
 
 	//UC6 //UC8
@@ -139,6 +157,14 @@ public class Whistler {
 		}
 		
 		return publicPosts;
+	}
+	
+	public void updatePost(Post p) {
+		PostDao.getInstance().updatePost(p);
+	}
+	
+	public void updateAccount(Account a) {
+		AccountDao.getInstance().updateAccount(a);
 	}
 
 }

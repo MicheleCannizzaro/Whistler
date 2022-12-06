@@ -16,6 +16,7 @@ import it.aps.whistler.ui.text.command.ProfileTimelineCommand;
 import it.aps.whistler.ui.text.command.PublishCommand;
 import it.aps.whistler.ui.text.command.RemoveAccountCommand;
 import it.aps.whistler.ui.text.command.RemovePostCommand;
+import it.aps.whistler.ui.text.command.SearchAccountCommand;
 import it.aps.whistler.ui.text.command.SettingsCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
@@ -133,6 +134,10 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ProfileConsole");
 								command = new ProfileCommand();
 								break;
+							case SEARCH_ACCOUNT:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchAccountConsole");
+								command = new SearchAccountCommand();
+								break;
 						}
 						break;
 						
@@ -198,13 +203,13 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - ProfileConsole turn back to HomeConsole");
 								command = new TurnBackCommand(Page.PROFILE_CONSOLE);
 								break;
-							case SETTINGS:
-								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to SettingsConsole");
-								command = new SettingsCommand();
-								break;
 							case PROFILE_TIMELINE:
 								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to ProfileTimelineConsole");
 								command = new ProfileTimelineCommand();
+								break;
+							case SETTINGS:
+								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to SettingsConsole");
+								command = new SettingsCommand();
 								break;
 							case REMOVE_ACCOUNT:
 								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to RemoveAccountConsole");
@@ -278,6 +283,41 @@ public class Parser {
 							case CONFIRM:
 								logger.log(Level.INFO,"[Parser] - RemoveAccountConsole takes to ConfirmCommand");
 								command = new ConfirmCommand(Page.REMOVE_ACCOUNT_CONSOLE);  
+								break;
+						}
+						break;
+						
+					case SEARCH_ACCOUNT_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - SearchAccountConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.SEARCH_ACCOUNT_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - SearchAccountConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.SEARCH_ACCOUNT_CONSOLE);  
+								break;
+						}
+						break;
+						
+					case ACCOUNT_PROFILE_CONSOLE:	
+						switch(PageCommands.AccountProfile.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO, "[Parser] - AccountProfileConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.ACCOUNT_PROFILE_CONSOLE);
+								break;
+							case ACCOUNT_PROFILE_TIMELINE:
+								logger.log(Level.INFO, "[Parser] - AccountProfileConsole takes to ProfileTimelineConsole");
+								command = new ProfileTimelineCommand();
+								break;
+						}
+						break;
+					
+					case ACCOUNT_TIMELINE_CONSOLE:
+						switch(PageCommands.AccountTimeline.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
 								break;
 						}
 						break;

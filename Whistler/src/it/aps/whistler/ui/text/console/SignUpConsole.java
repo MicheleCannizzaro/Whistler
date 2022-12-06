@@ -25,7 +25,7 @@ public class SignUpConsole implements Console {
 		welcomePage();
 		
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter a new shiny Nickname:");
-	
+		System.out.println(Util.padLeft("checking...", 21));
 		//UI preventive checks for better user experience
 		while (!isNicknameCorrect(nickname) || whistler.getAccount(nickname) != null) {
 			String message = null;
@@ -33,7 +33,7 @@ public class SignUpConsole implements Console {
 			else message = "\n<<Sorry! The Nickname you chose is already taken.>>\n Please choose another one:";
 			nickname = "@"+Parser.getInstance().readCommand(message);
 		}
-		
+		System.out.println(Util.padLeft("available!", 21));
 		String name = Parser.getInstance().readCommand(" Enter a Name:");
 		String surname = Parser.getInstance().readCommand(" Enter a Surname:");
 		String email = Parser.getInstance().readCommand(" Enter an E-mail:");

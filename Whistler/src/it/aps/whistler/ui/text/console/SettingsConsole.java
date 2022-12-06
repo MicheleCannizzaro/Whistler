@@ -69,7 +69,7 @@ public class SettingsConsole implements Console {
 					fields.add(newEmail); //index - 1
 					break;
 				case INFO_VISIBILITY: 
-					System.out.println("<<In order to set privacy policy for this post ->  Enter \"0:PUBLIC\" or \"1:PRIVATE\" >>\n");
+					System.out.println("<<In order to set privacy policy for each Info Field ->  Enter \"0:PUBLIC\" or \"1:PRIVATE\" >>\n");
 					ArrayList<String> visibilitySettings = getVisibilityInputs();
 					fields.addAll(visibilitySettings); //index - 1-2-3
 					break;
