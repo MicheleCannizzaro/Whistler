@@ -13,7 +13,7 @@
 		<property name="title" column="title"/>
 		<property name="body" column="body"/>
 		
-		<set name="postKeywords" table="post_keyword" inverse="false" lazy="true" fetch="select" cascade="all">
+		<set name="postKeywords" table="post_keyword" inverse="false" lazy="true" fetch="select" cascade="none">
 			<key>
 				<column name="pid" not-null="true"/>
 			</key>

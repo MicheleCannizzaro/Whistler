@@ -4,13 +4,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
+import it.aps.whistler.domain.Keyword;
+import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
+import it.aps.whistler.persistence.dao.KeywordDao;
 
 class WhistlerTest {
 	
@@ -37,17 +44,6 @@ class WhistlerTest {
 				Whistler w = Whistler.getInstance();
 																							//length = 7
 				assertFalse(w.signUp("@alanturing", "Alan", "Turing", "alanturing@gmail.com", "ciaocie"));
-			}
-		
-			@AfterEach
-			public void cleanUpWhistlerAccounts() {
-				Whistler w = Whistler.getInstance();
-				Account fakeAccount = w.getAccount("@elonmsk");
-				
-				//removing fake account from whistler_db and cache
-				if (w.getWhistlerAccounts().contains(fakeAccount)) {
-					w.removeAccount("@elonmsk");
-				}
 			}
 	  }
 	
@@ -134,28 +130,168 @@ class WhistlerTest {
 				assertNull(w.getAccount("@elonnotpresent"));
 			}
 			
-			
-			@AfterEach
-			public void cleanUpWhistlerAccounts() {
+			//GetPost Tests
+			@Test
+			void testGetPost_IsPresent() { //CE //CF
 				Whistler w = Whistler.getInstance();
 				Account fakeAccount = w.getAccount("@elonmsk");
 				
-				//removing fake account from whistler_db and cache
-				if (w.getWhistlerAccounts().contains(fakeAccount)) {
-					w.removeAccount("@elonmsk");
-				}
+				fakeAccount.enterNewPost("title", "body");
+				String postPid = fakeAccount.getCurrePostPid();
+				
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				Post pExpected = new Post("title","body");
+				pExpected.setPid(postPid);
+				pExpected.addPostKeyword("#Keyword1");
+				pExpected.addPostKeyword("#Keyword2");
+				pExpected.setOwner(fakeAccount.getNickname());
+				pExpected.setPostVisibility(Visibility.PUBLIC);
+				
+				
+				assertEquals(pExpected, w.getPost(postPid));
 			}
+			
+			@Test
+			void testGetPost_NotPresent() { //CE //CF
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				fakeAccount.enterNewPost("title", "body");
+				String postPid = fakeAccount.getCurrePostPid();
+				
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				fakeAccount.removePost(postPid);
+				
+				assertNull(w.getPost(postPid));
+			}
+			
+			@Test
+			void testGetAccountPublicPosts() { //CF
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PRIVATE);
+				fakeAccount.confirmPost();
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				int arrayListExpectedSize = 2;
+				
+				assertEquals(arrayListExpectedSize, w.getAccountPublicPosts("@elonmsk").size());
+			}
+			
+			@Test
+			void testGetAccountPublicInfo() { //CF
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				fakeAccount.getVisibility().put("Name", Visibility.PUBLIC);
+				fakeAccount.getVisibility().put("Surname", Visibility.PRIVATE);
+				fakeAccount.getVisibility().put("E-mail", Visibility.PUBLIC);
+				
+				w.updateAccount(fakeAccount);
+				
+				HashMap<String,String> accountPublicInfo = w.getAccountPublicInfo("@elonmsk");
+				
+				HashMap<String,String> accountPublicInfoExpected = new HashMap<>();
+				accountPublicInfoExpected.put("Name","Elon");
+				accountPublicInfoExpected.put("FollowedAccounts",String.valueOf(fakeAccount.getFollowedAccounts().size()));
+				accountPublicInfoExpected.put("Followers",String.valueOf(fakeAccount.getFollowers().size()));
+				accountPublicInfoExpected.put("E-mail", "elonmusk@gmail.com");
+				
+				
+				assertEquals(accountPublicInfoExpected,accountPublicInfo);
+				
+			}
+			
+			@Test
+			void testKeywordDiffusionRateReduction() { //CF
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				fakeAccount.enterNewPost("title", "body");
+				String postPid = fakeAccount.getCurrePostPid();
+				
+				fakeAccount.addPostKeyword("#Key1"); 	 
+				fakeAccount.addPostKeyword("#Key2");		
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				fakeAccount.enterNewPost("title1", "body1");
+				fakeAccount.addPostKeyword("#Key1"); 	
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				//Key1 diffRate = 2  --- Key2 diffRate = 1
+				
+				Post p = w.getPost(postPid);
+				w.keywordDiffusionRateReduction(p);
+				
+				//Expected
+				//Key1 diffRate = 1  --- Key2 diffRate = 0
+				
+				Keyword k = KeywordDao.getInstance().getKeywordByWord("#Key1");
+				Keyword k1 = KeywordDao.getInstance().getKeywordByWord("#Key2");
+				
+				assertTrue(k.getDiffusionRate()==1 && k1.getDiffusionRate() == 0);
+				
+			}
+			
+		}
+	  
+	  @Test
+	  void testRemoveAccount() { //CF
+		  Whistler w = Whistler.getInstance();
+		  w.signUp("@johnneumann", "John", "von Neumann", "johnneumann@gmail.com", "ciaociao2");
+		  
+		  w.removeAccount("@johnneumann");
+		  assertNull(w.getAccount("@johnneumann"));
 	  }
 	  
 	  @AfterEach
-		public void cleanUpWhistlerAccounts() {
-			Whistler w = Whistler.getInstance();
-			Account fakeAccount = w.getAccount("@elonmsk");
+	  public void cleanUp() {
+		  Whistler w = Whistler.getInstance();
+		  Account fakeAccount = w.getAccount("@elonmsk");
 			
-			//removing fake account from whistler_db and cache
-			if (w.getWhistlerAccounts().contains(fakeAccount)) {
-				w.removeAccount("@elonmsk");
-			}
-		}
-	
+		  //removing fake account from whistler_db and cache
+		  if (w.getWhistlerAccounts().contains(fakeAccount)) {
+			  w.removeAccount("@elonmsk");
+		  }
+	  }
+	  
+	  @AfterAll
+	  public static void cleanUpKeywords() {
+		  KeywordDao.getInstance().deleteKeyword("#Keyword1");
+		  KeywordDao.getInstance().deleteKeyword("#Keyword2");
+		  KeywordDao.getInstance().deleteKeyword("#Key1");
+		  KeywordDao.getInstance().deleteKeyword("#Key2");
+	  }
 }

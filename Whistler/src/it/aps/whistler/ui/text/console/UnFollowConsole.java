@@ -40,8 +40,8 @@ public class UnFollowConsole implements Console {
 		}
 		
 		
-		String whisltlerblowerNickname = Parser.getInstance().readCommand("\n Enter @nickname of the whistlerblower to unfollow:");
-		userInputs.add(whisltlerblowerNickname);
+		String whistleblowerNickname = Parser.getInstance().readCommand("\n Enter @nickname of the whistleblower to unfollow:");
+		userInputs.add(whistleblowerNickname);
 		
 		printAvailableCommands(Page.UNFOLLOW_CONSOLE);
 		

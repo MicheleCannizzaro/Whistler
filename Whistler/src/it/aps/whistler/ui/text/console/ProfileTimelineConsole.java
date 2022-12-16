@@ -46,7 +46,9 @@ public class ProfileTimelineConsole implements Console{
 			Page page = Page.PROFILE_TIMELINE_CONSOLE;
 			
 			if(!isOwner) {
+				userInputs.clear();
 				page = Page.ACCOUNT_TIMELINE_CONSOLE;
+				userInputs.add(whistleblowerNickname);
 			}
 			
 			Command command= Parser.getInstance().getCommand(page);
@@ -67,6 +69,7 @@ public class ProfileTimelineConsole implements Console{
 					+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 		if (page.equals(Page.ACCOUNT_TIMELINE_CONSOLE)){
@@ -76,6 +79,7 @@ public class ProfileTimelineConsole implements Console{
 			System.out.println(
 					 " ╔═════════════════════════╗             \n"
 					+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 	}

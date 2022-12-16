@@ -11,6 +11,7 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalDateTime;
@@ -109,37 +110,37 @@ public class ProfileConsole implements Console{
 	private void personalInfo() {
 		if (isOwner) {
 				System.out.println("                      PERSONAL INFO                                                                         \n"
-								  +"       ╔══════════════════════════════════════════╗                                                         \n"
-								  +"       ║  "+Util.padRight("Name: "+userAccount.getName(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(0).toString()+")",10)+"║      \n"
-								  +"       ║  "+Util.padRight("Surname: "+userAccount.getSurname(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(1).toString()+")",10)+"║\n"
-								  +"       ║  "+Util.padRight("E-mail: "+userAccount.getEmail(), 30)+Util.padRight(" ("+userAccount.getVisibility().get(2).toString()+")",10)+"║   \n"
-					  			  +"       ║══════════════════════════════════════════║                                                         \n"
-					  			  +"       ║  "+Util.padRight("Number of posts: "+userAccount.getPosts().size(), 40)+"║                         \n"
-			  					  +"       ║  "+Util.padRight("Followers: "+userAccount.getFollowers().size(), 40)+"║                           \n"
-			  					  +"       ║  "+Util.padRight("Followed: "+userAccount.getFollowedAccounts().size(), 40)+"║                     \n"
-								  +"       ╚══════════════════════════════════════════╝                                                         \n"                                                   
-						          +"                                                                                                            \n");
+						  +"       ╔══════════════════════════════════════════╗                                                         \n"
+						  +"       ║  "+Util.padRight("Name: "+userAccount.getName(), 30)+Util.padRight(" ("+userAccount.getVisibility().get("Name").toString()+")",10)+"║         \n"
+						  +"       ║  "+Util.padRight("Surname: "+userAccount.getSurname(), 30)+Util.padRight(" ("+userAccount.getVisibility().get("Surname").toString()+")",10)+"║\n"
+						  +"       ║  "+Util.padRight("E-mail: "+userAccount.getEmail(), 30)+Util.padRight(" ("+userAccount.getVisibility().get("E-mail").toString()+")",10)+"║    \n"
+			  			  +"       ║══════════════════════════════════════════║                                                         \n"
+			  			  +"       ║  "+Util.padRight("Number of posts: "+userAccount.getPosts().size(), 40)+"║                         \n"
+	  					  +"       ║  "+Util.padRight("Followers: "+userAccount.getFollowers().size(), 40)+"║                           \n"
+	  					  +"       ║  "+Util.padRight("Followed: "+userAccount.getFollowedAccounts().size(), 40)+"║                     \n"
+						  +"       ╚══════════════════════════════════════════╝                                                         \n"                                                   
+				          +"                                                                                                            \n");
 		}else {
-				Account wbAccount =  Whistler.getInstance().getAccount(whistleblowerNickname);
+				HashMap<String,String> accountPublicInfo = Whistler.getInstance().getAccountPublicInfo(whistleblowerNickname);
 				
 				System.out.println("                      PERSONAL INFO                                                                         \n"
 								  +"       ╔══════════════════════════════════════════╗                                                           ");
 				
-				if(wbAccount.getVisibility().get(0).toString().equals("PUBLIC")){
-					System.out.println("       ║  "+Util.padRight("Name: "+wbAccount.getName(), 40)+"║                                            ");
+				if(accountPublicInfo.containsKey("Name")){
+					System.out.println("       ║  "+Util.padRight("Name: "+accountPublicInfo.get("Name"), 40)+"║                                            ");
 				}
 				
-				if(wbAccount.getVisibility().get(1).toString().equals("PUBLIC")){
-					System.out.println("       ║  "+Util.padRight("Surname: "+wbAccount.getSurname(), 40)+"║                                      ");
+				if(accountPublicInfo.containsKey("Surname")){
+					System.out.println("       ║  "+Util.padRight("Surname: "+accountPublicInfo.get("Surname"), 40)+"║                                      ");
 				}
 				
-				if(wbAccount.getVisibility().get(2).toString().equals("PUBLIC")){
-					System.out.println("       ║  "+Util.padRight("E-mail: "+wbAccount.getEmail(), 40)+"║                                         ");
+				if(accountPublicInfo.containsKey("E-mail")){
+					System.out.println("       ║  "+Util.padRight("E-mail: "+accountPublicInfo.get("E-mail"), 40)+"║                                         ");
 				}
 				
 				System.out.println("       ║══════════════════════════════════════════║                                                         \n"
-								  +"       ║  "+Util.padRight("Followers: "+userAccount.getFollowers().size(), 40)+"║                           \n"
-								  +"       ║  "+Util.padRight("Followed: "+userAccount.getFollowedAccounts().size(), 40)+"║                     \n"
+								  +"       ║  "+Util.padRight("Followers: "+accountPublicInfo.get("Followers"), 40)+"║                           \n"
+								  +"       ║  "+Util.padRight("Followed: "+accountPublicInfo.get("FollowedAccounts"), 40)+"║                     \n"
 								  +"       ╚══════════════════════════════════════════╝                                                         \n"                                                   
 						          +"                                                                                                            \n");
 			

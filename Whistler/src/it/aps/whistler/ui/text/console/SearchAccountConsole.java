@@ -26,14 +26,14 @@ public class SearchAccountConsole implements Console {
 	public void start() {
 		welcomePage();
 		
-		String whisltlerblowerNickname = getWhistleblowerNicknameFromStandardInput();		
-		manageSearchConsoleCommand(whisltlerblowerNickname);
+		String whistleblowerNickname = getWhistleblowerNicknameFromStandardInput();		
+		manageSearchConsoleCommand(whistleblowerNickname);
 	}
 	
-	private void manageSearchConsoleCommand(String whisltlerblowerNickname) {
+	private void manageSearchConsoleCommand(String whistleblowerNickname) {
 		Command command;
 		userInputs.clear();			//Cleans the inputs of the various retries maintaining the current one
-		userInputs.add(whisltlerblowerNickname);
+		userInputs.add(whistleblowerNickname);
 		
 		printAvailableCommands(Page.SEARCH_ACCOUNT_CONSOLE);
 		
@@ -47,17 +47,17 @@ public class SearchAccountConsole implements Console {
 	}
 	
 	public String getWhistleblowerNicknameFromStandardInput() {
-		String whisltlerblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistlerblower account you want to search:");
+		String whistleblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistleblower account you want to search:");
 		
 		//UI preventive checks for better user experience
-		while (!Whistler.getInstance().isPresent(whisltlerblowerNickname)) {
+		while (!Whistler.getInstance().isPresent(whistleblowerNickname)) {
 			System.out.println("\n<<The Nickname is incorrect or non-existent!>>");
 			logger.log(Level.INFO, "[getWhistleblowerNicknameFromStandardInput] - The Nickname is incorrect or non-existent!");
 			
 			printAvailableCommandsSearchError(Page.SEARCH_ACCOUNT_CONSOLE);
-			manageSearchErrorCommands(whisltlerblowerNickname);
+			manageSearchErrorCommands(whistleblowerNickname);
 		}
-		return whisltlerblowerNickname;
+		return whistleblowerNickname;
 	}
 	
 	private void manageSearchErrorCommands(String nickname){
@@ -92,6 +92,18 @@ public class SearchAccountConsole implements Console {
 				+ "                                         ╚═╗║╣ ╠═╣╠╦╝║  ╠═╣  ╠═╣║  ║  ║ ║║ ║║║║ ║                                     \n"
 			    + "                                         ╚═╝╚═╝╩ ╩╩╚═╚═╝╩ ╩  ╩ ╩╚═╝╚═╝╚═╝╚═╝╝╚╝ ╩                                     \n"
 				+ "                                         ╚═══════════════════════════════════════╝                                    \n");
+		
+		//Suggestions							//toFollow=false
+		if (!Util.randomSuggestions(userNickname, false).isEmpty()){
+			System.out.println(Util.padLeft("\n These are some random suggestions:", 79));
+			
+			for (String suggestion : Util.randomSuggestions(userNickname, true)) {
+				System.out.println("  "+suggestion);
+			}
+			System.out.println("\n");
+		}else {
+			System.out.println(Util.padLeft("\n <<Sorry, no suggestions, you're the only one on Whistler right now>>", 79));
+		}
 	}
 	
 	public void printAvailableCommands(Page page) {

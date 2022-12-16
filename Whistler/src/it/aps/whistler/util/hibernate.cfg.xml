@@ -9,11 +9,16 @@
 			com.mysql.cj.jdbc.Driver
 		</property>
 		
+		             <!-- Local hosted mysql database-->
 		<property name="hibernate.connection.url">
 			jdbc:mysql://localhost:3306/whistler_db?useSSL=false
 		</property>
+		              <!--Azure hosted mysql databases-->
+		<!--<property name="hibernate.connection.url">
+			jdbc:mysql://whistler-ingsw.mysql.database.azure.com:3306/whistler_db?useSSL=false
+		</property>-->
 		
-		<property name="connection.username">whistler</property>
+		<property name="connection.username">ingsw_proj</property>
 		<property name="connection.password">Whistlerdbpass2!</property>
 		<!--<property name="connection.pool_size">5</property>-->
 		

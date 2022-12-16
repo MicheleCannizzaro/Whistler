@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import it.aps.whistler.Visibility;
@@ -30,6 +31,32 @@ public class Post implements java.io.Serializable {
 		this.body = body;
 		this.timestamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		this.postKeywords = new HashSet<Keyword>(0);	
+	}
+	
+	//UC3
+	public void addPostKeyword(String word) {
+		Keyword keyword = null;
+		Keyword result = KeywordDao.getInstance().getKeywordByWord(word);
+		
+		if(result!=null) {
+			keyword = result;
+			int keywordDiffusionRate = keyword.getDiffusionRate();
+			keyword.setDiffusionRate(keywordDiffusionRate+1);
+			KeywordDao.getInstance().updateKeyword(keyword);
+		}else {
+			keyword = new Keyword(word);
+			keyword.setDiffusionRate(1);
+		
+			KeywordDao.getInstance().saveKeyword(keyword);
+		}
+		
+		this.postKeywords.add(keyword);
+		
+	}
+	
+	//UC3_1a
+	public void clearKeyword() {
+		this.postKeywords.clear();
 	}
 	 
 	// Getter and Setter
@@ -94,32 +121,20 @@ public class Post implements java.io.Serializable {
 		return postKeywords;
 	}
 	
-	//UC3
-	public void addPostKeyword(String word) {
-		Keyword keyword = null;
-		Keyword result = KeywordDao.getInstance().getKeywordByWord(word);
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;			//self check
+		if (o == null) return false;		//null check 
 		
-		if(result!=null) {
-			keyword = result;
-			int keywordDiffusionRate = keyword.getDiffusionRate();
-			keyword.setDiffusionRate(keywordDiffusionRate+1);
-			KeywordDao.getInstance().updateKeyword(keyword);
-		}else {
-			keyword = new Keyword(word);
-			keyword.setDiffusionRate(1);
+		// type check and cast
+		if (!(o instanceof Post)) return false; 
+		Post post = (Post) o;
 		
-			KeywordDao.getInstance().saveKeyword(keyword);
-		}
-		
-		this.postKeywords.add(keyword);
-		
+		//field comparison
+		return Objects.equals(pid, post.pid) && Objects.equals(title, post.title) && Objects.equals(body, post.body)
+				&& Objects.equals(owner, post.owner);
 	}
 	
-	//UC3_1a
-	public void clearKeyword() {
-		this.postKeywords.clear();
-	}
-
 	@Override
 	public String toString() {
 		//DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;

@@ -51,6 +51,11 @@
     		<artifactId>hibernate-c3p0</artifactId>
     		<version>5.6.1.Final</version>
 	   </dependency>
+	   <dependency>
+		    <groupId>com.microsoft.sqlserver</groupId>
+		    <artifactId>mssql-jdbc</artifactId>
+		    <version>11.2.1.jre17</version>
+	   </dependency>
   </dependencies>   
   
   <build>

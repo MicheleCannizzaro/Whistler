@@ -21,6 +21,7 @@ import it.aps.whistler.ui.text.command.SettingsCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
 import it.aps.whistler.ui.text.command.UnFollowCommand;
+import it.aps.whistler.ui.text.command.UpdateCommand;
 
 public class Parser {
 	private final static Logger logger = Logger.getLogger(Parser.class.getName());
@@ -138,6 +139,10 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchAccountConsole");
 								command = new SearchAccountCommand();
 								break;
+							case UPDATE:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to HomeConsole");
+								command = new UpdateCommand(Page.HOME_CONSOLE);
+								break;
 						}
 						break;
 						
@@ -245,6 +250,10 @@ public class Parser {
 								logger.log(Level.INFO,"[Parser] - ProfileTimelineConsole takes to RemovePostConsole");
 								command = new RemovePostCommand();  
 								break;
+							case UPDATE:
+								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to ProfileTimelineConsole");
+								command = new UpdateCommand(Page.PROFILE_TIMELINE_CONSOLE);
+								break;
 						}
 						break;
 					
@@ -318,6 +327,10 @@ public class Parser {
 							case EXIT_BACK:
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole turn back to HomeConsole");
 								command = new TurnBackCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
+								break;
+							case UPDATE:
+								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ProfileTimelineConsole");
+								command = new UpdateCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
 								break;
 						}
 						break;

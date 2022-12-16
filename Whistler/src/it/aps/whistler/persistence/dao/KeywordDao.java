@@ -87,6 +87,7 @@ public class KeywordDao {
 			
 			// retrieve keyword object by word
 			keyword = session.get(Keyword.class, word);
+			
 			// remove keyword object
 			session.delete(keyword);
 			

@@ -3,10 +3,13 @@ package it.aps.whistler.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import it.aps.whistler.Visibility;
+import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Post;
+import it.aps.whistler.domain.Whistler;
 
 public class Util {
 
@@ -19,6 +22,53 @@ public class Util {
         	return String.format("%06d", number);
         }
         return getRandomHexString();
+	}
+	
+	//Useful for random suggestions
+	public static int getRandomNumber(int maxValue){
+        Random rand = new Random();
+        int number = rand.nextInt(maxValue); //generate a random number from 0 to maxValue 
+       
+        return number;
+	}
+	
+	public static ArrayList<String> randomSuggestions(String userNickname, boolean toFollow){
+		ArrayList<String> whistlerAccountsNicknames = new ArrayList<>();
+		ArrayList<String> randomSuggestions = new ArrayList<>();
+		
+		//Getting whistlerAccountsNicknames
+		for (Account a : Whistler.getInstance().getWhistlerAccounts()) {
+			whistlerAccountsNicknames.add(a.getNickname());
+		}
+		
+		//Removing userNickname
+		whistlerAccountsNicknames.remove(userNickname);
+		
+		if(toFollow) {
+			//Removing already followed Accounts
+			Account userAccount = Whistler.getInstance().getAccount(userNickname);
+			
+			for (String nickname : userAccount.getFollowedAccounts()) {
+				whistlerAccountsNicknames.remove(nickname);
+			}
+			
+			for(int i=0; i<whistlerAccountsNicknames.size();i++) {	
+				
+				if(i<4) {
+															//getting randomNumber from 0 to whistlerAccountsNicknames size
+					String suggestion = whistlerAccountsNicknames.get(getRandomNumber(whistlerAccountsNicknames.size()));
+					while(randomSuggestions.contains(suggestion)) {	
+						suggestion = whistlerAccountsNicknames.get(getRandomNumber(whistlerAccountsNicknames.size()));
+					}
+					randomSuggestions.add(suggestion);
+				}
+			}
+			
+			return randomSuggestions;
+		}
+		
+		Collections.shuffle(whistlerAccountsNicknames); 
+		return whistlerAccountsNicknames;	
 	}
 	
 	//Useful to format string printing in console

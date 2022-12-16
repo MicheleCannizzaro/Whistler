@@ -41,8 +41,13 @@ public class PublishConsole implements Console {
 		//Gather maximum 3 keywords
 		for (int i =0; i <3; i++) {
 			String keyword = "#"+Parser.getInstance().readCommand("\n Enter Keyword n°"+(i+1));
-			if (!keyword.equals("#")) 
-				postKeywordsFromInput.add(keyword);
+			if (!keyword.equals("#")) {   //if keyword it's not blank
+				if(!postKeywordsFromInput.contains(keyword)) {
+					postKeywordsFromInput.add(keyword);
+				}else{
+					System.out.println("<<You already entered \""+keyword+"\"! Keyword n°"+(i+1)+" will be blank>>");
+				}
+			}
 			
 		}
 		

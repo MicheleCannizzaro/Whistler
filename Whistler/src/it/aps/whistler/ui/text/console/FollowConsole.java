@@ -24,11 +24,9 @@ public class FollowConsole implements Console {
 	public void start() {
 		welcomePage();
 		
-		//Optional - add some random suggestion of people to follow
+		String whistleblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistleblower to follow:");
 		
-		String whisltlerblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistlerblower to follow:");
-		
-		userInputs.add(whisltlerblowerNickname);
+		userInputs.add(whistleblowerNickname);
 		
 		printAvailableCommands(Page.FOLLOW_CONSOLE);
 		

@@ -20,6 +20,7 @@ import it.aps.whistler.ui.text.console.WhistlerConsole;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,35 +43,34 @@ public class ConfirmCommand implements Command{
 	}
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname) {
-		Whistler whistler = Whistler.getInstance();
 		
 		switch(this.page) {
 			case SIGNUP_CONSOLE:
-				confirmSignup(whistler,enteredInputs);
+				confirmSignup(enteredInputs);
 				break;
 			case LOGIN_CONSOLE:
-				confirmLogin(whistler,enteredInputs);
+				confirmLogin(enteredInputs);
 				break;
 			case PUBLISH_CONSOLE:
-				confirmPublishConsole(whistler,enteredInputs,userNickname);
+				confirmPublishConsole(enteredInputs,userNickname);
 				break;
 			case FOLLOW_CONSOLE:
-				confirmFollowConsole(whistler,enteredInputs,userNickname);
+				confirmFollowConsole(enteredInputs,userNickname);
 				break;
 			case UNFOLLOW_CONSOLE:
-				confirmUnFollowConsole(whistler,enteredInputs,userNickname);
+				confirmUnFollowConsole(enteredInputs,userNickname);
 				break;
 			case SETTINGS_CONSOLE:
-				confirmSettingsConsole(whistler,enteredInputs,userNickname);
+				confirmSettingsConsole(enteredInputs,userNickname);
 				break;
 			case EDIT_POST_CONSOLE:
-				confirmEditPostConsole(whistler,enteredInputs,userNickname);
+				confirmEditPostConsole(enteredInputs,userNickname);
 				break;
 			case REMOVE_POST_CONSOLE:
-				confirmRemovePostConsole(whistler,enteredInputs,userNickname);
+				confirmRemovePostConsole(enteredInputs,userNickname);
 				break;
 			case REMOVE_ACCOUNT_CONSOLE:
-				confirmRemoveAccountConsole(whistler,enteredInputs,userNickname);
+				confirmRemoveAccountConsole(enteredInputs,userNickname);
 				break;
 			case SEARCH_ACCOUNT_CONSOLE:
 				confirmSearchAccountConsole(enteredInputs,userNickname);
@@ -80,7 +80,8 @@ public class ConfirmCommand implements Command{
 		}	
 	}
 	
-	private void confirmSignup(Whistler whistler, ArrayList<String> enteredInputs) {
+	private void confirmSignup(ArrayList<String> enteredInputs) {
+		Whistler whistler = Whistler.getInstance();
 		
 		while (!whistler.signUp(enteredInputs.get(0),enteredInputs.get(1),enteredInputs.get(2),enteredInputs.get(3),enteredInputs.get(4))) {
 			Console signUpConsole = new SignUpConsole();
@@ -91,7 +92,8 @@ public class ConfirmCommand implements Command{
 		whistlerConsole.start();
 	}
 	
-	private void confirmLogin(Whistler whistler, ArrayList<String> enteredInputs) {
+	private void confirmLogin(ArrayList<String> enteredInputs) {
+		Whistler whistler = Whistler.getInstance();
 		
 		while(!whistler.login(enteredInputs.get(0), enteredInputs.get(1))) {
 			System.out.println("<<Wrong password. Try again!>>");
@@ -103,7 +105,8 @@ public class ConfirmCommand implements Command{
 		homeConsole.start();
 	}
 	
-	private void confirmPublishConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmPublishConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Whistler whistler = Whistler.getInstance();
 		Account userAccount = whistler.getAccount(userNickname);
 		
 		userAccount.enterNewPost(enteredInputs.get(0), enteredInputs.get(1));
@@ -132,26 +135,37 @@ public class ConfirmCommand implements Command{
 		homeConsole.start();
 	}
 	
-	private void confirmFollowConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmFollowConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Whistler whistler = Whistler.getInstance();
 		Account userAccount = whistler.getAccount(userNickname);
+		String nicknameAccountToFollow = enteredInputs.get(0); //enteredInputs.get(0) is the nickname of the account to follow
 		
-		userAccount.followAccount(enteredInputs.get(0));       //enteredInputs.get(0) is the nickname of the account to follow
+		if (userNickname.equals(nicknameAccountToFollow))
+			System.out.println("<<It's not necessary to follow yourself!>>");
+		
+		userAccount.followAccount(nicknameAccountToFollow);       
 		
 		Console circleConsole = new CircleConsole(userNickname); 
 		circleConsole.start();
 	}
 	
-	private void confirmUnFollowConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmUnFollowConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Whistler whistler = Whistler.getInstance();
 		Account userAccount = whistler.getAccount(userNickname);
+		String nicknameAccountToUnfollow = enteredInputs.get(0); //enteredInputs.get(0) is the nickname of the account to unfollow
 		
-		userAccount.unFollowAccount(enteredInputs.get(0));      //enteredInputs.get(0) is the nickname of the account to unfollow
+		if (userNickname.equals(nicknameAccountToUnfollow))
+			System.out.println("<<You can't unfollow yourself!>>");
+		
+		userAccount.unFollowAccount(nicknameAccountToUnfollow);     
 	
 		Console circleConsole = new CircleConsole(userNickname); 
 		circleConsole.start();
 	}
 	
-	private void confirmSettingsConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
-
+	private void confirmSettingsConsole(ArrayList<String> enteredInputs, String userNickname) {
+		
+		Whistler whistler = Whistler.getInstance();
 		int fieldToEdit = Integer.parseInt(enteredInputs.get(0)); //enteredInputs.get(0) - contains the choice made about the field to edit
 		Account userAccount = whistler.getAccount(userNickname);
 		
@@ -170,11 +184,12 @@ public class ConfirmCommand implements Command{
 				break;
 			case INFO_VISIBILITY:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Info Visibility");
-				ArrayList<Visibility> visibility = new ArrayList<>();
+				HashMap<String,Visibility> visibility = new HashMap<>();
+				String[] visibilityField = {"Name","Surname","E-mail"};
 				
 				for(int i=1; i<4;i++) {
-					int visibilityIndex = Integer.valueOf(enteredInputs.get(i)); //enteredInputs.get(i) - contains the  visibility values
-					visibility.add(Visibility.values()[visibilityIndex]);
+					int visibilityIndex = Integer.valueOf(enteredInputs.get(i)); //enteredInputs.get(i) - contains the  visibility values (1: Name - 2: Surname - 3:E-mail)
+					visibility.put(visibilityField[i-1], Visibility.values()[visibilityIndex]);
 				}
 				
 				userAccount.setVisibility(visibility);
@@ -200,8 +215,9 @@ public class ConfirmCommand implements Command{
 			
 	}
 	
-	private void confirmEditPostConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmEditPostConsole(ArrayList<String> enteredInputs, String userNickname) {
 		
+		Whistler whistler = Whistler.getInstance();
 		String postPid = enteredInputs.get(0);   //enteredInputs.get(0) - contains the pid
 		Post postToEdit = whistler.getPost(postPid);
 		int fieldToEdit = Integer.parseInt(enteredInputs.get(1)); //enteredInputs.get(1) - contains the choice made about the field to edit
@@ -249,8 +265,9 @@ public class ConfirmCommand implements Command{
 		profileTimelineConsole.start();
 	}
 	
-	private void confirmRemovePostConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
+	private void confirmRemovePostConsole(ArrayList<String> enteredInputs, String userNickname) {
 		
+		Whistler whistler = Whistler.getInstance();
 		String postPid = enteredInputs.get(0);   //enteredInputs.get(0) - contains the pid of the post to remove
 		whistler.getAccount(userNickname).removePost(postPid);
 		
@@ -261,8 +278,9 @@ public class ConfirmCommand implements Command{
 	}
 	
 	
-	private void confirmRemoveAccountConsole(Whistler whistler, ArrayList<String> enteredInputs, String userNickname) {
-
+	private void confirmRemoveAccountConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Whistler whistler = Whistler.getInstance();
+		
 		while(!whistler.login(userNickname, enteredInputs.get(0))) {
 			System.out.println("<<Wrong password. Try again!>>");
 			Console removeAccountConsole = new RemoveAccountConsole(userNickname);

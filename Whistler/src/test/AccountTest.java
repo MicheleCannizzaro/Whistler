@@ -2,11 +2,11 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +16,7 @@ import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
+import it.aps.whistler.persistence.dao.KeywordDao;
 
 class AccountTest {
 
@@ -62,49 +63,62 @@ class AccountTest {
 			assertEquals(1,sizeAfterFollow);
 			assertEquals(beforeSize,sizeAfterFollowAndUnFollow);
 		}
-	}
-	
-	@Test
-	void testConfirmPost() {
-		Whistler w = Whistler.getInstance();
-		w.signUp("@elonmsk", "Elon", "Musk", "elonmusk@gmail.com", "ciaociao2");
-		Account fakeAccount = w.getAccount("@elonmsk");
+		
+		@Test
+		void testConfirmPost() { //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+				
+			fakeAccount.enterNewPost("title", "body");
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC);
+			fakeAccount.confirmPost();	
 			
-		fakeAccount.enterNewPost("titoloDelPost", "rosso di sera bel tempo si spera");
-		fakeAccount.addPostKeyword("ciao");
-		fakeAccount.addPostKeyword("mare");
-		fakeAccount.setPostOwner();
-		fakeAccount.setPostVisibility(Visibility.PUBLIC);
-		fakeAccount.confirmPost();	
-		
-		String expectedTitle = "titoloDelPost";
-		String expectedBody = "rosso di sera bel tempo si spera";
-		
-		boolean isPidPresent=false;
-		//ArrayList<Post> fakeAccountPosts= PostDao.getInstance().getAllPostsFromOwner(fakeAccount.getNickname());
-		ArrayList<Post> fakeAccountPosts=fakeAccount.getPosts();
-		
-		for (Post post : fakeAccountPosts) {
-			if (post.getTitle().equals(expectedTitle) && post.getBody().equals(expectedBody) && post.getOwner().equals("@elonmsk")) {
-				if (post.getPid()!=null) {
-					isPidPresent = true;
+			String expectedTitle = "title";
+			String expectedBody = "body";
+			
+			boolean isPidPresent=false;
+			//ArrayList<Post> fakeAccountPosts= PostDao.getInstance().getAllPostsFromOwner(fakeAccount.getNickname());
+			ArrayList<Post> fakeAccountPosts=fakeAccount.getPosts();
+			
+			for (Post post : fakeAccountPosts) {
+				if (post.getTitle().equals(expectedTitle) && post.getBody().equals(expectedBody) && post.getOwner().equals("@elonmsk")) {
+					if (post.getPid()!=null) {
+						isPidPresent = true;
+					}
 				}
 			}
+			
+			assertEquals(expectedTitle,fakeAccountPosts.get(0).getTitle());
+			assertEquals(expectedBody,fakeAccountPosts.get(0).getBody());
+			assertTrue(isPidPresent);
+			
 		}
 		
-		assertEquals(expectedTitle,fakeAccountPosts.get(0).getTitle());
-		assertEquals(expectedBody,fakeAccountPosts.get(0).getBody());
-		assertTrue(isPidPresent);
-		
-	}
-	
-	@Test
-	void testRemoveAccount() {
-		Whistler w = Whistler.getInstance();
-		w.signUp("@johnneumann", "John", "von Neumann", "johnneumann@gmail.com", "ciaociao2");
-		
-		w.removeAccount("@johnneumann");
-		assertNull(w.getAccount("@johnneumann"));
+		@Test
+		void testRemovePost() { //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			fakeAccount.enterNewPost("title", "body");
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC);
+			fakeAccount.confirmPost();	
+			
+			boolean isPostPresent = false;
+			if (w.getPost(postPid)!=null) isPostPresent=true;
+			
+			fakeAccount.removePost(postPid);
+			
+			assertEquals(isPostPresent==true,w.getPost(postPid)==null);
+		}
 	}
 	
 	@AfterEach
@@ -121,5 +135,12 @@ class AccountTest {
 			w.removeAccount("@alanturing");
 		}
 	}
+	
+	  @AfterAll
+	  public static void cleanUpKeywords() {
+		  KeywordDao.getInstance().deleteKeyword("#Keyword1");
+		  KeywordDao.getInstance().deleteKeyword("#Keyword2");
+		  KeywordDao.getInstance().deleteKeyword("#Keyword3");
+	  }
 
 }

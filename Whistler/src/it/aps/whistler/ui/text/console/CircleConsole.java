@@ -34,6 +34,15 @@ public class CircleConsole implements Console {
 			System.out.println(Util.padLeft("Your Circle of Interests is empty, follow someone!", 79));
 		}
 		
+		//Suggestions							//toFollow=true
+		if (!Util.randomSuggestions(userNickname, true).isEmpty()){
+			System.out.println(Util.padLeft("\n These are some random suggestions:", 79));
+			
+			for (String suggestion : Util.randomSuggestions(userNickname, true)) {
+				System.out.println("  "+suggestion);
+			}
+		}
+		
 		for(String nickname : followedAccount) {
 			System.out.println(
 					 		   Util.padRight("",43)+"╔════════════════════╗            \n"                    

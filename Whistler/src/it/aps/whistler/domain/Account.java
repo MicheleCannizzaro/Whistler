@@ -6,6 +6,7 @@ import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.AESUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,8 +18,8 @@ public class Account {
 	private String name;
 	private String surname;
 	private String email;
-	private String encryptedPassword;
-	private ArrayList<Visibility> visibility;   
+	private String encryptedPassword;	
+	private HashMap<String,Visibility> visibility; 
 	
 	private String encodedKey;
 	private String encodedIv;
@@ -40,10 +41,10 @@ public class Account {
 		this.encodedIv = AESUtil.generateEncodedIv();
 		this.encryptedPassword = AESUtil.encryptPassword(plainTextPassword, AESUtil.getSecretKeyFromEncodedKey(this.encodedKey), AESUtil.getIvParameterSpec(this.encodedIv));
 		
-		this.visibility = new ArrayList<>();
-		this.visibility.add(0, Visibility.PRIVATE);   //index 0 -> name visibility;
-		this.visibility.add(1,Visibility.PRIVATE);	 //index 1 -> surname visibility;
-		this.visibility.add(2,Visibility.PUBLIC);	//index 2 -> email visibility;
+		this.visibility = new HashMap<String,Visibility>();
+		this.visibility.put("Name", Visibility.PRIVATE);
+		this.visibility.put("Surname", Visibility.PRIVATE);
+		this.visibility.put("E-mail", Visibility.PUBLIC);
 		
 		this.followedAccounts = new ArrayList<>();
 		this.followers = new ArrayList<>();
@@ -55,7 +56,7 @@ public class Account {
 		
 		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to follow
 		
-		if (Whistler.getInstance().isPresent(nickname)) {
+		if (Whistler.getInstance().isPresent(nickname) && !this.nickname.equals(nickname)) {
 		
 			if(!followedAccounts.contains(nickname)) {
 				
@@ -70,8 +71,8 @@ public class Account {
 			}
 			
 		}else{
-			System.out.println("\n<<Sorry the Account with nickname: \""+nickname+"\" does not exists on Whistler>>");
-			logger.logp(Level.INFO, Account.class.getSimpleName(),"followAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exists on Whistler.");
+			System.out.println("\n<<Sorry the Account with nickname: \""+nickname+"\" does not exist on Whistler or it's your account>>");
+			logger.logp(Level.INFO, Account.class.getSimpleName(),"followAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exist on Whistler or entered his own account nickname.");
 		}
 	}
 	
@@ -79,7 +80,7 @@ public class Account {
 	public void unFollowAccount(String nickname) {
 		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to unfollow
 		
-		if (Whistler.getInstance().isPresent(nickname)) {
+		if (Whistler.getInstance().isPresent(nickname) && !this.nickname.equals(nickname)) {
 			
 			if(followedAccounts.contains(nickname)) {
 				
@@ -93,13 +94,13 @@ public class Account {
 			}
 			
 		}else {
-			System.out.println("\n<<Sorry you can't unfollow the Account with nickname: \""+nickname+"\" because it does not exists in Whistler>>");
-			logger.logp(Level.INFO, Account.class.getSimpleName(),"unFollowAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exists on Whistler.");
+			System.out.println("\n<<Sorry you can't unfollow the Account with nickname: \""+nickname+"\" because it does not exist on Whistler or because it's your account>>");
+			logger.logp(Level.INFO, Account.class.getSimpleName(),"unFollowAccount","The user with account "+this.nickname+" entered "+nickname+", that does not exist on Whistler or entered his own account nickname.");
 		}
 
 	}
 
-	public void addFollower(String Nickname) {
+	private void addFollower(String Nickname) {
 		if (this.followers==null) {
 			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
 		}
@@ -108,7 +109,7 @@ public class Account {
 		
 	}
 	
-	public void removeFollower(String Nickname) {
+	private void removeFollower(String Nickname) {
 		if (this.followers==null) {
 			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
 		}
@@ -128,13 +129,13 @@ public class Account {
 	}
 	
 	//UC3
-	public void setPostVisibility(Visibility vis) {
-		this.currentPost.setPostVisibility(vis);
+	public void setPostOwner() {
+		this.currentPost.setOwner(this.nickname);
 	}
 	
 	//UC3
-	public void setPostOwner() {
-		this.currentPost.setOwner(this.nickname);
+	public void setPostVisibility(Visibility vis) {
+		this.currentPost.setPostVisibility(vis);
 	}
 	
 	//UC3
@@ -144,15 +145,20 @@ public class Account {
 	
 	//UC3
 	public void removePost(String postPid) {
-		Post p = PostDao.getInstance().getPostByPid(postPid);
+		Post p = Whistler.getInstance().getPost(postPid);
 		
-		if (this.nickname.equals(p.getOwner())) {
-			this.posts.remove(p);
-			PostDao.getInstance().deletePost(postPid);
+		if (p!=null) {
+			if (this.nickname.equals(p.getOwner())) {
+				
+				Whistler.getInstance().keywordDiffusionRateReduction(p);
+				PostDao.getInstance().deletePost(postPid);
+				
+			}else {
+				logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost", this.nickname+" wants to remove post ("+postPid+") of an other user!");
+			}
 		}else {
-			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost", this.nickname+" wants to remove post ("+postPid+") of other user!");
+			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost","post with pid:"+postPid+" does not exist on whistler.");
 		}
-		
 	}
 
 	//Getter and Setter
@@ -189,12 +195,12 @@ public class Account {
 		this.email = email;
 	}
 	
-	public ArrayList<Visibility> getVisibility() {
+	public HashMap<String, Visibility> getVisibility() {
 		return visibility;
 	}
-	
+
 	//UC1_1a
-	public void setVisibility(ArrayList<Visibility> visibility) {
+	public void setVisibility(HashMap<String, Visibility> visibility) {
 		this.visibility = visibility;
 	}
 
@@ -222,6 +228,7 @@ public class Account {
 		this.encryptedPassword = encryptedPassword;
 	}
 
+	//UC1 - edit account
 	public boolean setPassword(String plainTextPassword) {
 		if (plainTextPassword.length()<8) {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
@@ -256,9 +263,7 @@ public class Account {
 
 	//UC8
 	public ArrayList<Post> getPosts() {
-		//if (this.posts == null) {
-			this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
-		//}
+		this.posts = PostDao.getInstance().getAllPostsFromOwner(this.nickname);
 		return this.posts;
 	}
 
