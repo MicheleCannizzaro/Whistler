@@ -56,7 +56,7 @@ public class Account {
 		
 		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to follow
 		
-		if (Whistler.getInstance().isPresent(nickname) && !this.nickname.equals(nickname)) {
+		if (Whistler.getInstance().isAccountPresent(nickname) && !this.nickname.equals(nickname)) {
 		
 			if(!followedAccounts.contains(nickname)) {
 				
@@ -80,7 +80,7 @@ public class Account {
 	public void unFollowAccount(String nickname) {
 		Account whistleblowerAccount = Whistler.getInstance().getAccount(nickname);  //the account of the whistleblower to unfollow
 		
-		if (Whistler.getInstance().isPresent(nickname) && !this.nickname.equals(nickname)) {
+		if (Whistler.getInstance().isAccountPresent(nickname) && !this.nickname.equals(nickname)) {
 			
 			if(followedAccounts.contains(nickname)) {
 				

@@ -85,7 +85,12 @@ public class LoginConsole implements Console{
 	
 	public String getNicknameFromStandardInput() {
 		Whistler whistler = Whistler.getInstance();
-		String nickname = "@"+Parser.getInstance().readCommand(" Enter your Nickname:");
+		String nickname = Parser.getInstance().readCommand(" Enter your Nickname:");
+		
+		if (nickname.charAt(0)!='@') {
+			nickname = "@"+nickname;
+		}
+		
 		System.out.println(Util.padLeft("checking...", 21));
 		
 		//UI preventive checks for better user experience

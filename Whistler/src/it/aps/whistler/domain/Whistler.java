@@ -83,7 +83,145 @@ public class Whistler {
 		
 		return false;
 	}
+	
+	//UC1_1b
+	public void removeAccount(String nickname) {
+		Account userAccount = this.getAccount(nickname);
+		ArrayList<Post> posts = userAccount.getPosts();
 		
+		//remove userAccount's nickname from follower and followedAccount lists in all whistler accounts
+		this.removeAccountAssociations(nickname);
+		
+		//Delete Posts
+		for (Post p : posts) {
+			//Keyword diffusionRate reduction
+			keywordDiffusionRateReduction(p);
+			
+			//Delete Posts
+			PostDao.getInstance().deletePost(p.getPid());
+		}
+		
+		//Delete Account
+			//from cache
+		this.whistlerAccounts.remove(userAccount);
+			//from db
+		AccountDao.getInstance().deleteAccount(nickname);
+	}
+	
+	private void removeAccountAssociations(String userNickname) {
+		for (Account a : this.getWhistlerAccounts()) {
+			ArrayList<String> followers = a.getFollowers();
+			ArrayList<String> followedAccounts = a.getFollowedAccounts();
+			
+			//remove userNickname from a's followers
+			if(followers.contains(userNickname)) {
+				followers.remove(userNickname);
+			}
+			
+			//remove userNickname from a's followedAccounts
+			if (followedAccounts.contains(userNickname)) {
+				followedAccounts.remove(userNickname);
+			}
+			
+			//update
+			a.setFollowers(followers);
+			a.setFollowedAccounts(followedAccounts);
+			
+			this.updateAccount(a);
+		}
+	}
+	
+	public void keywordDiffusionRateReduction(Post p) {
+		Set<Keyword> postKeywords = p.getPostKeywords();
+		for (Keyword key : postKeywords) {
+			key.setDiffusionRate(key.getDiffusionRate()-1);
+			KeywordDao.getInstance().updateKeyword(key);
+		}
+	}
+	
+	//UC4 
+	public ArrayList<Post> searchPosts(String keyword) {
+		ArrayList<Post> matches = new ArrayList<>();
+		Keyword key = getKeyword(keyword);
+		
+		for (Post p : getWhistlerPublicPosts()) {
+			for (Keyword k : p.getPostKeywords()) {
+				if (k.equals(key)) {
+					matches.add(p);
+				}
+			}
+		}
+		
+		return matches;
+	}
+	
+	//UC6 
+	public ArrayList<Post> getAccountPublicPosts(String nickname){
+		ArrayList<Post> publicPosts = new ArrayList<>();
+		ArrayList<Post> posts = new ArrayList<>();;
+		
+		try {
+			posts = this.getAccount(nickname).getPosts(); 
+		}catch(Exception ex) {
+			System.out.println("<<Something went wrong while gathering account posts: "+ex);
+			logger.logp(Level.SEVERE, Whistler.class.getSimpleName(),"getAccountPublicPosts","Something went wrong while gathering "+nickname+" account's posts: "+ex);
+		}
+		
+		if(!posts.isEmpty()) {
+			for (Post p: posts) {
+				if (p.getPostVisibility()==Visibility.PUBLIC) {
+					publicPosts.add(p);
+				}
+			}
+		}
+		
+		return publicPosts;
+	}
+	
+	//UC8
+	public HashMap<String,String> getAccountPublicInfo(String nickname){
+		Account wbAccount =  this.getAccount(nickname);
+		HashMap<String,String> accountPublicInfo = new HashMap<>();
+		
+		if(wbAccount.getVisibility().get("Name").toString().equals("PUBLIC")) {
+			accountPublicInfo.put("Name",wbAccount.getName());
+		}
+		
+		if(wbAccount.getVisibility().get("Surname").toString().equals("PUBLIC")) {
+			accountPublicInfo.put("Surname",wbAccount.getSurname());
+		}
+		
+		if(wbAccount.getVisibility().get("E-mail").toString().equals("PUBLIC")) {
+			accountPublicInfo.put("E-mail",wbAccount.getEmail());
+		}
+		
+		accountPublicInfo.put("Followers", String.valueOf(wbAccount.getFollowers().size()));
+		accountPublicInfo.put("FollowedAccounts", String.valueOf(wbAccount.getFollowedAccounts().size()));
+		
+		return accountPublicInfo;
+	}
+	
+	//Getter and Setter
+	public ArrayList<Account> getWhistlerAccounts() {
+		this.whistlerAccounts = AccountDao.getInstance().getAllWhistlerAccounts();
+		return this.whistlerAccounts;
+	}
+	
+	public void setWhistlerAccounts(ArrayList<Account> whistlerAccounts) {
+		this.whistlerAccounts = whistlerAccounts;
+	}
+	
+	//convenient methods
+	public boolean isAccountPresent(String nickname) {           //checks if an account with the nickname provided exists on Whistler
+		if (this.getAccount(nickname)!=null) return true;
+		return false;
+	}
+	
+	public boolean isKeywordPresent(String keyword) {           //checks if keyword with word==keyword exists on Whistler
+		if (this.getKeyword(keyword)!=null) return true;
+		return false;
+	}
+	
 	public Account getAccount(String nickname){
 		Account account = null;
 		
@@ -110,109 +248,19 @@ public class Whistler {
 		return post;
 	}
 	
-	//UC1_1b
-	public void removeAccount(String nickname) {
-		Account userAccount = this.getAccount(nickname);
-		ArrayList<Post> posts = userAccount.getPosts();
-		
-		//remove userAccount's nickname from follower and followedAccount lists in all whistler accounts
-		this.removeAccountAssociations(nickname);
-		
-		//Delete Posts
-		for (Post p : posts) {
-			//Keyword diffusionRate reduction
-			keywordDiffusionRateReduction(p);
-			
-			//Delete Posts
-			PostDao.getInstance().deletePost(p.getPid());
-		}
-		
-		//Delete Account
-			//from cache
-		this.whistlerAccounts.remove(userAccount);
-			//from db
-		AccountDao.getInstance().deleteAccount(nickname);
+	public Keyword getKeyword(String word) {
+		Keyword keyword = KeywordDao.getInstance().getKeywordByWord(word);
+		return keyword;
 	}
 	
-	public boolean isPresent(String nickname) {           //checks if an account with the nickname provided exists on Whistler
-		if (this.getAccount(nickname)!=null) return true;
-		return false;
-	}
-	
-	//UC6 //UC8
-	public ArrayList<Post> getAccountPublicPosts(String nickname){
-		ArrayList<Post> publicPosts = new ArrayList<>();
-		ArrayList<Post> posts = new ArrayList<>();;
-		
-		try {
-			posts = this.getAccount(nickname).getPosts(); 
-		}catch(Exception ex) {
-			System.out.println("<<Something went wrong while gathering account posts: "+ex);
-			logger.logp(Level.SEVERE, Whistler.class.getSimpleName(),"getAccountPublicPosts","Something went wrong while gathering "+nickname+" account's posts: "+ex);
-		}
-		
-		if(!posts.isEmpty()) {
-			for (Post p: posts) {
-				if (p.getPostVisibility()==Visibility.PUBLIC) {
-					publicPosts.add(p);
-				}
+	public ArrayList<Post> getWhistlerPublicPosts() {
+		ArrayList<Post> publicPosts = new ArrayList<>(); 
+		for (Post p : PostDao.getInstance().getAllPosts()) {
+			if (p.getPostVisibility()==Visibility.PUBLIC) {
+				publicPosts.add(p);
 			}
 		}
-		
 		return publicPosts;
-	}
-	
-	private void removeAccountAssociations(String userNickname) {
-		for (Account a : this.getWhistlerAccounts()) {
-			ArrayList<String> followers = a.getFollowers();
-			ArrayList<String> followedAccounts = a.getFollowedAccounts();
-			
-			//remove userNickname from a's followers
-			if(followers.contains(userNickname)) {
-				followers.remove(userNickname);
-			}
-			
-			//remove userNickname from a's followedAccounts
-			if (followedAccounts.contains(userNickname)) {
-				followedAccounts.remove(userNickname);
-			}
-			
-			//update
-			a.setFollowers(followers);
-			a.setFollowedAccounts(followedAccounts);
-			
-			this.updateAccount(a);
-		}
-	}
-	
-	public HashMap<String,String> getAccountPublicInfo(String nickname){
-		Account wbAccount =  this.getAccount(nickname);
-		HashMap<String,String> accountPublicInfo = new HashMap<>();
-		
-		if(wbAccount.getVisibility().get("Name").toString().equals("PUBLIC")) {
-			accountPublicInfo.put("Name",wbAccount.getName());
-		}
-		
-		if(wbAccount.getVisibility().get("Surname").toString().equals("PUBLIC")) {
-			accountPublicInfo.put("Surname",wbAccount.getSurname());
-		}
-		
-		if(wbAccount.getVisibility().get("E-mail").toString().equals("PUBLIC")) {
-			accountPublicInfo.put("E-mail",wbAccount.getEmail());
-		}
-		
-		accountPublicInfo.put("Followers", String.valueOf(wbAccount.getFollowers().size()));
-		accountPublicInfo.put("FollowedAccounts", String.valueOf(wbAccount.getFollowedAccounts().size()));
-		
-		return accountPublicInfo;
-	}
-	
-	public void keywordDiffusionRateReduction(Post p) {
-		Set<Keyword> postKeywords = p.getPostKeywords();
-		for (Keyword key : postKeywords) {
-			key.setDiffusionRate(key.getDiffusionRate()-1);
-			KeywordDao.getInstance().updateKeyword(key);
-		}
 	}
 	
 	public void updatePost(Post p) {
@@ -221,16 +269,6 @@ public class Whistler {
 	
 	public void updateAccount(Account a) {
 		AccountDao.getInstance().updateAccount(a);
-	}
-	
-	//Getter and Setter
-	public ArrayList<Account> getWhistlerAccounts() {
-		this.whistlerAccounts = AccountDao.getInstance().getAllWhistlerAccounts();
-		return this.whistlerAccounts;
-	}
-	
-	public void setWhistlerAccounts(ArrayList<Account> whistlerAccounts) {
-		this.whistlerAccounts = whistlerAccounts;
 	}
 	
 }

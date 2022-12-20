@@ -13,6 +13,7 @@ import it.aps.whistler.ui.text.console.LoginConsole;
 import it.aps.whistler.ui.text.console.ProfileConsole;
 import it.aps.whistler.ui.text.console.ProfileTimelineConsole;
 import it.aps.whistler.ui.text.console.RemoveAccountConsole;
+import it.aps.whistler.ui.text.console.ShowResultsConsole;
 import it.aps.whistler.ui.text.console.SettingsConsole;
 import it.aps.whistler.ui.text.console.SignUpConsole;
 import it.aps.whistler.ui.text.console.WhistlerConsole;
@@ -74,6 +75,9 @@ public class ConfirmCommand implements Command{
 				break;
 			case SEARCH_ACCOUNT_CONSOLE:
 				confirmSearchAccountConsole(enteredInputs,userNickname);
+				break;
+			case SEARCH_POST_CONSOLE:
+				confirmSearchPostConsole(enteredInputs,userNickname);
 				break;
 			default:
 				break;
@@ -307,6 +311,13 @@ public class ConfirmCommand implements Command{
 			profileConsole= new ProfileConsole(userNickname, true, null); // isOwner == true
 		}
 		profileConsole.start();
+	}
+	
+	private void confirmSearchPostConsole(ArrayList<String> enteredInputs, String userNickname) {
+		ArrayList<Post> results = Whistler.getInstance().searchPosts(enteredInputs.get(0)); //enteredInputs.get(0) is the keyword searched 
+		
+		Console showResultsConsole= new ShowResultsConsole(userNickname, results);
+		showResultsConsole.start();
 	}
 	
 }

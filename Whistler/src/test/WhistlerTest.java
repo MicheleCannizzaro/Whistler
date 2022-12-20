@@ -265,6 +265,77 @@ class WhistlerTest {
 				
 			}
 			
+			@Test
+			void testSearchPosts() { //CF
+				Whistler w = Whistler.getInstance();
+				Account fakeAccount = w.getAccount("@elonmsk");
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Key3"); 	
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				assertFalse(w.searchPosts("#Key3").isEmpty());
+				
+			}
+			
+			//GetKeyword Tests
+			@Test
+			void testGetKeyword_IsPresent() { //CE //CF
+				Whistler w = Whistler.getInstance();
+				Keyword k = new Keyword("#Key4");
+				KeywordDao.getInstance().saveKeyword(k);
+				
+				assertTrue(k.equals(w.getKeyword("#Key4")));
+			}
+			
+			@Test
+			void testGetKeyword_NotPresent() { //CE //CF
+				Whistler w = Whistler.getInstance();
+				
+				assertNull(w.getKeyword("#Keynotpresent"));
+			}
+			
+			@Test
+			void testGetWhistlerPublicPosts() { //CF
+				Whistler w = Whistler.getInstance();
+				w.signUp("@alanturing", "Alan", "Turing", "alanturing@gmail.com", "ciaociao22");
+				
+				Account fakeAccount = w.getAccount("@elonmsk");
+				Account fakeAccount1 = w.getAccount("@alanturing");
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount.confirmPost();
+				
+				fakeAccount.enterNewPost("title", "body");
+				fakeAccount.addPostKeyword("#Keyword1");
+				fakeAccount.addPostKeyword("#Keyword2");
+				fakeAccount.setPostOwner();
+				fakeAccount.setPostVisibility(Visibility.PRIVATE);
+				fakeAccount.confirmPost();
+				
+				fakeAccount1.enterNewPost("title", "body");
+				fakeAccount1.addPostKeyword("#Keyword1");
+				fakeAccount1.addPostKeyword("#Keyword2");
+				fakeAccount1.setPostOwner();
+				fakeAccount1.setPostVisibility(Visibility.PUBLIC);
+				fakeAccount1.confirmPost();
+				
+				boolean isPrivate = false;
+				
+				for( Post p : w.getWhistlerPublicPosts()) {
+					if (p.getPostVisibility()==Visibility.PRIVATE)
+						isPrivate = true;
+				}
+				
+				assertFalse(isPrivate);
+			}
+			
 		}
 	  
 	  @Test
@@ -280,10 +351,15 @@ class WhistlerTest {
 	  public void cleanUp() {
 		  Whistler w = Whistler.getInstance();
 		  Account fakeAccount = w.getAccount("@elonmsk");
+		  Account fakeAccount1 = w.getAccount("@alanturing");
 			
 		  //removing fake account from whistler_db and cache
 		  if (w.getWhistlerAccounts().contains(fakeAccount)) {
 			  w.removeAccount("@elonmsk");
+		  }
+		  
+		  if (w.getWhistlerAccounts().contains(fakeAccount1)) {
+			  w.removeAccount("@alanturing");
 		  }
 	  }
 	  
@@ -293,5 +369,7 @@ class WhistlerTest {
 		  KeywordDao.getInstance().deleteKeyword("#Keyword2");
 		  KeywordDao.getInstance().deleteKeyword("#Key1");
 		  KeywordDao.getInstance().deleteKeyword("#Key2");
+		  KeywordDao.getInstance().deleteKeyword("#Key3");
+		  KeywordDao.getInstance().deleteKeyword("#Key4");
 	  }
 }

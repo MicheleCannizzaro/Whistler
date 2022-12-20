@@ -17,6 +17,7 @@ import it.aps.whistler.ui.text.command.PublishCommand;
 import it.aps.whistler.ui.text.command.RemoveAccountCommand;
 import it.aps.whistler.ui.text.command.RemovePostCommand;
 import it.aps.whistler.ui.text.command.SearchAccountCommand;
+import it.aps.whistler.ui.text.command.SearchPostCommand;
 import it.aps.whistler.ui.text.command.SettingsCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
@@ -137,7 +138,11 @@ public class Parser {
 								break;
 							case SEARCH_ACCOUNT:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchAccountConsole");
-								command = new SearchAccountCommand();
+								command = new SearchAccountCommand(Page.HOME_CONSOLE);
+								break;
+							case SEARCH_POST:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchPostConsole");
+								command = new SearchPostCommand();
 								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to HomeConsole");
@@ -331,6 +336,32 @@ public class Parser {
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ProfileTimelineConsole");
 								command = new UpdateCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
+								break;
+						}
+						break;
+						
+					case SEARCH_POST_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - SearchPostConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.SEARCH_POST_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - SearchPostConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.SEARCH_POST_CONSOLE);  
+								break;
+						}
+						break;
+					
+					case SHOW_RESULTS_CONSOLE:	
+						switch(PageCommands.SearchPost.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - ShowResultConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.SHOW_RESULTS_CONSOLE);
+								break;
+							case SEARCH_ACCOUNT:
+								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to SearchAccountConsole");
+								command = new SearchAccountCommand(Page.SHOW_RESULTS_CONSOLE);
 								break;
 						}
 						break;

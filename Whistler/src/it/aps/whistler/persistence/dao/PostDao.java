@@ -143,13 +143,13 @@ public class PostDao {
 		return post;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public ArrayList<Post> getAllPostsFromOwner(String owner) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		
 		List<Object[]> postFieldList = null;
-		ArrayList<Post> posts = new ArrayList();
+		ArrayList<Post> posts = new ArrayList<>();
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 		
@@ -191,5 +191,55 @@ public class PostDao {
          }
 		return posts;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<Post> getAllPosts() {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		
+		List<Object[]> postFieldList = null;
+		ArrayList<Post> posts = new ArrayList<>();
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+		
+		try {
+			 //start the transaction 
+			 transaction = session.beginTransaction();
+			
+			// get all post in a list and put it in an HashSet
+			postFieldList = session.createNativeQuery("select * from post").list();  //it uses native SQL language for query
+			Set<Object[]> fields = new HashSet<>(postFieldList); 
+			
+			
+			for(Object[] field: fields) {
+				Post p=new Post();
+				p.setPid(field[0].toString());
+				p.setTitle(field[1].toString());
+				p.setBody(field[2].toString());
+				p.setPostVisibility(Visibility.values()[(int)field[3]]);
+				LocalDateTime t = LocalDateTime.parse(field[4].toString(), formatter);
+				p.setTimestamp(t);
+				p.setOwner(field[5].toString());
+		
+				posts.add(p);	
+			}
+			
+			// commit transaction
+			transaction.commit();
+			
+		}catch(HibernateException ex) {
+			logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getAllPostsFromOwner","HibernateException: "+ex);
+			
+            if (transaction!=null) {
+            	transaction.rollback();
+            	
+            	logger.logp(Level.SEVERE, PostDao.class.getSimpleName(),"getAllPostsFromOwner","Transaction Rollback");
+            }
+        } finally {
+      	   session.close();
+         }
+		return posts;
+	}
+
 
 }

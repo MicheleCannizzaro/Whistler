@@ -24,6 +24,7 @@ public class PageCommands {
 		PUBLISH,
 		PROFILE,
 		SEARCH_ACCOUNT,
+		SEARCH_POST,
 		UPDATE
 	}
 
@@ -62,11 +63,16 @@ public class PageCommands {
 		RETRY
 	}
 	
+	public enum SearchPost{
+		EXIT_BACK,
+		SEARCH_ACCOUNT
+	}
+	
 	private static final String[] exitConsoleCommands = {"0:YES","1:NO"};
 	private static final String[] whistlerConsoleCommands = {"0:Exit","1:Login","2:SignUp"};
 	private static final String[] signUpConsoleCommands = {"0:Go back to Whistler","1:Confirm"};
 	private static final String[] loginConsoleCommands = {"0:Go back to Whistler","1:Confirm"};
-	private static final String[] homeConsoleCommands = {"0:Logout","1:Circle of Interests", "2:Publish","3:Profile", "4:Search Account","5:Update"};
+	private static final String[] homeConsoleCommands = {"0:Logout","1:Circle of Interests", "2:Publish","3:Profile", "4:Search Account","5:Search Post","6:Update"};
 	private static final String[] publishConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
 	private static final String[] circleOfInterestConsoleCommands = {"0:Go back to Home","1:Follow","2:Unfollow"};
 	private static final String[] followConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
@@ -80,6 +86,8 @@ public class PageCommands {
 	private static final String[] searchAccountConsoleCommands = {"0:Discard and go back to Home","1:Search"};
 	private static final String[] accountProfileConsoleCommands = {"0:Go back to Home","1:Account Timeline"};
 	private static final String[] accountTimelineConsoleCommands = {"0:Go back to Home","1:Update"};
+	private static final String[] searchPostConsoleCommands = {"0:Discard and go back to Home","1:Search"};
+	private static final String[] showResultsConsoleCommands = {"0:Discard and go back to Home", "1:Search Account"};
 	 
 	public static String[] getCommands(Page page){
 			
@@ -104,6 +112,8 @@ public class PageCommands {
 				case SEARCH_ACCOUNT_CONSOLE: commands = searchAccountConsoleCommands; break;
 				case ACCOUNT_PROFILE_CONSOLE: commands = accountProfileConsoleCommands; break;
 				case ACCOUNT_TIMELINE_CONSOLE: commands = accountTimelineConsoleCommands; break;
+				case SEARCH_POST_CONSOLE: commands = searchPostConsoleCommands; break;
+				case SHOW_RESULTS_CONSOLE: commands = showResultsConsoleCommands; break;
 			};
 			return commands;
 		}

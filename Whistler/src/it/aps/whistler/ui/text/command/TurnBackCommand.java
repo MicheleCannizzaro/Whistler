@@ -38,7 +38,8 @@ public class TurnBackCommand implements Command{
 		
 		if (this.page == Page.PUBLISH_CONSOLE || this.page == Page.CIRCLE_CONSOLE || this.page == Page.FOLLOW_CONSOLE
 				|| this.page == Page.UNFOLLOW_CONSOLE || this.page == Page.PROFILE_CONSOLE || this.page == Page.SEARCH_ACCOUNT_CONSOLE
-				|| this.page == Page.ACCOUNT_PROFILE_CONSOLE || this.page == Page.ACCOUNT_TIMELINE_CONSOLE) {
+				|| this.page == Page.ACCOUNT_PROFILE_CONSOLE || this.page == Page.ACCOUNT_TIMELINE_CONSOLE
+				|| this.page == Page.SEARCH_POST_CONSOLE || this.page == Page.SHOW_RESULTS_CONSOLE) {
 			Console homeConsole= new HomeConsole(userNickname);
 			homeConsole.start();
 		}

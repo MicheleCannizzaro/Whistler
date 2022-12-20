@@ -26,6 +26,10 @@ public class FollowConsole implements Console {
 		
 		String whistleblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistleblower to follow:");
 		
+		if (whistleblowerNickname.charAt(0)!='@') {
+			whistleblowerNickname = "@"+whistleblowerNickname;
+		}
+		
 		userInputs.add(whistleblowerNickname);
 		
 		printAvailableCommands(Page.FOLLOW_CONSOLE);
