@@ -54,6 +54,8 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[4], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[5], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[6], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[7], 23)+"║  \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	
@@ -81,6 +83,10 @@ public class HomeConsole implements Console {
 		//Adding public posts of followedAccount to homeTimeline
 		for (String accountNickname: followedAccount) {
 			homeTimeline.addAll(Whistler.getInstance().getAccountPublicPosts(accountNickname)); 
+		}
+		
+		if(homeTimeline.isEmpty()){
+			System.out.println(Util.padLeft("Your Timeline is Empty, because the accounts you follow haven't publish something yet!\n", 97));
 		}
 		
 		//printing post of homeTimeline

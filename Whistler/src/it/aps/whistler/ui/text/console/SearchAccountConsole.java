@@ -28,7 +28,8 @@ public class SearchAccountConsole implements Console {
 	public void start() {
 		welcomePage();
 		
-		String whistleblowerNickname = getWhistleblowerNicknameFromStandardInput();		
+		String whistleblowerNickname = getWhistleblowerNicknameFromStandardInput();
+		System.out.println("\n<<Account found! Want to show this account?>>");
 		manageSearchConsoleCommand(whistleblowerNickname);
 	}
 	

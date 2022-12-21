@@ -9,6 +9,7 @@ import it.aps.whistler.ui.text.command.CircleCommand;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.ui.text.command.ConfirmCommand;
 import it.aps.whistler.ui.text.command.EditPostCommand;
+import it.aps.whistler.ui.text.command.ExploreCommand;
 import it.aps.whistler.ui.text.command.FollowCommand;
 import it.aps.whistler.ui.text.command.LoginCommand;
 import it.aps.whistler.ui.text.command.ProfileCommand;
@@ -143,6 +144,10 @@ public class Parser {
 							case SEARCH_POST:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchPostConsole");
 								command = new SearchPostCommand();
+								break;
+							case EXPLORE:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ExploreConsole");
+								command = new ExploreCommand();
 								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to HomeConsole");
@@ -362,6 +367,19 @@ public class Parser {
 							case SEARCH_ACCOUNT:
 								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to SearchAccountConsole");
 								command = new SearchAccountCommand(Page.SHOW_RESULTS_CONSOLE);
+								break;
+						}
+						break;
+					
+					case EXPLORE_CONSOLE:	
+						switch(PageCommands.Explore.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - ExploreConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.EXPLORE_CONSOLE);
+								break;
+							case SEARCH_POST:
+								logger.log(Level.INFO, "[Parser] - ExploreConsole takes to SearchPostConsole");
+								command = new SearchPostCommand();
 								break;
 						}
 						break;

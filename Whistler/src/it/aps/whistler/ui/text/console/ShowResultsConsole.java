@@ -67,7 +67,7 @@ public class ShowResultsConsole implements Console{
 	private void showResults() {
 		
 		if (!this.posts.isEmpty()) {
-			//printing post of profileTimeline
+			//printing post of the search
 			for (Post p : this.posts) {	
 				Util.printDetailedPost(p);
 			}

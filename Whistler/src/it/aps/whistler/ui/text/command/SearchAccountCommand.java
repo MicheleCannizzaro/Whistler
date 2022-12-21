@@ -14,7 +14,7 @@ public class SearchAccountCommand implements Command {
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "SearchProfileCommand takes to SearchConsole which then takes to searched account public profile.";
+		String descripition = "SearchAccountCommand takes to SearchAccountConsole which then takes to searched account public profile.";
 		return descripition;
 	}
 	

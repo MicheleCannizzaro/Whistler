@@ -1,6 +1,8 @@
 package it.aps.whistler.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -139,7 +141,7 @@ public class Whistler {
 		}
 	}
 	
-	//UC4 
+	//UC4 //UC7
 	public ArrayList<Post> searchPosts(String keyword) {
 		ArrayList<Post> matches = new ArrayList<>();
 		Keyword key = getKeyword(keyword);
@@ -261,6 +263,20 @@ public class Whistler {
 			}
 		}
 		return publicPosts;
+	}
+	
+	//UC7
+	public ArrayList<Keyword> getTrendingKeywords(){
+		ArrayList<Keyword> trendingKeywords = new ArrayList<>();
+		
+		//getting keywords and sorting them in descending order of diffusionRate
+		ArrayList<Keyword> allWhistlerKeywords = new ArrayList<>(KeywordDao.getInstance().getAllWhistlerKeywords());
+		Collections.sort(allWhistlerKeywords, Comparator.comparingInt(Keyword::getDiffusionRate).reversed());
+		
+		for (int i=0; i<3;i++) {		//getting the 3 most trending keywords
+			trendingKeywords.add(allWhistlerKeywords.get(i));
+		}
+		return trendingKeywords;
 	}
 	
 	public void updatePost(Post p) {
