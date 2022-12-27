@@ -52,7 +52,7 @@ public class UnFollowConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.UNFOLLOW_CONSOLE);
-			command.run(userInputs, this.userNickname);
+			command.run(userInputs, this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, UnFollowConsole.class.getSimpleName(),"start","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException UnFollowConsole "+ex);

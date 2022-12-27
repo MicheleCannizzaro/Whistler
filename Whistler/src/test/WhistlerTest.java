@@ -365,11 +365,9 @@ class WhistlerTest {
 	  
 	  @AfterAll
 	  public static void cleanUpKeywords() {
-		  KeywordDao.getInstance().deleteKeyword("#Keyword1");
-		  KeywordDao.getInstance().deleteKeyword("#Keyword2");
-		  KeywordDao.getInstance().deleteKeyword("#Key1");
-		  KeywordDao.getInstance().deleteKeyword("#Key2");
-		  KeywordDao.getInstance().deleteKeyword("#Key3");
-		  KeywordDao.getInstance().deleteKeyword("#Key4");
+		  String[] keywords = {"#Keyword1","#Keyword2","#Key1","#Key2","#Key3","#Key4"};
+		  for (String key : keywords) {
+			  KeywordDao.getInstance().deleteKeyword(key);
+		  }
 	  }
 }

@@ -18,7 +18,7 @@ public class SearchAccountCommand implements Command {
 		return descripition;
 	}
 	
-	public void run(ArrayList<String> enteredInputs, String userNickname) {
+	public void run(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
 		Console searchAccountConsole = null;
 		
 		if (this.page == Page.HOME_CONSOLE) {							//isPreviousPageHome = true

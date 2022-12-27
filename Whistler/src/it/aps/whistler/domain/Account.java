@@ -2,6 +2,7 @@ package it.aps.whistler.domain;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
+import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.AESUtil;
 
@@ -29,6 +30,7 @@ public class Account {
 	
 	private Post currentPost;
 	private ArrayList<Post> posts;
+	private Comment currentComment;
 
 	public Account() {}
 	
@@ -143,7 +145,7 @@ public class Account {
 		PostDao.getInstance().savePost(this.currentPost);
 	}
 	
-	//UC3
+	//UC3_1b
 	public void removePost(String postPid) {
 		Post p = Whistler.getInstance().getPost(postPid);
 		
@@ -158,6 +160,41 @@ public class Account {
 			}
 		}else {
 			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost","post with pid:"+postPid+" does not exist on whistler.");
+		}
+	}
+	
+	//UC5
+	public void enterNewComment(String postPid, String body) {
+		Post p = Whistler.getInstance().getPost(postPid);
+		this.currentComment = new Comment(body);
+		this.currentComment.setCommentVisibility(p.getPostVisibility());
+		this.currentComment.setPost(p);
+	}
+	
+	//UC5
+	public void setCommentOwner() {
+		this.currentComment.setOwner(this.nickname);
+	}
+	
+	//UC5
+	public void confirmComment() {
+		CommentDao.getInstance().saveComment(this.currentComment);
+	}
+	
+	//UC5_1b
+	public void removeComment(String commentCid) {
+		Comment c = Whistler.getInstance().getComment(commentCid);
+		
+		if (c!=null) {
+			if (this.nickname.equals(c.getOwner())) {
+				
+				CommentDao.getInstance().deleteComment(commentCid);
+				
+			}else {
+				logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removeComment", this.nickname+" wants to remove comment ("+commentCid+") of an other user!");
+			}
+		}else {
+			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removeComment","comment with cid:"+commentCid+" is not present in this post.");
 		}
 	}
 
@@ -228,7 +265,7 @@ public class Account {
 		this.encryptedPassword = encryptedPassword;
 	}
 
-	//UC1 - edit account
+	//UC1_1a
 	public boolean setPassword(String plainTextPassword) {
 		if (plainTextPassword.length()<8) {
 			System.out.println("\n<<Password must be at least 8 characters. Please, take in mind and retry.>>\n");
@@ -274,13 +311,21 @@ public class Account {
 	public String getCurrePostPid() {
 		return this.currentPost.getPid();
 	}
+	
+	public Comment getCurrentComment() {
+		return currentComment;
+	}
+
+	public void setCurrentComment(Comment currentComment) {
+		this.currentComment = currentComment;
+	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;			//self check
 		if (o == null) return false;		//null check 
 		
-		// type check and cast
+		//type check and cast
 		if (!(o instanceof Account)) return false; 
 		Account account = (Account) o;
 		

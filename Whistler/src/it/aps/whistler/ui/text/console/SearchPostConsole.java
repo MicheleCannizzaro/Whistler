@@ -40,7 +40,7 @@ public class SearchPostConsole implements Console {
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.SEARCH_POST_CONSOLE);
-			command.run(userInputs,this.userNickname);
+			command.run(userInputs,this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, SearchPostConsole.class.getSimpleName(),"manageSearchConsoleCommand","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SearchAccountConsole "+ex);
@@ -75,7 +75,7 @@ public class SearchPostConsole implements Console {
 				case EXIT: 
 						logger.log(Level.INFO, "[manageSearchErrorCommands] - SearchPostConsole turn back to HomeConsole");
 						command = new TurnBackCommand(Page.SEARCH_POST_CONSOLE);
-						command.run(userInputs, this.userNickname);
+						command.run(userInputs, this.userNickname,null);
 						break;
 				case RETRY: 
 						logger.log(Level.INFO, "[manageSearchErrorCommands] - SearchPostConsole (Retry)");

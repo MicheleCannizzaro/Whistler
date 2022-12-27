@@ -1,8 +1,11 @@
 package test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -26,7 +29,7 @@ class PostTest {
 	
 		
 		@Test
-		void testAddPostKeyword() {
+		void testAddPostKeyword() {	//CF
 			Whistler w = Whistler.getInstance();
 			Account fakeAccount = w.getAccount("@elonmsk");
 				
@@ -43,15 +46,18 @@ class PostTest {
 			
 			p.addPostKeyword("#Keyword3");
 			
-			ArrayList<String> keywords  = new ArrayList<>();
+			ArrayList<Keyword> expecetdKeywords = new ArrayList<>();
+			expecetdKeywords.add(new Keyword("#Keyword1"));
+			expecetdKeywords.add(new Keyword("#Keyword2"));
+			expecetdKeywords.add(new Keyword("#Keyword3"));
 			
-			for (Keyword k : p.getPostKeywords()) {
-				keywords.add(k.getWord());
-			}
+			//Keywords Set in ArrayList
+			ArrayList<Keyword> keywords = new ArrayList<>(p.getPostKeywords());
 			
-			assertTrue(keywords.contains("#Keyword1"));
-			assertTrue(keywords.contains("#Keyword2"));
-			assertTrue(keywords.contains("#Keyword3"));
+			//Sorting Keywords Alphabetical Order
+			Collections.sort(keywords, Comparator.comparing(Keyword::getWord));
+			
+			assertEquals(expecetdKeywords,keywords);
 		}
 		
 	}
@@ -66,9 +72,10 @@ class PostTest {
 			w.removeAccount("@elonmsk");
 		}
 		
-		KeywordDao.getInstance().deleteKeyword("#Keyword1");
-		KeywordDao.getInstance().deleteKeyword("#Keyword2");
-		KeywordDao.getInstance().deleteKeyword("#Keyword3");
+		String[] keywords = {"#Keyword1","#Keyword2","#Keyword3"};
+		  for (String key : keywords) {
+			  KeywordDao.getInstance().deleteKeyword(key);
+		  }
 	}
 
 }

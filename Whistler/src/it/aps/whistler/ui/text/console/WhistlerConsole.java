@@ -26,7 +26,7 @@ public class WhistlerConsole implements Console{
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.WHISTLER_CONSOLE);
-			command.run(userInputs,null);
+			command.run(userInputs,null,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, WhistlerConsole.class.getSimpleName(),"start","(BYE): NullPointerException: "+ex);
 			System.out.println("closing...");

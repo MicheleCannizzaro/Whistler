@@ -4,6 +4,7 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.console.Console;
 import it.aps.whistler.ui.text.console.HomeConsole;
 import it.aps.whistler.ui.text.console.ProfileTimelineConsole;
+import it.aps.whistler.ui.text.console.ShowPostCommentsConsole;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class UpdateCommand implements Command{
 		return descripition;
 	}
 	
-	public void run(ArrayList<String> enteredInputs, String userNickname) {
+	public void run(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
 				
 		if (this.page == Page.HOME_CONSOLE) {
 			Console homeConsole= new HomeConsole(userNickname);
@@ -36,6 +37,11 @@ public class UpdateCommand implements Command{
 		if (this.page == Page.ACCOUNT_TIMELINE_CONSOLE) {
 			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,false ,enteredInputs.get(0)); //isOwner == false enteredInputs.get(0) = whistleblowerNickname
 			profileTimelineConsole.start();
+		}
+		
+		if (this.page == Page.SHOW_POST_COMMENTS_CONSOLE) {
+			Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs,Page.SHOW_POST_COMMENTS_CONSOLE);
+			showPostCommentsConsole.start();
 		}
 	}
 

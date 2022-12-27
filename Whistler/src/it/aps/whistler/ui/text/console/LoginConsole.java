@@ -44,7 +44,7 @@ public class LoginConsole implements Console{
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.LOGIN_CONSOLE);
-			command.run(userInputs,null);
+			command.run(userInputs,null,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, LoginConsole.class.getSimpleName(),"manageLoginConsoleCommand","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException LoginConsole "+ex);
@@ -61,12 +61,12 @@ public class LoginConsole implements Console{
 				case EXIT_BACK: 
 						logger.log(Level.INFO, "[manageLoginErrorCommands] - LoginConsole turn back to WhistlerConsole");
 						command = new TurnBackCommand(Page.LOGIN_CONSOLE);
-						command.run(userInputs,null);
+						command.run(userInputs,null,null);
 						break;
 				case SIGNUP:
 						logger.log(Level.INFO, "[manageLoginErrorCommands] - LoginConsole turn back to SignUpConsole");
 						command = new SignUpCommand();
-						command.run(userInputs,null);
+						command.run(userInputs,null,null);
 						break;
 				case RETRY: 
 						logger.log(Level.INFO, "[manageLoginErrorCommands] - LoginConsole (Retry)");

@@ -55,7 +55,7 @@ public class CircleConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.CIRCLE_CONSOLE);
-			command.run(userInputs, this.userNickname); 
+			command.run(userInputs, this.userNickname,null); 
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.SEVERE, CircleConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException CircleConsole "+ex);

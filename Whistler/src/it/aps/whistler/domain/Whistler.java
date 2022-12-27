@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
+import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.KeywordDao;
 import it.aps.whistler.persistence.dao.PostDao;
 
@@ -180,6 +181,33 @@ public class Whistler {
 		return publicPosts;
 	}
 	
+	//UC7
+	public ArrayList<Keyword> getTrendingKeywords(){
+		ArrayList<Keyword> trendingKeywords = new ArrayList<>();
+		
+		//getting keywords and sorting them in descending order of diffusionRate
+		ArrayList<Keyword> allWhistlerKeywords = new ArrayList<>(KeywordDao.getInstance().getAllWhistlerKeywords());
+		
+		if(allWhistlerKeywords.isEmpty()) return trendingKeywords;
+		
+		Collections.sort(allWhistlerKeywords, Comparator.comparingInt(Keyword::getDiffusionRate).reversed());
+		
+		for (int i=0; i<3;i++) {		//getting the 3 most trending keywords
+			trendingKeywords.add(allWhistlerKeywords.get(i));
+		}
+		return trendingKeywords;
+	}
+	
+	public ArrayList<Post> getWhistlerPublicPosts() {
+		ArrayList<Post> publicPosts = new ArrayList<>(); 
+		for (Post p : PostDao.getInstance().getAllPosts()) {
+			if (p.getPostVisibility()==Visibility.PUBLIC) {
+				publicPosts.add(p);
+			}
+		}
+		return publicPosts;
+	}
+	
 	//UC8
 	public HashMap<String,String> getAccountPublicInfo(String nickname){
 		Account wbAccount =  this.getAccount(nickname);
@@ -213,7 +241,7 @@ public class Whistler {
 		this.whistlerAccounts = whistlerAccounts;
 	}
 	
-	//convenient methods
+	//----convenient methods----
 	public boolean isAccountPresent(String nickname) {           //checks if an account with the nickname provided exists on Whistler
 		if (this.getAccount(nickname)!=null) return true;
 		return false;
@@ -221,6 +249,12 @@ public class Whistler {
 	
 	public boolean isKeywordPresent(String keyword) {           //checks if keyword with word==keyword exists on Whistler
 		if (this.getKeyword(keyword)!=null) return true;
+		return false;
+	}
+	
+	public boolean isPidPresentAndRelativeToPublicPost(String postPid) {    //checks if pid exists on Whistler and it's relative to a public post
+		Post p = this.getPost(postPid);
+		if (p!=null && p.getPostVisibility().equals(Visibility.PUBLIC)) return true;
 		return false;
 	}
 	
@@ -250,33 +284,14 @@ public class Whistler {
 		return post;
 	}
 	
+	public Comment getComment(String commentCid) {
+		Comment comment = CommentDao.getInstance().getCommentByCid(commentCid);
+		return comment;
+	}
+	
 	public Keyword getKeyword(String word) {
 		Keyword keyword = KeywordDao.getInstance().getKeywordByWord(word);
 		return keyword;
-	}
-	
-	public ArrayList<Post> getWhistlerPublicPosts() {
-		ArrayList<Post> publicPosts = new ArrayList<>(); 
-		for (Post p : PostDao.getInstance().getAllPosts()) {
-			if (p.getPostVisibility()==Visibility.PUBLIC) {
-				publicPosts.add(p);
-			}
-		}
-		return publicPosts;
-	}
-	
-	//UC7
-	public ArrayList<Keyword> getTrendingKeywords(){
-		ArrayList<Keyword> trendingKeywords = new ArrayList<>();
-		
-		//getting keywords and sorting them in descending order of diffusionRate
-		ArrayList<Keyword> allWhistlerKeywords = new ArrayList<>(KeywordDao.getInstance().getAllWhistlerKeywords());
-		Collections.sort(allWhistlerKeywords, Comparator.comparingInt(Keyword::getDiffusionRate).reversed());
-		
-		for (int i=0; i<3;i++) {		//getting the 3 most trending keywords
-			trendingKeywords.add(allWhistlerKeywords.get(i));
-		}
-		return trendingKeywords;
 	}
 	
 	public void updatePost(Post p) {
@@ -287,4 +302,7 @@ public class Whistler {
 		AccountDao.getInstance().updateAccount(a);
 	}
 	
+	public void updateComment(Comment c) {
+		CommentDao.getInstance().updateComment(c);
+	}
 }

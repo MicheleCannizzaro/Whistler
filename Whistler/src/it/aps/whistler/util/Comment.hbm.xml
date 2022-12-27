@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="it.aps.whistler.domain.Comment" table="comment">
+		<id name="cid"  type="string">
+			<column name="cid" unique="true"/>
+			<generator class="assigned"/> 
+		</id>
+		
+		<property name="body" column="body"/>
+		
+		<property name="commentVisibility" column="visibility">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">it.aps.whistler.Visibility</param>
+			</type> 
+		</property>
+		
+		<property name="timestamp" column="timestamp"/>
+		<property name="owner" column="owner"/>
+		
+		<many-to-one name="post" class="it.aps.whistler.domain.Post" fetch="select">
+            <column name="pid" not-null="true" />
+        </many-to-one>
+		
+	</class>
+</hibernate-mapping>

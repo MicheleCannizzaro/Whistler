@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
+import it.aps.whistler.domain.Comment;
+import it.aps.whistler.domain.Keyword;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 
@@ -104,9 +107,9 @@ public class Util {
 	//Useful for pretty printing on timelines
 	public static void printDetailedPost(Post p) {
 		
-		System.out.println("         ╔═══════════════════╗"+                 "═══════════════════╗"+                    "═════════════════════╗");
-		System.out.println("         ║  "+Util.padRight(p.getOwner(),17)+"║"+" PID: "+Util.padRight(p.getPid(), 13)+"║"+" "+Util.getTimeString(p.getTimestamp())+" ║");
-		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════╗");
+		System.out.println("         ╔═══════════════════╗"+                 "═══════════════════╗"+                    "═══════════════════════════════════════╗");
+		System.out.println("         ║  "+Util.padRight(p.getOwner(),17)+"║"+" PID: "+Util.padRight(p.getPid(), 13)+"║"+"          "+Util.getTimeString(p.getTimestamp())+"          ║");
+		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
 		
 		if (p.getTitle().length()<=70) {
 			System.out.println("         ║ TITLE: "+Util.padRight(p.getTitle(), 71)+"║");
@@ -148,8 +151,17 @@ public class Util {
 			System.out.println("         ║ Visibility: PRIVATE                                                           ║");
 			System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
 		}
-			
-		System.out.println("         ║ Keywords:"+Util.padRight(p.getPostKeywords().toString(), 69)+"║");
+		
+		//Keywords Set in ArrayList
+		ArrayList<Keyword> keywords = new ArrayList<>(p.getPostKeywords());
+		
+		//Sorting Keywords in Alphabetical Order
+		Collections.sort(keywords, Comparator.comparing(Keyword::getWord));
+		
+		
+		System.out.println("         ║ Keywords:"+Util.padRight(keywords.toString(), 69)+"║");
+		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
+		System.out.println("         ║ "+Util.padLeft(+p.getAllPostComments().size()+"      Comments     ",37)+"║ "+Util.padLeft("",39)+"║");
 		System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
 	}
 	
@@ -207,5 +219,84 @@ public class Util {
 		
 		System.out.println("         ║ Keywords:"+Util.padRight(postKeywordsFromInput.toString(), 69)+"║");
 		System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+	}
+	
+	//Useful for comment preview pretty printing
+	public static void commentPreview(String nickname, String body) {
+		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+				  "                             ┌─┐┌─┐┌┬┐┌┬┐┌─┐┌┐┌┌┬┐  ┌─┐┬─┐┌─┐┬  ┬┬┌─┐┬ ┬                                                   \n"
+				+ "                             │  │ │││││││├┤ │││ │   ├─┘├┬┘├┤ └┐┌┘│├┤ │││                                                   \n"
+			    + "                             └─┘└─┘┴ ┴┴ ┴└─┘┘└┘ ┴   ┴  ┴└─└─┘ └┘ ┴└─┘└┴┘                                                   \n"
+				+ "                            ╚═══════════════════════════════════════════╝                                                 \n");
+		
+		System.out.println("         ╔═══════════════════════════════════════════════════════════════════════════════╗");
+		
+		System.out.println("         ║ "+Util.padRight(nickname, 78)+"║");
+		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");  
+		
+		
+		if (body.length()<=70) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0,body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝"); 
+		}
+		
+		if (body.length()>70 && body.length()<=140 ) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
+		if (body.length()>140 && body.length()<=209) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(140,body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
+		if (body.length()>209 && body.length()<=280) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(140, 210), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(210, body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
+	}
+	
+	public static void printDetailedComment(Comment comment) {
+		String body= comment.getBody();
+		
+		System.out.println("         ╔═══════════════════╗"+                 "═══════════════════╗"+                    "═══════════════════════════════════════╗");
+		System.out.println("         ║ "+Util.padRight(comment.getOwner(), 18)+"║"+" CID: "+Util.padRight(comment.getCid(), 13)+"║"+"          "+Util.getTimeString(comment.getTimestamp())+"          ║");
+		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");  
+		
+		
+		if (body.length()<=70) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0,body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝"); 
+		}
+		
+		if (body.length()>70 && body.length()<=140 ) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
+		if (body.length()>140 && body.length()<=209) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(140,body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
+		if (body.length()>209 && body.length()<=280) {
+			System.out.println("         ║ Body:"+Util.padRight(body.substring(0, 70), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(70, 140), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(140, 210), 73)+"║");
+			System.out.println("         ║      "+Util.padRight(body.substring(210, body.length()), 73)+"║");
+			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
+		}
+		
 	}
 }

@@ -29,8 +29,12 @@
 		</property>
 		<property name="timestamp" column="timestamp"/>
 		<property name="owner" column="owner"/>
+		
+		<set name="comments" table="comment" inverse="true" lazy="true" cascade="all" fetch="select">  
+          <key>
+			  <column name="pid"  not-null="true"/>
+		  </key>   
+          <one-to-many class="it.aps.whistler.domain.Comment"/> 
+         </set>
 	</class>
 </hibernate-mapping>
-
-<!--<list name="postKeywords" table="keyword" inverse="true" cascade="all"> si usa list per mantenere l'ordine bag se non è importante-->
-<!--<one-to-many class="it.aps.whistler.domain.Keyword"/>-->

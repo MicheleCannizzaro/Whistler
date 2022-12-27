@@ -45,5 +45,6 @@
 		<mapping resource="/it/aps/whistler/util/Account.hbm.xml" />
 		<mapping resource="/it/aps/whistler/util/Post.hbm.xml" />
 		<mapping resource="/it/aps/whistler/util/Keyword.hbm.xml" />
+		<mapping resource="/it/aps/whistler/util/Comment.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

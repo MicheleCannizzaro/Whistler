@@ -39,7 +39,7 @@ public class SettingsConsole implements Console {
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.SETTINGS_CONSOLE);
-			command.run(userInputs,this.userNickname);
+			command.run(userInputs,this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, SettingsConsole.class.getSimpleName(),"manageSettingsConsoleCommand","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SettingsConsole "+ex);

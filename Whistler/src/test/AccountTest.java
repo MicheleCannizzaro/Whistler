@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
+import it.aps.whistler.domain.Keyword;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.persistence.dao.KeywordDao;
@@ -78,9 +81,12 @@ class AccountTest {
 			
 			String expectedTitle = "title";
 			String expectedBody = "body";
+			ArrayList<Keyword> expecetdKeywords = new ArrayList<>();
+			expecetdKeywords.add(new Keyword("#Keyword1"));
+			expecetdKeywords.add(new Keyword("#Keyword2"));
 			
 			boolean isPidPresent=false;
-			//ArrayList<Post> fakeAccountPosts= PostDao.getInstance().getAllPostsFromOwner(fakeAccount.getNickname());
+			
 			ArrayList<Post> fakeAccountPosts=fakeAccount.getPosts();
 			
 			for (Post post : fakeAccountPosts) {
@@ -91,8 +97,15 @@ class AccountTest {
 				}
 			}
 			
+			//Keywords Set in ArrayList
+			ArrayList<Keyword> keywords = new ArrayList<>(fakeAccountPosts.get(0).getPostKeywords());
+			
+			//Sorting Keywords Alphabetical Order
+			Collections.sort(keywords, Comparator.comparing(Keyword::getWord));
+			
 			assertEquals(expectedTitle,fakeAccountPosts.get(0).getTitle());
 			assertEquals(expectedBody,fakeAccountPosts.get(0).getBody());
+			assertEquals(expecetdKeywords,keywords);
 			assertTrue(isPidPresent);
 			
 		}
@@ -138,9 +151,10 @@ class AccountTest {
 	
 	  @AfterAll
 	  public static void cleanUpKeywords() {
-		  KeywordDao.getInstance().deleteKeyword("#Keyword1");
-		  KeywordDao.getInstance().deleteKeyword("#Keyword2");
-		  KeywordDao.getInstance().deleteKeyword("#Keyword3");
+		  String[] keywords = {"#Keyword1","#Keyword2","#Keyword3"};
+		  for (String key : keywords) {
+			  KeywordDao.getInstance().deleteKeyword(key);
+		  }
 	  }
 
 }

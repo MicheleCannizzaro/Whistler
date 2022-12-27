@@ -22,6 +22,8 @@ public class PageCommands {
 		EXIT_BACK,
 		CIRCLE_OF_INTERESTS,
 		PUBLISH,
+		COMMENT,
+		SHOW_POST_COMMENT,
 		PROFILE,
 		SEARCH_ACCOUNT,
 		SEARCH_POST,
@@ -51,11 +53,15 @@ public class PageCommands {
 		EXIT_BACK,
 		EDIT_POST,
 		REMOVE_POST,
+		COMMENT,
+		SHOW_POST_COMMENT,
 		UPDATE
 	}
 	
 	public enum AccountTimeline{
 		EXIT_BACK,
+		COMMENT,
+		SHOW_POST_COMMENT,
 		UPDATE
 	}
 	
@@ -66,7 +72,9 @@ public class PageCommands {
 	
 	public enum SearchPost{
 		EXIT_BACK,
-		SEARCH_ACCOUNT
+		SEARCH_ACCOUNT,
+		COMMENT,
+		SHOW_POST_COMMENT
 	}
 	
 	public enum Explore{
@@ -74,27 +82,38 @@ public class PageCommands {
 		SEARCH_POST
 	}
 	
+	public enum ShowComments{
+		EXIT_BACK,
+		EDIT_COMMENT,
+		REMOVE_COMMENT
+	}
+	
 	private static final String[] exitConsoleCommands = {"0:YES","1:NO"};
 	private static final String[] whistlerConsoleCommands = {"0:Exit","1:Login","2:SignUp"};
 	private static final String[] signUpConsoleCommands = {"0:Go back to Whistler","1:Confirm"};
 	private static final String[] loginConsoleCommands = {"0:Go back to Whistler","1:Confirm"};
-	private static final String[] homeConsoleCommands = {"0:Logout","1:Circle of Interests", "2:Publish","3:Profile", "4:Search Account","5:Search Post","6:Explore","7:Update"};
+	private static final String[] homeConsoleCommands = {"0:Logout","1:Circle of Interests", "2:Publish","3:Comment","4:Show Comments","5:Profile", "6:Search Account","7:Search Post","8:Explore","9:Update"};
 	private static final String[] publishConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
 	private static final String[] circleOfInterestConsoleCommands = {"0:Go back to Home","1:Follow","2:Unfollow"};
 	private static final String[] followConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
 	private static final String[] unFollowConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
 	private static final String[] profileConsoleCommands = {"0:Go back to Home","1:ProfileTimeline","2:Settings","3:Remove Account"};
 	private static final String[] settingsConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
-	private static final String[] profileTimelineConsoleCommands = {"0:Go back to Profile","1:Edit Post","2:Remove Post","3:Update"};
+	private static final String[] profileTimelineConsoleCommands = {"0:Go back to Profile","1:Edit Post","2:Remove Post","3:Comment","4:Show Comments","5:Update"};
 	private static final String[] editPostConsoleCommands = {"0:Discard and go back to Profile","1:Confirm"};
 	private static final String[] removePostConsoleCommands = {"0:Discard and go back to Profile","1:Confirm"};
 	private static final String[] removeAccountConsoleCommands = {"0:Discard and go back to Profile","1:Confirm"};
 	private static final String[] searchAccountConsoleCommands = {"0:Discard and go back to Home","1:Show"};
 	private static final String[] accountProfileConsoleCommands = {"0:Go back to Home","1:Account Timeline"};
-	private static final String[] accountTimelineConsoleCommands = {"0:Go back to Home","1:Update"};
+	private static final String[] accountTimelineConsoleCommands = {"0:Go back to Home","1:Comment","2:Show Comments","3:Update"};
 	private static final String[] searchPostConsoleCommands = {"0:Discard and go back to Home","1:Search"};
-	private static final String[] showResultsConsoleCommands = {"0:Discard and go back to Home", "1:Search Account"};
-	private static final String[] exploreConsoleCommands = {"0:Discard and go back to Home", "1:Show Keyword posts"};
+	private static final String[] showResultsConsoleCommands = {"0:Discard and go back to Home", "1:Search Account", "2:Comment","3:Show Comments"};
+	private static final String[] exploreConsoleCommands = {"0:Go back to Home", "1:Show Keyword posts"};
+	private static final String[] commentConsoleCommands = {"0:Discard and go back to Home","1:Confirm"};
+	private static final String[] showPostCommentConsoleCommands = {"0:Go back","1:Edit Comment","2:Remove Comment"};
+	private static final String[] removeCommentConsoleCommands = {"0:Discard and go back","1:Confirm"};
+	private static final String[] editCommentConsoleCommands = {"0:Discard and go back","1:Confirm"};
+
 	 
 	public static String[] getCommands(Page page){
 			
@@ -122,6 +141,10 @@ public class PageCommands {
 				case SEARCH_POST_CONSOLE: commands = searchPostConsoleCommands; break;
 				case SHOW_RESULTS_CONSOLE: commands = showResultsConsoleCommands; break;
 				case EXPLORE_CONSOLE: commands = exploreConsoleCommands; break;
+				case COMMENT_CONSOLE: commands = commentConsoleCommands; break;
+				case SHOW_POST_COMMENTS_CONSOLE: commands = showPostCommentConsoleCommands; break;
+				case REMOVE_COMMENT_CONSOLE: commands = removeCommentConsoleCommands; break;
+				case EDIT_COMMENT_CONSOLE: commands = editCommentConsoleCommands; break;
 			};
 			return commands;
 		}

@@ -33,7 +33,7 @@ public class RemovePostConsole implements Console {
 	}
 	
 	private String getPostPidFromStandardInput() {
-		String postPid = Parser.getInstance().readCommand("\n Enter post's PID you wish to edit:");
+		String postPid = Parser.getInstance().readCommand("\n Enter post's PID you wish to remove:");
 		
 		Post p = Whistler.getInstance().getPost(postPid);
 		
@@ -62,7 +62,7 @@ public class RemovePostConsole implements Console {
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.REMOVE_POST_CONSOLE);
-			command.run(userInputs,this.userNickname);
+			command.run(userInputs,this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, RemovePostConsole.class.getSimpleName(),"manageRemovePostConsoleCommand","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException RemovePostConsole "+ex);
@@ -80,7 +80,7 @@ public class RemovePostConsole implements Console {
 				case EXIT: 
 						logger.log(Level.INFO, "[manageRemovePostConsoleCommandError] - RemovePostConsole turn back to ProfileConsole");
 						command = new TurnBackCommand(Page.PROFILE_TIMELINE_CONSOLE);
-						command.run(userInputs,this.userNickname);
+						command.run(userInputs,this.userNickname,null);
 						break;
 				case RETRY:
 						logger.log(Level.INFO, "[manageRemovePostConsoleCommandError] - RemovePostConsole (Retry)");

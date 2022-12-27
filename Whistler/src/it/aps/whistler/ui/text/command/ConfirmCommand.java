@@ -2,6 +2,7 @@ package it.aps.whistler.ui.text.command;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
+import it.aps.whistler.domain.Comment;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 
@@ -15,6 +16,7 @@ import it.aps.whistler.ui.text.console.ProfileTimelineConsole;
 import it.aps.whistler.ui.text.console.RemoveAccountConsole;
 import it.aps.whistler.ui.text.console.ShowResultsConsole;
 import it.aps.whistler.ui.text.console.SettingsConsole;
+import it.aps.whistler.ui.text.console.ShowPostCommentsConsole;
 import it.aps.whistler.ui.text.console.SignUpConsole;
 import it.aps.whistler.ui.text.console.WhistlerConsole;
 
@@ -43,7 +45,7 @@ public class ConfirmCommand implements Command{
 		return descripition;
 	}
 	
-	public void run(ArrayList<String> enteredInputs, String userNickname) {
+	public void run(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
 		
 		switch(this.page) {
 			case SIGNUP_CONSOLE:
@@ -54,6 +56,9 @@ public class ConfirmCommand implements Command{
 				break;
 			case PUBLISH_CONSOLE:
 				confirmPublishConsole(enteredInputs,userNickname);
+				break;
+			case COMMENT_CONSOLE:
+				confirmCommentConsole(enteredInputs,userNickname);
 				break;
 			case FOLLOW_CONSOLE:
 				confirmFollowConsole(enteredInputs,userNickname);
@@ -78,6 +83,12 @@ public class ConfirmCommand implements Command{
 				break;
 			case SEARCH_POST_CONSOLE:
 				confirmSearchPostConsole(enteredInputs,userNickname);
+				break;
+			case REMOVE_COMMENT_CONSOLE:
+				confirmRemoveCommentConsole(enteredInputs,userNickname, previousPage);
+				break;
+			case EDIT_COMMENT_CONSOLE:
+				confirmEditCommentConsole(enteredInputs,userNickname, previousPage);
 				break;
 			default:
 				break;
@@ -258,8 +269,15 @@ public class ConfirmCommand implements Command{
 				break;
 			case POST_VISIBILITY:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits pos's visibility ("+postPid+")");
-				int visibilityIndex = Integer.valueOf(enteredInputs.get(2)); ////enteredInputs.get(2) - contains the  visibility value
+				int visibilityIndex = Integer.valueOf(enteredInputs.get(2)); //enteredInputs.get(2) - contains the  visibility value
 				postToEdit.setPostVisibility(Visibility.values()[visibilityIndex]);
+				
+				//changing comments' visibility according to the post's one
+				ArrayList<Comment> comments = postToEdit.getAllPostComments();
+				for (Comment c : comments) {
+					c.setCommentVisibility(Visibility.values()[visibilityIndex]);
+					whistler.updateComment(c);
+				}
 				break;
 		}
 		postToEdit.setTimestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -314,10 +332,52 @@ public class ConfirmCommand implements Command{
 	}
 	
 	private void confirmSearchPostConsole(ArrayList<String> enteredInputs, String userNickname) {
-		ArrayList<Post> results = Whistler.getInstance().searchPosts(enteredInputs.get(0)); //enteredInputs.get(0) is the keyword searched 
-		
-		Console showResultsConsole= new ShowResultsConsole(userNickname, results);
+		Console showResultsConsole= new ShowResultsConsole(userNickname, enteredInputs.get(0)); //enteredInputs.get(0) is the keyword searched 
 		showResultsConsole.start();
 	}
 	
+	private void confirmCommentConsole(ArrayList<String> enteredInputs, String userNickname) {
+		Whistler whistler = Whistler.getInstance();
+		Account userAccount = whistler.getAccount(userNickname);
+		
+		String postPid = enteredInputs.get(0);
+		String body = enteredInputs.get(1);
+		
+		userAccount.enterNewComment(postPid,body);
+		userAccount.setCommentOwner();
+		userAccount.confirmComment();
+		
+		
+		Console homeConsole = new HomeConsole(userNickname);
+		homeConsole.start();
+	}
+	
+	private void confirmRemoveCommentConsole(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
+		
+		Whistler whistler = Whistler.getInstance();
+		String commentCid = enteredInputs.get(1);   //enteredInputs.get(1) - contains the cid of the comment to remove
+		whistler.getAccount(userNickname).removeComment(commentCid);
+		
+		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemoveCommentConsole",userNickname+" deleted comment with CID: "+commentCid);
+		
+		System.out.println("\n<<OK, comment with CID:"+commentCid+" was Removed Correctly\n");
+		
+		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
+		showPostCommentsConsole.start();
+	}
+	
+	private void confirmEditCommentConsole(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
+		
+		Whistler whistler = Whistler.getInstance();
+		String commentCid = enteredInputs.get(1);   //enteredInputs.get(1) - contains the cid
+		Comment commentToEdit = whistler.getComment(commentCid);
+		
+		commentToEdit.setBody(enteredInputs.get(2)); //enteredInputs.get(2) - contains the body
+		whistler.updateComment(commentToEdit);
+		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditCommentConsole",userNickname+" edits comments's Body ("+commentCid+")");
+		
+		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
+		showPostCommentsConsole.start();
+		
+	}
 }

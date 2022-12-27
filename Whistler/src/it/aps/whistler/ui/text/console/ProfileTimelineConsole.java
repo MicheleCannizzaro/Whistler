@@ -12,6 +12,8 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalDateTime;
@@ -52,7 +54,7 @@ public class ProfileTimelineConsole implements Console{
 			}
 			
 			Command command= Parser.getInstance().getCommand(page);
-			command.run(userInputs, userNickname);
+			command.run(userInputs, userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, ProfileTimelineConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ProfileTimelineConsole "+ex);
@@ -70,6 +72,8 @@ public class ProfileTimelineConsole implements Console{
 					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[4], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[5], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 		if (page.equals(Page.ACCOUNT_TIMELINE_CONSOLE)){
@@ -80,6 +84,8 @@ public class ProfileTimelineConsole implements Console{
 					 " ╔═════════════════════════╗             \n"
 					+" ║  "+Util.padRight(commands[0], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 	}
@@ -124,6 +130,9 @@ public class ProfileTimelineConsole implements Console{
 		if (profileTimeline.isEmpty()) {
 			System.out.println(Util.padLeft("Your ProfileTimeline is Empty, start to post something on Whistler.\n", 85));
 		}
+		
+		//Sorting Posts in Reverse Chronological Order
+		Collections.sort(profileTimeline, Comparator.comparing(Post::getTimestamp).reversed());
 		
 		//printing post of profileTimeline
 		for (Post p : profileTimeline) {	

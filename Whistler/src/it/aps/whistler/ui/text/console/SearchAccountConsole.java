@@ -29,7 +29,7 @@ public class SearchAccountConsole implements Console {
 		welcomePage();
 		
 		String whistleblowerNickname = getWhistleblowerNicknameFromStandardInput();
-		System.out.println("\n<<Account found! Want to show this account?>>");
+		System.out.println("\n<<Account found! Want Whistler to show this account?>>");
 		manageSearchConsoleCommand(whistleblowerNickname);
 	}
 	
@@ -42,7 +42,7 @@ public class SearchAccountConsole implements Console {
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.SEARCH_ACCOUNT_CONSOLE);
-			command.run(userInputs,this.userNickname);
+			command.run(userInputs,this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, SearchAccountConsole.class.getSimpleName(),"manageSearchConsoleCommand","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SearchAccountConsole "+ex);
@@ -77,7 +77,7 @@ public class SearchAccountConsole implements Console {
 				case EXIT: 
 						logger.log(Level.INFO, "[manageSearchErrorCommands] - SearchConsole turn back to HomeConsole");
 						command = new TurnBackCommand(Page.SEARCH_ACCOUNT_CONSOLE);
-						command.run(userInputs, this.userNickname);
+						command.run(userInputs, this.userNickname,null);
 						break;
 				case RETRY: 
 						logger.log(Level.INFO, "[manageSearchErrorCommands] - SearchConsole (Retry)");
@@ -104,7 +104,7 @@ public class SearchAccountConsole implements Console {
 			if (!Util.randomSuggestions(userNickname, false).isEmpty()){
 				System.out.println(Util.padLeft("\n These are some random suggestions:", 79));
 				
-				for (String suggestion : Util.randomSuggestions(userNickname, true)) {
+				for (String suggestion : Util.randomSuggestions(userNickname, false)) {
 					System.out.println("  "+suggestion);
 				}
 				System.out.println("\n");

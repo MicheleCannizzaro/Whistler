@@ -34,7 +34,7 @@ public class ExploreConsole implements Console{
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.EXPLORE_CONSOLE);
-			command.run(userInputs, userNickname);
+			command.run(userInputs, userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, ExploreConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ExploreConsole "+ex);
@@ -64,11 +64,17 @@ public class ExploreConsole implements Console{
 
 	private void showTrendingKeywords() {
 		ArrayList<Keyword> trendingKeywords = Whistler.getInstance().getTrendingKeywords();
-		System.out.println(
-				 "         #1 Trending                     #2 Trending                     #3 Trending                                                                                                         \n"
-				+" ╔═══════════════════════════╗   ╔═══════════════════════════╗   ╔═══════════════════════════╗                                                                                               \n"
-				+" ║  "+Util.padRight(trendingKeywords.get(0).getWord(), 25)+"║   ║  "+Util.padRight(trendingKeywords.get(1).getWord(), 25)+"║   ║  "+Util.padRight(trendingKeywords.get(2).getWord(), 25)+"║  \n"
-				+" ╚═══════════════════════════╝   ╚═══════════════════════════╝   ╚═══════════════════════════╝                                                                                               \n");
+		if(!trendingKeywords.isEmpty()) {
+			System.out.println(
+					 "         #1 Trending                     #2 Trending                     #3 Trending                                                                                                         \n"
+					+" ╔═══════════════════════════╗   ╔═══════════════════════════╗   ╔═══════════════════════════╗                                                                                               \n"
+					+" ║  "+Util.padRight(trendingKeywords.get(0).getWord(), 25)+"║   ║  "+Util.padRight(trendingKeywords.get(1).getWord(), 25)+"║   ║  "+Util.padRight(trendingKeywords.get(2).getWord(), 25)+"║  \n"
+					+" ╚═══════════════════════════╝   ╚═══════════════════════════╝   ╚═══════════════════════════╝                                                                                               \n");
+		}else {
+			System.out.println("                      Sorry! No keywords were previously added on Whistler,\n"
+							  +"                 be the first one to populate this wonderful microblogging platform!\n"
+							  +"                      Go back to Home and Publish the first post with keywords!\n");
+		}
 		
 	}
 	

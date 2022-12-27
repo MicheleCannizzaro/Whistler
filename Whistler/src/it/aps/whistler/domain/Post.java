@@ -1,27 +1,30 @@
 package it.aps.whistler.domain;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import it.aps.whistler.Visibility;
+import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.KeywordDao;
 import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.Util;
 
 @SuppressWarnings("serial")
 public class Post implements java.io.Serializable {
-
+	
 	private String pid;
 	private String title;
 	private String body;
 	private Visibility postVisibility;
 	private LocalDateTime timestamp;
 	private String owner;
-	private Set<Keyword> postKeywords = new HashSet<>(); //also necessary for many-to-many Hibernate relation mapping
+	private Set<Keyword> postKeywords = new HashSet<>(0); //also necessary for many-to-many Hibernate relation mapping
+	
+	private Set<Comment> comments  = new HashSet<>(0);
 	
 	public Post() {}
 	
@@ -30,7 +33,7 @@ public class Post implements java.io.Serializable {
 		this.title = title;
 		this.body = body;
 		this.timestamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		this.postKeywords = new HashSet<Keyword>(0);	
+		this.comments = new HashSet<Comment>(0);
 	}
 	
 	//UC3
@@ -58,7 +61,7 @@ public class Post implements java.io.Serializable {
 	public void clearKeyword() {
 		this.postKeywords.clear();
 	}
-	 
+		 
 	// Getter and Setter
 	public String getPid() {
 		return pid;
@@ -120,13 +123,26 @@ public class Post implements java.io.Serializable {
 		}
 		return postKeywords;
 	}
+
+	public Set<Comment> getComments() { //necessary for one-to-many Hibernate relation mapping
+		return this.comments;
+	}
+
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	public ArrayList<Comment> getAllPostComments(){
+		ArrayList<Comment> postComments = CommentDao.getInstance().getAllCommentsFromPost(this.pid);
+		return postComments;
+	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;			//self check
 		if (o == null) return false;		//null check 
 		
-		// type check and cast
+		//type check and cast
 		if (!(o instanceof Post)) return false; 
 		Post post = (Post) o;
 		
@@ -137,12 +153,8 @@ public class Post implements java.io.Serializable {
 	
 	@Override
 	public String toString() {
-		//DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = this.timestamp.format(formatter);
-        
 		return "Post [title=" + title + ", body=" + body + ", postVisibility=" + postVisibility + ", timestamp="
-				+ formattedDateTime + ", owner=" + owner + ", pid=" + pid + "]";
+				+ Util.getTimeString(timestamp) + ", owner=" + owner + ", pid=" + pid + "]";
 	}
 	
 }

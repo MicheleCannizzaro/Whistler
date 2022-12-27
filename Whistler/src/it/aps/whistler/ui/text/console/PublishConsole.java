@@ -77,7 +77,7 @@ public class PublishConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.PUBLISH_CONSOLE);
-			command.run(userInputs,userNickname);
+			command.run(userInputs,userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, PublishConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException PublishConsole "+ex);

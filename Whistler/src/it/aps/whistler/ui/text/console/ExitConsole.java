@@ -25,7 +25,7 @@ public class ExitConsole implements Console{
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.EXIT_CONSOLE);
-			command.run(userInputs,null);
+			command.run(userInputs,null,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, ExitConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException ExitConsole "+ex);

@@ -26,14 +26,19 @@ public class SignUpConsole implements Console {
 		
 		String nickname = "@"+Parser.getInstance().readCommand(" Enter a new shiny Nickname:");
 		System.out.println(Util.padLeft("checking...", 21));
+		
 		//UI preventive checks for better user experience
 		while (!isNicknameCorrect(nickname) || whistler.getAccount(nickname) != null) {
 			String message = null;
+			
 			if (!isNicknameCorrect(nickname)) message = "\n<<Sorry! Spaces are not allowed in \"@nickname\".>>\n Please choose another one:";
 			else message = "\n<<Sorry! The Nickname you chose is already taken.>>\n Please choose another one:";
+			
 			nickname = "@"+Parser.getInstance().readCommand(message);
 		}
+		
 		System.out.println(Util.padLeft("available!", 21));
+		
 		String name = Parser.getInstance().readCommand(" Enter a Name:");
 		String surname = Parser.getInstance().readCommand(" Enter a Surname:");
 		String email = Parser.getInstance().readCommand(" Enter an E-mail:");
@@ -55,7 +60,7 @@ public class SignUpConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.SIGNUP_CONSOLE);
-			command.run(userInputs,null);
+			command.run(userInputs,null,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, SignUpConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole "+ex);

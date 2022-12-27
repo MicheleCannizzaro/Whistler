@@ -11,6 +11,8 @@ import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ public class HomeConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.HOME_CONSOLE);
-			command.run(userInputs, userNickname);
+			command.run(userInputs, userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, HomeConsole.class.getSimpleName(),"start","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException HomeConsole "+ex);
@@ -56,6 +58,8 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[5], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[6], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[7], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[8], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[9], 23)+"║  \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	
@@ -76,18 +80,19 @@ public class HomeConsole implements Console {
 		
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		
-		if (followedAccount.isEmpty()) {
-			System.out.println(Util.padLeft("Your Timeline is Empty, because you still don't follow anyone, please follow someone.\n", 97));
-		}
-		
 		//Adding public posts of followedAccount to homeTimeline
 		for (String accountNickname: followedAccount) {
 			homeTimeline.addAll(Whistler.getInstance().getAccountPublicPosts(accountNickname)); 
 		}
 		
-		if(homeTimeline.isEmpty()){
+		if (followedAccount.isEmpty()) {
+			System.out.println(Util.padLeft("Your Timeline is Empty, because you still don't follow anyone, please follow someone.\n", 97));
+		}else if(homeTimeline.isEmpty()){
 			System.out.println(Util.padLeft("Your Timeline is Empty, because the accounts you follow haven't publish something yet!\n", 97));
 		}
+		
+		//Sorting Posts in Reverse Chronological Order
+		Collections.sort(homeTimeline, Comparator.comparing(Post::getTimestamp).reversed());
 		
 		//printing post of homeTimeline
 		for (Post p : homeTimeline) {	

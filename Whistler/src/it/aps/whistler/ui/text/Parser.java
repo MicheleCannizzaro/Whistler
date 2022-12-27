@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 
 import it.aps.whistler.ui.text.command.CircleCommand;
 import it.aps.whistler.ui.text.command.Command;
+import it.aps.whistler.ui.text.command.CommentCommand;
 import it.aps.whistler.ui.text.command.ConfirmCommand;
+import it.aps.whistler.ui.text.command.EditCommentCommand;
 import it.aps.whistler.ui.text.command.EditPostCommand;
 import it.aps.whistler.ui.text.command.ExploreCommand;
 import it.aps.whistler.ui.text.command.FollowCommand;
@@ -16,10 +18,12 @@ import it.aps.whistler.ui.text.command.ProfileCommand;
 import it.aps.whistler.ui.text.command.ProfileTimelineCommand;
 import it.aps.whistler.ui.text.command.PublishCommand;
 import it.aps.whistler.ui.text.command.RemoveAccountCommand;
+import it.aps.whistler.ui.text.command.RemoveCommentCommand;
 import it.aps.whistler.ui.text.command.RemovePostCommand;
 import it.aps.whistler.ui.text.command.SearchAccountCommand;
 import it.aps.whistler.ui.text.command.SearchPostCommand;
 import it.aps.whistler.ui.text.command.SettingsCommand;
+import it.aps.whistler.ui.text.command.ShowCommentsCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
 import it.aps.whistler.ui.text.command.UnFollowCommand;
@@ -133,6 +137,14 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to PublishConsole");
 								command = new PublishCommand();
 								break;
+							case COMMENT:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to CommentConsole");
+								command = new CommentCommand();
+								break;
+							case SHOW_POST_COMMENT:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ShowPostCommentConsole");
+								command = new ShowCommentsCommand(Page.HOME_CONSOLE);
+								break;
 							case PROFILE:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ProfileConsole");
 								command = new ProfileCommand();
@@ -165,6 +177,19 @@ public class Parser {
 							case CONFIRM:
 								logger.log(Level.INFO, "[Parser] - PublishConsole takes to ConfirmCommand");
 								command = new ConfirmCommand(Page.PUBLISH_CONSOLE);
+								break;
+						}
+						break;
+						
+					case COMMENT_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO, "[Parser] - CommentConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.COMMENT_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO, "[Parser] - CommentConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.COMMENT_CONSOLE);
 								break;
 						}
 						break;
@@ -260,6 +285,14 @@ public class Parser {
 								logger.log(Level.INFO,"[Parser] - ProfileTimelineConsole takes to RemovePostConsole");
 								command = new RemovePostCommand();  
 								break;
+							case COMMENT:
+								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to CommentConsole");
+								command = new CommentCommand();
+								break;
+							case SHOW_POST_COMMENT:
+								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to ShowPostCommentConsole");
+								command = new ShowCommentsCommand(Page.PROFILE_TIMELINE_CONSOLE);
+								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to ProfileTimelineConsole");
 								command = new UpdateCommand(Page.PROFILE_TIMELINE_CONSOLE);
@@ -338,6 +371,14 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole turn back to HomeConsole");
 								command = new TurnBackCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
 								break;
+							case COMMENT:
+								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to CommentConsole");
+								command = new CommentCommand();
+								break;
+							case SHOW_POST_COMMENT:
+								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ShowPostCommentConsole");
+								command = new ShowCommentsCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
+								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ProfileTimelineConsole");
 								command = new UpdateCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
@@ -368,6 +409,14 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to SearchAccountConsole");
 								command = new SearchAccountCommand(Page.SHOW_RESULTS_CONSOLE);
 								break;
+							case COMMENT:
+								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to CommentConsole");
+								command = new CommentCommand();
+								break;
+							case SHOW_POST_COMMENT:
+								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to ShowPostCommentConsole");
+								command = new ShowCommentsCommand(Page.SHOW_RESULTS_CONSOLE);
+								break;
 						}
 						break;
 					
@@ -384,9 +433,52 @@ public class Parser {
 						}
 						break;
 					
+					case SHOW_POST_COMMENTS_CONSOLE:	
+						switch(PageCommands.ShowComments.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - ShowPostCommentConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.SHOW_POST_COMMENTS_CONSOLE);
+								break;
+							case EDIT_COMMENT:
+								logger.log(Level.INFO,"[Parser] - ShowPostCommentConsole takes to EditCommentConsole");
+								command = new EditCommentCommand();
+								break;
+							case REMOVE_COMMENT:
+								logger.log(Level.INFO,"[Parser] - ShowPostCommentConsole takes to RemoveCommentConsole");
+								command = new RemoveCommentCommand();
+								break;
+						}
+						break;
+						
+					case REMOVE_COMMENT_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - RemoveCommentConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.REMOVE_COMMENT_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - RemoveCommentConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.REMOVE_COMMENT_CONSOLE);  
+								break;
+						}
+						break;
+						
+					case EDIT_COMMENT_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - EditCommentConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.EDIT_COMMENT_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - EditCommentConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.EDIT_COMMENT_CONSOLE);
+								break;
+						}
+						break;
+					
 				}
 		}catch(java.lang.NumberFormatException | java.lang.ArrayIndexOutOfBoundsException ex) {
-			System.out.println ("You must enter a command in the list \"Commands\" [digit format]");
+			System.out.println ("\n<<You must enter a command in the list \"Commands\" [digit format]>>");
 			logger.logp(Level.WARNING, Parser.class.getSimpleName(),"getCommand","Command entered not in digit format or out of bounds: "+ex);
 			
 			command= Parser.getInstance().getCommand(page);
