@@ -9,7 +9,9 @@
 			<generator class="assigned"/> 
 		</id>
 		
-		<property name="body" column="body"/>
+		<property name="body" type="string">
+            <column name="body" length="280"/>
+        </property>
 		
 		<property name="commentVisibility" column="visibility">
 			<type name="org.hibernate.type.EnumType">

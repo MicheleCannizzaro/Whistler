@@ -92,7 +92,7 @@ public class CommentConsole implements Console {
 			System.out.println(Util.padRight(body.substring(70, 140), 73));
 			System.out.println(Util.padRight(body.substring(140, 210), 73));
 			System.out.println(Util.padRight(body.substring(210, 280), 73));
-			System.out.println(Util.padRight(body.substring(280, 350), 73));
+			System.out.println(Util.padRight(body.substring(280, body.length()), 73));
 			System.out.println(Util.padRight("...", 73));
 			logger.log(Level.INFO, "[getBodyFromStandardInput] - The body exceeded 280 characters");
 			

@@ -121,8 +121,12 @@ public class Account {
 	}
 
 	//UC3
-	public void enterNewPost(String title, String body) {
-		this.currentPost = new Post(title,body);
+	public boolean enterNewPost(String title, String body) {
+		if(title.length()<=70 && body.length()<=280) {
+			this.currentPost = new Post(title,body);
+			return true;
+		}
+		return false;
 	}
 	
 	//UC3
@@ -164,11 +168,15 @@ public class Account {
 	}
 	
 	//UC5
-	public void enterNewComment(String postPid, String body) {
+	public boolean enterNewComment(String postPid, String body) {
 		Post p = Whistler.getInstance().getPost(postPid);
-		this.currentComment = new Comment(body);
-		this.currentComment.setCommentVisibility(p.getPostVisibility());
-		this.currentComment.setPost(p);
+		if(body.length()<=280) {
+			this.currentComment = new Comment(body);
+			this.currentComment.setCommentVisibility(p.getPostVisibility());
+			this.currentComment.setPost(p);
+			return true;
+		}
+		return false;
 	}
 	
 	//UC5

@@ -128,7 +128,7 @@ public class EditCommentConsole implements Console {
 			System.out.println(Util.padRight(newBody.substring(70, 140), 73));
 			System.out.println(Util.padRight(newBody.substring(140, 210), 73));
 			System.out.println(Util.padRight(newBody.substring(210, 280), 73));
-			System.out.println(Util.padRight(newBody.substring(280, 350), 73));
+			System.out.println(Util.padRight(newBody.substring(280, newBody.length()), 73));
 			System.out.println(Util.padRight("...", 73));
 			logger.log(Level.INFO, "[getNewBodyFromStandardInput] - The body exceeded 280 characters");
 			

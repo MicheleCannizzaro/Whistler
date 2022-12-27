@@ -16,9 +16,11 @@ import org.junit.jupiter.api.Test;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
+import it.aps.whistler.domain.Comment;
 import it.aps.whistler.domain.Keyword;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
+import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.KeywordDao;
 
 class AccountTest {
@@ -68,6 +70,148 @@ class AccountTest {
 		}
 		
 		@Test
+		void testEnterNewPost_TitleLenghtMoreThanSeventy() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												      //titlelength = 99
+			boolean actual = fakeAccount.enterNewPost("Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+												     +" Quisque ultricies mi nec vulputate tempus.", "body");
+			
+			assertFalse(actual);
+		}
+		
+		@Test
+		void testEnterNewPost_TitleLenghtEqualSeventy() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												      //titlelength = 70
+			boolean actual = fakeAccount.enterNewPost("Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+												     +" Quisque ultri", "body");
+			
+			assertTrue(actual);
+		}
+		
+		@Test
+		void testEnterNewPost_TitleLenghtLessThanSeventy() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												      //titlelength = 20
+			boolean actual = fakeAccount.enterNewPost("Lorem ipsum dolor si", "body");
+			
+			assertTrue(actual);
+		}
+		
+		@Test
+		void testEnterNewPost_BodyLenghtMoreThanTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												                //bodylength = 320
+			boolean actual = fakeAccount.enterNewPost("title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											                  +"Quisque ultricies mi nec vulputate tempus. Mauris lectus nisl,"
+											                  +" interdum a cursus eu, interdum nec orci. Curabitur id arcu lacus."
+											                  +" Donec orci leo, convallis semper tempus non, consectetur et leo. D"
+											                  +"onec congue in magna ut ultricies. Aenean cursus suscipit molestie.");
+			
+			assertFalse(actual);
+		}
+		
+		@Test
+		void testEnterNewPost_BodyLenghtEqualTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												               //bodylength = 280
+			boolean actual = fakeAccount.enterNewPost("title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											                  +"Quisque ultricies mi nec vulputate tempus. Mauris lectus nisl,"
+											                  +" interdum a cursus eu, interdum nec orci. Curabitur id arcu lacus."
+											                  +" Donec orci leo, convallis semper tempus non, consectetur et leo. D"
+											                  +"onec congue in magna ut ultr");
+			
+			assertTrue(actual);
+		}
+		
+		@Test
+		void testEnterNewPost_BodyLessThanTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+												                 //bodylength = 99
+			boolean actual = fakeAccount.enterNewPost("title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											 				  +"Quisque ultricies mi nec vulputate tempus.");
+			
+			assertTrue(actual);
+		}
+		
+		@Test
+		void testEnterNewComment_BodyLenghtMoreThanTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			 
+			Account fakeAccount = w.getAccount("@elonmsk"); 
+			 
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			 
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2"); 
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC);
+			fakeAccount.confirmPost();
+																  //bodylength = 320
+			boolean actual = fakeAccount.enterNewComment(postPid,"Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											                    +"Quisque ultricies mi nec vulputate tempus. Mauris lectus nisl,"
+											                    +" interdum a cursus eu, interdum nec orci. Curabitur id arcu lacus."
+											                    +" Donec orci leo, convallis semper tempus non, consectetur et leo. D"
+											                    +"onec congue in magna ut ultricies. Aenean cursus suscipit molestie.");
+			
+			assertFalse(actual);
+		}
+		
+		@Test
+		void testEnterNewComment_BodyLenghtEqualTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			 
+			Account fakeAccount = w.getAccount("@elonmsk"); 
+			 
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			 
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2"); 
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+												                  //bodylength = 280
+			boolean actual = fakeAccount.enterNewComment(postPid,"Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+	                  											+"Quisque ultricies mi nec vulputate tempus. Mauris lectus nisl,"
+	                  											+" interdum a cursus eu, interdum nec orci. Curabitur id arcu lacus."
+	                  											+" Donec orci leo, convallis semper tempus non, consectetur et leo. D"
+	                  											+"onec congue in magna ut ultr");
+			
+			assertTrue(actual);
+		}
+		
+		@Test
+		void testEnterNewComment_BodyLenghtLessThanTwoHundredAndEighty() { //CF //VE
+			Whistler w = Whistler.getInstance();
+			 
+			Account fakeAccount = w.getAccount("@elonmsk"); 
+			 
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			 
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2"); 
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+												                  //bodylength = 99
+			boolean actual = fakeAccount.enterNewComment(postPid,"Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+																+"Quisque ultricies mi nec vulputate tempus.");
+			
+			assertTrue(actual);
+		}
+		
+		
+		
+		@Test
 		void testConfirmPost() { //CF
 			Whistler w = Whistler.getInstance();
 			Account fakeAccount = w.getAccount("@elonmsk");
@@ -111,6 +255,42 @@ class AccountTest {
 		}
 		
 		@Test
+		void testConfirmComment() { //CF
+			 Whistler w = Whistler.getInstance();
+			 
+			 Account fakeAccount = w.getAccount("@elonmsk"); 
+			 
+			 fakeAccount.enterNewPost("title", "body"); 
+			 String postPid = fakeAccount.getCurrePostPid();
+			 
+			 fakeAccount.addPostKeyword("#Keyword1");
+			 fakeAccount.addPostKeyword("#Keyword2"); 
+			 fakeAccount.setPostOwner();
+			 fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			 fakeAccount.confirmPost();
+			 
+			 fakeAccount.enterNewComment(postPid,"body");
+			 fakeAccount.setCommentOwner();
+			 fakeAccount.confirmComment();
+			 
+			 
+			 String expectedBody = "body";
+				
+			 boolean isCidPresent=false;
+			 ArrayList<Comment> postComments = CommentDao.getInstance().getAllCommentsFromPost(postPid);
+			
+			 for (Comment comment : postComments) {
+			 	 if (comment.getBody().equals(expectedBody) && comment.getOwner().equals("@elonmsk")) {
+					 if (comment.getCid()!=null) {
+						 isCidPresent = true;
+					 }
+				 } 
+			 }
+			 
+			 assertTrue(isCidPresent);
+		}
+		
+		@Test
 		void testRemovePost() { //CF
 			Whistler w = Whistler.getInstance();
 			Account fakeAccount = w.getAccount("@elonmsk");
@@ -132,6 +312,64 @@ class AccountTest {
 			
 			assertEquals(isPostPresent==true,w.getPost(postPid)==null);
 		}
+		
+		@Test
+		void testRemoveComment_owner() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			 
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2"); 
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			 
+			fakeAccount1.enterNewComment(postPid,"body");
+			String commentCid = fakeAccount1.getCurrentComment().getCid();
+			fakeAccount1.setCommentOwner();
+			fakeAccount1.confirmComment();	
+			
+			boolean isCommentPresent = false;
+			if (w.getComment(commentCid)!=null) isCommentPresent=true;
+			
+			fakeAccount1.removeComment(commentCid); //comment's owner is fakeAccount1
+			
+			assertEquals(isCommentPresent==true,w.getComment(commentCid)==null); //fakeAccount1 can delete the comment
+			
+		}
+		
+		@Test
+		void testRemoveComment_notOwner() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			 
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			 
+			fakeAccount1.enterNewComment(postPid,"body");
+			String commentCid = fakeAccount1.getCurrentComment().getCid();
+			fakeAccount1.setCommentOwner();
+			fakeAccount1.confirmComment();	
+			
+			boolean isCommentPresent = false;
+			if (w.getComment(commentCid)!=null) isCommentPresent=true;
+			
+			fakeAccount.removeComment(commentCid); //comment's owner is fakeAccount1 not fakeAccount
+			
+			assertEquals(isCommentPresent==true,w.getComment(commentCid)!=null); //fakeAccount can't delete comment
+			
+		}
 	}
 	
 	@AfterEach
@@ -149,12 +387,12 @@ class AccountTest {
 		}
 	}
 	
-	  @AfterAll
-	  public static void cleanUpKeywords() {
-		  String[] keywords = {"#Keyword1","#Keyword2","#Keyword3"};
-		  for (String key : keywords) {
-			  KeywordDao.getInstance().deleteKeyword(key);
-		  }
-	  }
+	@AfterAll
+	public static void cleanUpKeywords() {
+		String[] keywords = {"#Keyword1","#Keyword2","#Keyword3"};
+		for (String key : keywords) {
+			KeywordDao.getInstance().deleteKeyword(key);
+		}
+	}
 
 }

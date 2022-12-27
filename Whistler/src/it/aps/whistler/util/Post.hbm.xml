@@ -11,7 +11,9 @@
 		</id>
 		
 		<property name="title" column="title"/>
-		<property name="body" column="body"/>
+		<property name="body" type="string">
+            <column name="body" length="280"/>
+        </property>
 		
 		<set name="postKeywords" table="post_keyword" inverse="false" lazy="true" fetch="select" cascade="none">
 			<key>

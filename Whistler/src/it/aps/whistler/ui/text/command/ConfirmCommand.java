@@ -124,27 +124,32 @@ public class ConfirmCommand implements Command{
 		Whistler whistler = Whistler.getInstance();
 		Account userAccount = whistler.getAccount(userNickname);
 		
-		userAccount.enterNewPost(enteredInputs.get(0), enteredInputs.get(1));
+		if (userAccount.enterNewPost(enteredInputs.get(0), enteredInputs.get(1))) {
 		
-		List<String> keywords = null; //keyword entered by user were appended at the end of the enteredInputs, after title(0) and body(1) visibility(2)
-		if(enteredInputs.size()>3) {							//it can be entered maximum 3 keywords per post
-			switch(enteredInputs.size()) {
-				case 4: keywords = enteredInputs.subList(3,4);     
-						break;
-				case 5: keywords = enteredInputs.subList(3,5);
-						break;
-				case 6: keywords = enteredInputs.subList(3,6);
-						break;
+			List<String> keywords = null; //keyword entered by user were appended at the end of the enteredInputs, after title(0) and body(1) visibility(2)
+			if(enteredInputs.size()>3) {							//it can be entered maximum 3 keywords per post
+				switch(enteredInputs.size()) {
+					case 4: keywords = enteredInputs.subList(3,4);     
+							break;
+					case 5: keywords = enteredInputs.subList(3,5);
+							break;
+					case 6: keywords = enteredInputs.subList(3,6);
+							break;
+				}
+				
+				for (String keyword : keywords) {
+					userAccount.addPostKeyword(keyword);
+				}
 			}
 			
-			for (String keyword : keywords) {
-				userAccount.addPostKeyword(keyword);
-			}
+			userAccount.setPostOwner();
+			int visibilityIndex = Integer.valueOf(enteredInputs.get(2));
+			userAccount.setPostVisibility(Visibility.values()[visibilityIndex]);
+			userAccount.confirmPost();
+			
+		}else {
+			System.out.println("\n<<Sorry something went wrong in enterNewPost, wrong length of title or body>>");
 		}
-		userAccount.setPostOwner();
-		int visibilityIndex = Integer.valueOf(enteredInputs.get(2));
-		userAccount.setPostVisibility(Visibility.values()[visibilityIndex]);
-		userAccount.confirmPost();
 		
 		Console homeConsole = new HomeConsole(userNickname);
 		homeConsole.start();
@@ -343,10 +348,12 @@ public class ConfirmCommand implements Command{
 		String postPid = enteredInputs.get(0);
 		String body = enteredInputs.get(1);
 		
-		userAccount.enterNewComment(postPid,body);
-		userAccount.setCommentOwner();
-		userAccount.confirmComment();
-		
+		if(userAccount.enterNewComment(postPid,body)) {
+			userAccount.setCommentOwner();
+			userAccount.confirmComment();
+		}else {
+			System.out.println("\n<<Sorry something went wrong in enterNewComment, wrong body's length>>");
+		}
 		
 		Console homeConsole = new HomeConsole(userNickname);
 		homeConsole.start();

@@ -122,12 +122,12 @@ public class EditPostConsole implements Console {
 			switch(editPostField.values()[fieldToEdit]) {
 			
 				case TITLE: 
-						String newTitle = Parser.getInstance().readCommand(" Enter new Title:");
+						String newTitle = getTitleFromStandardInput();
 						fields.add(newTitle);
 						break;
 						
 				case BODY: 
-						String newBody = Parser.getInstance().readCommand(" Enter new Body:");
+						String newBody = getBodyFromStandardInput();
 						fields.add(newBody);
 						break;
 						
@@ -171,6 +171,48 @@ public class EditPostConsole implements Console {
 		
 		return fields;
 	} 
+	
+	public String getTitleFromStandardInput() {
+		String title = Parser.getInstance().readCommand(" Enter post's Title:");
+		
+		//UI preventive checks for better user experience
+		//check that the title isn't over 70 characters 
+		while(title.length()>70) {
+			System.out.println("<<Sorry, title length can't be higher than 70 characters, the title entered was "+title.length()+" characters long! Please Retry!>>\n");
+			System.out.println("<<Reporting title to copy and resize:\n");
+			System.out.println(Util.padRight(title.substring(0, 70), 73));
+			System.out.println(Util.padRight("...", 73));
+			logger.log(Level.INFO, "[getTitleFromStandardInput] - The title exceeded 70 characters");
+			
+			printAvailableCommandsEditPostError(Page.EDIT_POST_CONSOLE);
+			manageEditPostConsoleCommandError();
+		}
+		
+		return title;
+	}
+	
+	public String getBodyFromStandardInput() {
+		String body = Parser.getInstance().readCommand("\n Enter post's Body:");
+		
+		//UI preventive checks for better user experience
+		//check that the body isn't over 280 characters 
+		while (body.length()>280) {
+			System.out.println("<<Sorry the body exceeded 280 characters. Retry...>>\n");
+			System.out.println("<<Reporting body to copy and resize:\n");
+			System.out.println(Util.padRight(body.substring(0, 70), 73));
+			System.out.println(Util.padRight(body.substring(70, 140), 73));
+			System.out.println(Util.padRight(body.substring(140, 210), 73));
+			System.out.println(Util.padRight(body.substring(210, 280), 73));
+			System.out.println(Util.padRight(body.substring(280, body.length()), 73));
+			System.out.println(Util.padRight("...", 73));
+			logger.log(Level.INFO, "[getBodyFromStandardInput] - The body exceeded 280 characters");
+			
+			printAvailableCommandsEditPostError(Page.EDIT_POST_CONSOLE);
+			manageEditPostConsoleCommandError();
+		}
+		
+		return body;
+	}
 
 	public void welcomePage() {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
