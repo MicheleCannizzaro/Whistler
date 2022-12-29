@@ -74,7 +74,7 @@ public class TurnBackCommand implements Command{
 			showPostCommentsConsole.start();
 		}
 		
-		if (this.page == Page.SETTINGS_CONSOLE || this.page == Page.PROFILE_TIMELINE_CONSOLE || this.page == Page.EDIT_POST_CONSOLE
+		if (this.page == Page.SETTINGS_CONSOLE || this.page == Page.PROFILE_TIMELINE_CONSOLE 
 				|| this.page == Page.REMOVE_POST_CONSOLE ||  this.page == Page.REMOVE_ACCOUNT_CONSOLE) {
 			Console profileConsole= new ProfileConsole(userNickname, true, null); //isOwner == true
 			profileConsole.start();

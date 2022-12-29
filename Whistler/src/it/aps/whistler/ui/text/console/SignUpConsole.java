@@ -28,10 +28,10 @@ public class SignUpConsole implements Console {
 		System.out.println(Util.padLeft("checking...", 21));
 		
 		//UI preventive checks for better user experience
-		while (!isNicknameCorrect(nickname) || whistler.getAccount(nickname) != null) {
+		while (!Util.isNicknameCorrect(nickname) || whistler.getAccount(nickname) != null) {
 			String message = null;
 			
-			if (!isNicknameCorrect(nickname)) message = "\n<<Sorry! Spaces are not allowed in \"@nickname\".>>\n Please choose another one:";
+			if (!Util.isNicknameCorrect(nickname)) message = "\n<<Sorry! Blank nicknames, special characters as !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ and spaces are not allowed \n   in \"@nickname\". You entered:"+nickname+">>\n\n Please choose another one:";
 			else message = "\n<<Sorry! The Nickname you chose is already taken.>>\n Please choose another one:";
 			
 			nickname = "@"+Parser.getInstance().readCommand(message);
@@ -65,11 +65,6 @@ public class SignUpConsole implements Console {
 			logger.logp(Level.WARNING, SignUpConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException SignUpConsole "+ex);
 		}
-	}
-	
-	private boolean isNicknameCorrect(String nickname) {
-		if (!nickname.matches("\\S+")) return false;
-		return true;
 	}
 	
 	public void printAvailableCommands(Page page) {

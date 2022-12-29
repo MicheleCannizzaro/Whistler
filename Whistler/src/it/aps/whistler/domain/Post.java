@@ -22,9 +22,9 @@ public class Post implements java.io.Serializable {
 	private Visibility postVisibility;
 	private LocalDateTime timestamp;
 	private String owner;
-	private Set<Keyword> postKeywords = new HashSet<>(0); //also necessary for many-to-many Hibernate relation mapping
+	private Set<Keyword> postKeywords = new HashSet<>(0); //necessary for many-to-many Hibernate relation mapping
 	
-	private Set<Comment> comments  = new HashSet<>(0);
+	private Set<Comment> comments  = new HashSet<>(0);   //necessary for one-to-many Hibernate relation mapping
 	
 	public Post() {}
 	
@@ -33,6 +33,7 @@ public class Post implements java.io.Serializable {
 		this.title = title;
 		this.body = body;
 		this.timestamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		this.postKeywords = new HashSet<>(0);
 		this.comments = new HashSet<Comment>(0);
 	}
 	

@@ -284,10 +284,10 @@ class WhistlerTest {
 			@Test
 			void testGetKeyword_IsPresent() { //CE //CF
 				Whistler w = Whistler.getInstance();
-				Keyword k = new Keyword("#Key4");
+				Keyword k = new Keyword("#Keypresent");
 				KeywordDao.getInstance().saveKeyword(k);
 				
-				assertTrue(k.equals(w.getKeyword("#Key4")));
+				assertTrue(k.equals(w.getKeyword("#Keypresent")));
 			}
 			
 			@Test
@@ -365,7 +365,7 @@ class WhistlerTest {
 	  
 	  @AfterAll
 	  public static void cleanUpKeywords() {
-		  String[] keywords = {"#Keyword1","#Keyword2","#Key1","#Key2","#Key3","#Key4"};
+		  String[] keywords = {"#Keyword1","#Keyword2","#Key1","#Key2","#Key3","#Keypresent"};
 		  for (String key : keywords) {
 			  KeywordDao.getInstance().deleteKeyword(key);
 		  }

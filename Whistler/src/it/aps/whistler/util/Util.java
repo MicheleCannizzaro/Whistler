@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
@@ -15,6 +17,31 @@ import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 
 public class Util {
+	
+	public static boolean isNicknameCorrect(String nickname) {
+		//check for white spaces
+		Pattern pattern = Pattern.compile("\\s+");
+	    Matcher matcher = pattern.matcher(nickname);
+	    boolean whiteSpaces = matcher.find();
+	    
+	    //check for special characters
+	    Pattern pattern1 = Pattern.compile("[!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~]");
+	    Matcher matcher1 = pattern1.matcher(nickname);
+	    boolean specialCharacters = matcher1.find();
+	    
+	    //check for multiple @
+	    Pattern pattern2 = Pattern.compile("([@])");
+	    Matcher atMatcher = pattern2.matcher(nickname);
+	    int atCount = 0;
+	    while (atMatcher.find()) atCount++;
+	    
+	    if(whiteSpaces)return false;
+	    if(specialCharacters)return false;
+	    if(nickname.equals("@"))return false;   	//check for blank nickname
+	    if(atCount>=2) return false;				//check for multiple @
+	    
+		return true;
+	}
 
 	//Useful to generate pid value for post
 	public static String getRandomHexString(){

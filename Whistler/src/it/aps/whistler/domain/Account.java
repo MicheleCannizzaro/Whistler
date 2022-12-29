@@ -150,7 +150,7 @@ public class Account {
 	}
 	
 	//UC3_1b
-	public void removePost(String postPid) {
+	public boolean removePost(String postPid) {
 		Post p = Whistler.getInstance().getPost(postPid);
 		
 		if (p!=null) {
@@ -158,19 +158,20 @@ public class Account {
 				
 				Whistler.getInstance().keywordDiffusionRateReduction(p);
 				PostDao.getInstance().deletePost(postPid);
-				
+				return true;
 			}else {
 				logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost", this.nickname+" wants to remove post ("+postPid+") of an other user!");
 			}
 		}else {
 			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removePost","post with pid:"+postPid+" does not exist on whistler.");
 		}
+		return false;
 	}
 	
 	//UC5
 	public boolean enterNewComment(String postPid, String body) {
 		Post p = Whistler.getInstance().getPost(postPid);
-		if(body.length()<=280) {
+		if(p!=null && body.length()<=280) {
 			this.currentComment = new Comment(body);
 			this.currentComment.setCommentVisibility(p.getPostVisibility());
 			this.currentComment.setPost(p);
@@ -190,20 +191,21 @@ public class Account {
 	}
 	
 	//UC5_1b
-	public void removeComment(String commentCid) {
+	public boolean removeComment(String commentCid) {
 		Comment c = Whistler.getInstance().getComment(commentCid);
 		
 		if (c!=null) {
 			if (this.nickname.equals(c.getOwner())) {
 				
 				CommentDao.getInstance().deleteComment(commentCid);
-				
+				return true;
 			}else {
 				logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removeComment", this.nickname+" wants to remove comment ("+commentCid+") of an other user!");
 			}
 		}else {
 			logger.logp(Level.SEVERE,Account.class.getSimpleName(),"removeComment","comment with cid:"+commentCid+" is not present in this post.");
 		}
+		return false;
 	}
 
 	//Getter and Setter

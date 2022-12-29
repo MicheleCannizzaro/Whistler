@@ -13,6 +13,7 @@ import it.aps.whistler.persistence.dao.AccountDao;
 import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.KeywordDao;
 import it.aps.whistler.persistence.dao.PostDao;
+import it.aps.whistler.util.Util;
 
 public class Whistler {
 	private final static Logger logger = Logger.getLogger(Whistler.class.getName());
@@ -36,9 +37,9 @@ public class Whistler {
 	//UC1
 	public boolean signUp(String nickname, String name, String surname, String email, String passwordPlainText) {
 		
-		if(!nickname.matches("\\S+")) {
-			System.out.println("<<Spaces are not allowed in \"@nickname\". Please choose another one.>>");
-			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"signUp", "nickname with spaces: "+nickname);
+		if(!Util.isNicknameCorrect(nickname)) {
+			System.out.println("<<Blank nicknames, special characters as !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ and spaces are not allowed in \"@nickname\". Please choose another one.>>");
+			logger.logp(Level.WARNING, Whistler.class.getSimpleName(),"signUp", "nickname with spaces or special characters: "+nickname);
 			return false;
 		}
 		

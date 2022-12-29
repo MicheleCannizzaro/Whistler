@@ -68,7 +68,7 @@ public class CommentConsole implements Console {
 			String postOwner = Whistler.getInstance().getPost(postPid).getOwner();
 			
 			if(this.userNickname.equals(postOwner)) {
-				System.out.println("<<Sorry, you have to make post ("+postPid+") PUBLIC prior to be able to comment that!>>\n");
+				System.out.println("<<Sorry, you have to make post ("+postPid+") PUBLIC to be able to comment that!>>\n");
 			}else {
 				System.out.println("<<Sorry, PID:"+postPid+" is not present on Whistler!>>\n");
 			}

@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class ConfirmCommand implements Command{
 	private final static Logger logger = Logger.getLogger(ConfirmCommand.class.getName());
 	
-	private enum editFieldSettings{ NAME, SURNAME, EMAIL, INFO_VISIBILITY, PASSWORD }
-	private enum editFieldPost{ TITLE, BODY, KEYWORDS, POST_VISIBILITY }
+	private enum editFieldSettings{ EXIT, NAME, SURNAME, EMAIL, INFO_VISIBILITY, PASSWORD }
+	private enum editFieldPost{ EXIT, TITLE, BODY, KEYWORDS, POST_VISIBILITY }
 	
 	private Page page;
 	
@@ -190,6 +190,8 @@ public class ConfirmCommand implements Command{
 		Account userAccount = whistler.getAccount(userNickname);
 		
 		switch(editFieldSettings.values()[fieldToEdit]) {
+			case EXIT:
+				break;
 			case NAME: 
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmSettingsConsole",userNickname+" edits Name");
 				userAccount.setName(enteredInputs.get(1));
@@ -243,6 +245,8 @@ public class ConfirmCommand implements Command{
 		int fieldToEdit = Integer.parseInt(enteredInputs.get(1)); //enteredInputs.get(1) - contains the choice made about the field to edit
 		
 		switch(editFieldPost.values()[fieldToEdit]) {
+			case EXIT:
+				break;
 			case TITLE:
 				logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditPostConsole",userNickname+" edits post's Title ("+postPid+")");
 				postToEdit.setTitle(enteredInputs.get(2));  //enteredInputs.get(2) - contains the field value
@@ -296,9 +300,15 @@ public class ConfirmCommand implements Command{
 		
 		Whistler whistler = Whistler.getInstance();
 		String postPid = enteredInputs.get(0);   //enteredInputs.get(0) - contains the pid of the post to remove
-		whistler.getAccount(userNickname).removePost(postPid);
 		
-		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemovePostConsole",userNickname+" deleted post with PID: "+postPid);
+		if(whistler.getAccount(userNickname).removePost(postPid)) {
+		
+			logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemovePostConsole",userNickname+" deleted post with PID: "+postPid);
+			System.out.println("\n<<OK, post with PID:"+postPid+" was Removed Correctly\n");
+		
+		}else {
+			System.out.println("\n<<Sorry, something went wrong! Post with PID:"+postPid+" was not removed\n");
+		}
 		
 		Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
 		profileTimelineConsole.start();
@@ -363,11 +373,16 @@ public class ConfirmCommand implements Command{
 		
 		Whistler whistler = Whistler.getInstance();
 		String commentCid = enteredInputs.get(1);   //enteredInputs.get(1) - contains the cid of the comment to remove
-		whistler.getAccount(userNickname).removeComment(commentCid);
 		
-		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemoveCommentConsole",userNickname+" deleted comment with CID: "+commentCid);
+		if(whistler.getAccount(userNickname).removeComment(commentCid)) {
 		
-		System.out.println("\n<<OK, comment with CID:"+commentCid+" was Removed Correctly\n");
+			logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmRemoveCommentConsole",userNickname+" deleted comment with CID: "+commentCid);
+			
+			System.out.println("\n<<OK, comment with CID:"+commentCid+" was Removed Correctly\n");
+		
+		}else {
+			System.out.println("\n<<Sorry something went wrong! Comment with CID:"+commentCid+" was not removed\n");
+		}
 		
 		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
 		showPostCommentsConsole.start();

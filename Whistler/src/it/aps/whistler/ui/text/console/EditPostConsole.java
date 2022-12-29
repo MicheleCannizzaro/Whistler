@@ -16,7 +16,7 @@ import it.aps.whistler.util.Util;
 public class EditPostConsole implements Console {
 	private final static Logger logger = Logger.getLogger(EditPostConsole.class.getName());
 	
-	private enum editPostField{ TITLE, BODY, KEYWORDS, POST_VISIBILITY }
+	private enum editPostField{ EXIT, TITLE, BODY, KEYWORDS, POST_VISIBILITY }
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -113,14 +113,19 @@ public class EditPostConsole implements Console {
 	private ArrayList<String> getNewFieldValueToEdit(String postPid){
 		ArrayList<String> fields = new ArrayList<>();
 		System.out.println("\n Choose one of this field to edit:");
-		System.out.println(" [Commands]: \"0:Title\" - \"1:Body\" - \"2:Keywords\" - \"3:Post Visibility\"");
+		System.out.println(" [Commands]: \"0:Exit\" - \"1:Title\" - \"2:Body\" - \"3:Keywords\" - \"4:Post Visibility\"");
 		
 		try {
 			int fieldToEdit = Integer.parseInt(Parser.getInstance().readCommand("\n Which Field you want to modify?"));
 			fields.add(String.valueOf(fieldToEdit));  //adding choice made to store the field to edit
 			
 			switch(editPostField.values()[fieldToEdit]) {
-			
+				case EXIT: 
+					logger.log(Level.INFO, "[getNewFieldValueToEdit] - EditPostConsole turn back to ProfileTimeline");
+					Command command = new TurnBackCommand(Page.EDIT_POST_CONSOLE);
+					userInputs.clear();
+					command.run(userInputs,this.userNickname,null);
+					break;
 				case TITLE: 
 						String newTitle = getTitleFromStandardInput();
 						fields.add(newTitle);
@@ -134,12 +139,22 @@ public class EditPostConsole implements Console {
 				case KEYWORDS:
 						ArrayList<String> postKeywordsFromInput = new ArrayList<>();
 						
+						//Gather maximum 3 keywords
 						for (int i =0; i <3; i++) {
-							
 							String keyword = "#"+Parser.getInstance().readCommand("\n Enter new Keyword n°"+(i+1));
 							
-							if (!keyword.equals("#")) 
-								postKeywordsFromInput.add(keyword);
+							while(keyword.length()>21) {
+								System.out.println("<<Sorry, keyword length must not exceed 20 characters! Please try again!>>\n");
+								keyword = "#"+Parser.getInstance().readCommand("\n Enter Keyword n°"+(i+1));
+							}
+							
+							if (!keyword.equals("#")) {   //if keyword it's not blank
+								if(!postKeywordsFromInput.contains(keyword)) {
+									postKeywordsFromInput.add(keyword);
+								}else{
+									System.out.println("<<You already entered \""+keyword+"\"! Keyword n°"+(i+1)+" will be blank>>\n");
+								}
+							}
 						}
 						
 						fields.addAll(postKeywordsFromInput);

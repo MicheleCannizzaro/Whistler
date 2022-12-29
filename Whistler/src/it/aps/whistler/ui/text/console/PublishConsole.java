@@ -98,9 +98,16 @@ public class PublishConsole implements Console {
 	
 	public ArrayList<String> getPostKeywordsFromStandardInput(){
 		ArrayList<String> postKeywordsFromInput = new ArrayList<>();
+		
 		//Gather maximum 3 keywords
 		for (int i =0; i <3; i++) {
 			String keyword = "#"+Parser.getInstance().readCommand("\n Enter Keyword n°"+(i+1));
+			
+			while(keyword.length()>21) {
+				System.out.println("<<Sorry, keyword length must not exceed 20 characters! Please try again!>>\n");
+				keyword = "#"+Parser.getInstance().readCommand("\n Enter Keyword n°"+(i+1));
+			}
+			
 			if (!keyword.equals("#")) {   //if keyword it's not blank
 				if(!postKeywordsFromInput.contains(keyword)) {
 					postKeywordsFromInput.add(keyword);

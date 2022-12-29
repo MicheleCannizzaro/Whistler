@@ -291,7 +291,7 @@ class AccountTest {
 		}
 		
 		@Test
-		void testRemovePost() { //CF
+		void testRemovePost_owner() { //CE //CF
 			Whistler w = Whistler.getInstance();
 			Account fakeAccount = w.getAccount("@elonmsk");
 			
@@ -308,9 +308,33 @@ class AccountTest {
 			boolean isPostPresent = false;
 			if (w.getPost(postPid)!=null) isPostPresent=true;
 			
-			fakeAccount.removePost(postPid);
+			fakeAccount.removePost(postPid);	//post's owner is fakeAccount
 			
-			assertEquals(isPostPresent==true,w.getPost(postPid)==null);
+			assertEquals(isPostPresent==true,w.getPost(postPid)==null); //fakeAccount can delete post
+		}
+		
+		@Test
+		void testRemovePost_notOwner() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			fakeAccount.enterNewPost("title", "body");
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC);
+			fakeAccount.confirmPost();	
+			
+			boolean isPostPresent = false;
+			if (w.getPost(postPid)!=null) isPostPresent=true;
+			
+			fakeAccount1.removePost(postPid);	//post's owner is fakeAccount not fakeAccount1
+			
+			assertEquals(isPostPresent==true,w.getPost(postPid)!=null); //fakeAccount1 can't delete post
 		}
 		
 		@Test

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Comment;
 import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.ui.text.Page;
@@ -97,7 +98,7 @@ public class EditCommentConsole implements Console {
 		
 		Comment c = Whistler.getInstance().getComment(commentCid);
 		
-		while (c==null) {
+		while (c==null || c.getCommentVisibility().equals(Visibility.PRIVATE)) {
 			System.out.println("<<Sorry wrong CID, no comment has this CID on Whistler. Retry or come back to Home.>>");
 			logger.logp(Level.INFO, EditCommentConsole.class.getSimpleName(),"getCommentCidFromStandardInput", userNickname+" entered wrong CID, no comment has this CID on Whistler");
 			

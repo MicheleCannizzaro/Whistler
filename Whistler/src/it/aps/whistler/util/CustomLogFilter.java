@@ -29,6 +29,10 @@ public class CustomLogFilter implements Filter {
 			filteredLogRecords.add(logRecord.getLoggerName());
 		}
 		
+		if (Pattern.matches("^jdk.event.*", logRecord.getLoggerName())) {
+			filteredLogRecords.add(logRecord.getLoggerName());
+		}
+		
 		if (filteredLogRecords.contains(logRecord.getLoggerName())) return false;
 		
         return true;

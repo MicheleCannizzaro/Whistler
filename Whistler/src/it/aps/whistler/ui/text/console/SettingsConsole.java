@@ -8,12 +8,13 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.PageCommands;
 import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.command.Command;
+import it.aps.whistler.ui.text.command.TurnBackCommand;
 import it.aps.whistler.util.Util;
 
 public class SettingsConsole implements Console {
 	private final static Logger logger = Logger.getLogger(SettingsConsole.class.getName());
 	
-	private enum editAccountInfoField{ NAME, SURNAME, EMAIL, INFO_VISIBILITY, PASSWORD }
+	private enum editAccountInfoField{ EXIT, NAME, SURNAME, EMAIL, INFO_VISIBILITY, PASSWORD }
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
@@ -49,13 +50,19 @@ public class SettingsConsole implements Console {
 	private ArrayList<String> getNewFieldValueToEdit(){
 		ArrayList<String> fields = new ArrayList<>();
 		System.out.println("\n Choose one of this field to edit:");
-		System.out.println(" [Commands]: \"0:Name\" - \"1:Surname\" - \"2:E-mail\" - \"3:Change Info Visibility Settings\" - \"4:Password\"");
+		System.out.println(" [Commands]: \"0:Exit\" \"1:Name\" - \"2:Surname\" - \"3:E-mail\" - \"4:Change Info Visibility Settings\" - \"5:Password\"");
 		
 		try {
 			int fieldToEdit = Integer.parseInt(Parser.getInstance().readCommand("\n Which Field you want to modify?"));
 			fields.add(String.valueOf(fieldToEdit));  //adding choice made to store the field to edit - index 0
 			
 			switch(editAccountInfoField.values()[fieldToEdit]) {
+				case EXIT: 
+					logger.log(Level.INFO, "[getNewFieldValueToEdit] - SettingConsole turn back to ProfileConsole");
+					Command command = new TurnBackCommand(Page.SETTINGS_CONSOLE);
+					userInputs.clear();
+					command.run(userInputs,this.userNickname,null);
+					break;
 				case NAME: 
 					String newName = Parser.getInstance().readCommand(" Edit Name:");
 					fields.add(newName); //index - 1

@@ -15,7 +15,7 @@ public class Comment implements java.io.Serializable{
 	private Visibility commentVisibility;
 	private LocalDateTime timestamp;
 	private String owner;
-	private Post post;
+	private Post post;				//necessary for many-to-one Hibernate relation mapping
 	
 	public Comment() {}
 	

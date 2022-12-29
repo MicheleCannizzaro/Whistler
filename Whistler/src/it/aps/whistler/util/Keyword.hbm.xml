@@ -6,7 +6,8 @@
 	<class name="it.aps.whistler.domain.Keyword" table="keyword">
 	
 		<id name="word" type="string">
-			<column name="word"/> <!--unique="true"-->
+			<column name="word" unique="true"/>
+			<generator class="assigned"/> 
 		</id>
 		
 		<property name="diffusionRate" column="diffusionRate"/>
