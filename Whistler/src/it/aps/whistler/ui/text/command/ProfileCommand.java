@@ -14,7 +14,7 @@ public class ProfileCommand implements Command {
 	}
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
-		Console profileConsole= new ProfileConsole(userNickname,true, null); //isOwner == true
+		Console profileConsole= new ProfileConsole(userNickname,true, null); //isOwner = true  whistleblowerNickname = null
 		profileConsole.start();
 	}
 }

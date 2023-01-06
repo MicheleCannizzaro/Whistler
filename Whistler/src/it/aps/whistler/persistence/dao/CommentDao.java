@@ -1,21 +1,17 @@
 package it.aps.whistler.persistence.dao;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.persistence.TypedQuery;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Comment;
-import it.aps.whistler.domain.Post;
 import it.aps.whistler.util.HibernateUtil;
 
 public class CommentDao {
@@ -141,38 +137,21 @@ public class CommentDao {
 		return comment;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ArrayList<Comment> getAllCommentsFromPost(String pid) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 		
-		List<Object[]> commentFieldList = null;
-		ArrayList<Comment> comments = new ArrayList<>();
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+		ArrayList<Comment> comments = null;
 		
 		try {
 			// start the transaction 
 			transaction = session.beginTransaction();
-			
-			// get all comments in a list and put it in an HashSet
-			commentFieldList = session.createNativeQuery("select * from comment where pid=\'"+pid+"\'").list();  //it uses native SQL language for query
-			Set<Object[]> fields = new HashSet<>(commentFieldList); 
-			
-			Post p = PostDao.getInstance().getPostByPid(pid);
-			
-			for(Object[] field: fields) {
-				Comment c=new Comment();
-				c.setCid(field[0].toString());
-				c.setBody(field[1].toString());
-				c.setCommentVisibility(Visibility.values()[(int)field[2]]);
-				LocalDateTime t = LocalDateTime.parse(field[3].toString(), formatter);
-				c.setTimestamp(t);
-				c.setOwner(field[4].toString());
-				c.setPost(p);
-		
-				comments.add(c);	
-			}
+																		//it uses Hibernate SQL language, not native SQL
+			TypedQuery<Comment> query = session.createQuery("FROM Comment c LEFT JOIN FETCH c.post WHERE c.post.pid = :pid", Comment.class);
+		    query.setParameter("pid", pid);
+		      
+		    List<Comment> commentList = query.getResultList(); 
+			comments = new ArrayList<>(commentList);
 			
 			// commit transaction
 			transaction.commit();

@@ -42,7 +42,7 @@ public class TurnBackCommand implements Command{
 				|| this.page == Page.UNFOLLOW_CONSOLE || this.page == Page.PROFILE_CONSOLE || this.page == Page.SEARCH_ACCOUNT_CONSOLE
 				|| this.page == Page.ACCOUNT_PROFILE_CONSOLE || this.page == Page.ACCOUNT_TIMELINE_CONSOLE
 				|| this.page == Page.SEARCH_POST_CONSOLE || this.page == Page.SHOW_RESULTS_CONSOLE || this.page == Page.EXPLORE_CONSOLE
-				|| this.page == Page.COMMENT_CONSOLE) {
+				|| this.page == Page.COMMENT_CONSOLE ) {
 			Console homeConsole= new HomeConsole(userNickname);
 			homeConsole.start();
 		}
@@ -83,6 +83,18 @@ public class TurnBackCommand implements Command{
 		if (this.page == Page.EDIT_POST_CONSOLE ||this.page == Page.REMOVE_POST_CONSOLE) {
 			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
 			profileTimelineConsole.start();
+		}
+		
+		if(this.page == Page.SHOW_NOTIFICATIONS_CONSOLE) {
+			if (previousPage == Page.HOME_CONSOLE) {
+				Console homeConsole = new HomeConsole(userNickname);
+				homeConsole.start();
+			}
+			
+			if (previousPage == Page.PROFILE_CONSOLE) {
+				Console profileConsole= new ProfileConsole(userNickname, true, null); //isOwner == true
+				profileConsole.start();
+			}
 		}
 	}
 

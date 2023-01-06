@@ -18,7 +18,7 @@ public class EditCommentCommand implements Command {
 			Console editCommentConsole= new EditCommentConsole(userNickname, enteredInputs.get(0), previousPage); //enteredInputs.get(0) == postPid
 			editCommentConsole.start();
 			
-		}catch(java.lang.IndexOutOfBoundsException ex) {
+		}catch(java.lang.IndexOutOfBoundsException ex) {					//postPid = null
 			Console editCommentConsole= new EditCommentConsole(userNickname, null, previousPage);
 			editCommentConsole.start();
 		}

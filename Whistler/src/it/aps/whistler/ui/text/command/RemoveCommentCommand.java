@@ -15,9 +15,9 @@ public class RemoveCommentCommand implements Command {
 	
 	public void run(ArrayList<String> enteredInputs, String userNickname, Page previousPage) {
 		try {
-			Console removeCommentConsole= new RemoveCommentConsole(userNickname, enteredInputs.get(0), previousPage); //enteredInputs.get(0) == postPid
+			Console removeCommentConsole= new RemoveCommentConsole(userNickname, enteredInputs.get(0), previousPage); //enteredInputs.get(0) = postPid
 			removeCommentConsole.start();
-		}catch(java.lang.IndexOutOfBoundsException ex) {
+		}catch(java.lang.IndexOutOfBoundsException ex) {						//postPid = null
 			Console removeCommentConsole= new RemoveCommentConsole(userNickname, null, previousPage);
 			removeCommentConsole.start();
 		}

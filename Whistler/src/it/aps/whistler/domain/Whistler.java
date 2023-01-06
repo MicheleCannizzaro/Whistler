@@ -4,14 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
 import it.aps.whistler.persistence.dao.CommentDao;
 import it.aps.whistler.persistence.dao.KeywordDao;
+import it.aps.whistler.persistence.dao.NotificationDao;
 import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.Util;
 
@@ -232,6 +242,75 @@ public class Whistler {
 		return accountPublicInfo;
 	}
 	
+	//UC9
+	public void updatePropertyListeners() {
+		for (Account a : this.getWhistlerAccounts()) {
+			a.updatePropertyListeners(a.getNickname());
+		} 
+	}
+	
+	//UC9
+	public void sendEmailNotification(String nickname, Notification notification) {
+		Account account = this.getAccount(nickname);
+		Post post = this.getPost(notification.getItemIdentifier()); //itemIdentifier contains postPid
+		
+		 // Recipient's email ID 
+        String to = account.getEmail();
+        
+        // Sender's email ID 
+        String from = "whistlerprojectingsw@gmail.com";
+        
+        //host
+        String host = "smtp.gmail.com";
+        
+        // Get system properties
+        Properties properties = System.getProperties();
+        // Setup mail server
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.auth", "true");
+        
+        // Get the Session object and pass username and password
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+
+            protected PasswordAuthentication getPasswordAuthentication() {
+
+                return new PasswordAuthentication("whistlerprojectingsw@gmail.com", "odujrruqyylmczke");
+
+            }
+
+        });
+        
+        try {
+            // Create a default MimeMessage object.
+            MimeMessage message = new MimeMessage(session);
+
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress(from));
+
+            // Set To: header field of the header.
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+            // Set Subject: header field
+            message.setSubject("Whistler Notification!");
+
+            // Now set the actual message
+            message.setText(notification.getWhistleblowerNickname()+" has posted a new post - PID("+post.getPid()+")\n"
+            		+"\n Title: "+post.getTitle()+"\n"
+            		+" Body: "+post.getBody()+"\n"
+            		+" Keywords:"+post.getPostKeywords()+"\n");
+
+       
+            // Send message
+            Transport.send(message);
+            
+        } catch (MessagingException ex) {
+            //ex.printStackTrace();
+        	logger.logp(Level.SEVERE, Whistler.class.getSimpleName(),"sendEmailNotification","Something went wrong while sending email to( "+to+"): "+ex);
+        } 
+	}
+	
 	//Getter and Setter
 	public ArrayList<Account> getWhistlerAccounts() {
 		this.whistlerAccounts = AccountDao.getInstance().getAllWhistlerAccounts();
@@ -295,6 +374,11 @@ public class Whistler {
 		return keyword;
 	}
 	
+	public Notification getNotification(String nid) {
+		Notification notification = NotificationDao.getInstance().getNotificationByNid(nid);
+		return notification;
+	}
+	
 	public void updatePost(Post p) {
 		PostDao.getInstance().updatePost(p);
 	}
@@ -306,4 +390,5 @@ public class Whistler {
 	public void updateComment(Comment c) {
 		CommentDao.getInstance().updateComment(c);
 	}
+	
 }

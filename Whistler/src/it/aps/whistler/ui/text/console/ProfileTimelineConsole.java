@@ -128,7 +128,11 @@ public class ProfileTimelineConsole implements Console{
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		
 		if (profileTimeline.isEmpty()) {
-			System.out.println(Util.padLeft("Your ProfileTimeline is Empty, start to post something on Whistler.\n", 85));
+			if(!isOwner) {
+				System.out.println(Util.padLeft(nickname+"'s ProfileTimeline is Empty.\n", 65));
+			}else {
+				System.out.println(Util.padLeft("Your ProfileTimeline is Empty, start to post something on Whistler.\n", 85));
+			}
 		}
 		
 		//Sorting Posts in Reverse Chronological Order

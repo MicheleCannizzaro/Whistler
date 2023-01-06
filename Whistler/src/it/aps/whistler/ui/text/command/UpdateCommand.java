@@ -4,6 +4,7 @@ import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.console.Console;
 import it.aps.whistler.ui.text.console.HomeConsole;
 import it.aps.whistler.ui.text.console.ProfileTimelineConsole;
+import it.aps.whistler.ui.text.console.ShowNotificationsConsole;
 import it.aps.whistler.ui.text.console.ShowPostCommentsConsole;
 
 import java.util.ArrayList;
@@ -42,6 +43,11 @@ public class UpdateCommand implements Command{
 		if (this.page == Page.SHOW_POST_COMMENTS_CONSOLE) {
 			Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs,Page.SHOW_POST_COMMENTS_CONSOLE);
 			showPostCommentsConsole.start();
+		}
+		
+		if (this.page == Page.SHOW_NOTIFICATIONS_CONSOLE) {
+			Console showNotificationsConsole= new ShowNotificationsConsole(userNickname, previousPage);
+			showNotificationsConsole.start();
 		}
 	}
 

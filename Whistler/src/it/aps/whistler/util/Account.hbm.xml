@@ -4,7 +4,10 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 	<class name="it.aps.whistler.domain.Account" table="account">
-		<id name="nickname" column="nickname"/>
+		<id name="nickname"  type="string">
+			<column name="nickname" unique="true"/>
+			<generator class="assigned"/> 
+		</id>
 		<property name="name" column="name"/>
 		<property name="surname" column="surname"/>
 		<property name="email" column="email"/>
@@ -14,5 +17,13 @@
 		<property name="visibility" column="visibility"/>
 		<property name="followedAccounts" column="followedAccounts"/>
 		<property name="followers" column="followers"/>
+		
+		<set name="notifications" table="notification" inverse="true" lazy="true" cascade="all" fetch="select">  
+          <key>
+			  <column name="nickname"  not-null="true"/>
+		  </key>   
+          <one-to-many class="it.aps.whistler.domain.Notification"/> 
+        </set>
+        
 	</class>
 </hibernate-mapping>

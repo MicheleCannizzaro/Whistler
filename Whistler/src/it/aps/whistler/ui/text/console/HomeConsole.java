@@ -22,10 +22,12 @@ public class HomeConsole implements Console {
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
+	private Account userAccount;
 	
 	public HomeConsole(String nickname) {
 		this.userInputs = new ArrayList<>();
 		this.userNickname = nickname;
+		this.userAccount = Whistler.getInstance().getAccount(this.userNickname);
 	}
 		
 	public void start() {
@@ -37,7 +39,7 @@ public class HomeConsole implements Console {
 		
 		try {
 			Command command= Parser.getInstance().getCommand(Page.HOME_CONSOLE);
-			command.run(userInputs, userNickname,null);
+			command.run(this.userInputs, this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, HomeConsole.class.getSimpleName(),"start","("+userNickname+")"+" NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException HomeConsole "+ex);
@@ -60,6 +62,7 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[7], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[8], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[9], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[10], 23)+"║  \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	
@@ -67,15 +70,16 @@ public class HomeConsole implements Console {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("                               ██╗  ██╗ ██████╗ ███╗   ███╗███████╗                                         \n"
 					     + "                               ██║  ██║██╔═══██╗████╗ ████║██╔════╝        USER: "+      userNickname     +"\n"
-					     + "                               ███████║██║   ██║██╔████╔██║█████╗          Updated until "+Util.getTimeString(LocalDateTime.now())+"\n"
-				         + "                               ██╔══██║██║   ██║██║╚██╔╝██║██╔══╝                                           \n"
+					     + "                               ███████║██║   ██║██╔████╔██║█████╗          Updated until "+Util.getTimeString(LocalDateTime.now())+"    \n"
+				         + "                               ██╔══██║██║   ██║██║╚██╔╝██║██╔══╝          Notifications: "+this.userAccount.getAllAccountNotifications().size()+"\n"
 				         + "                               ██║  ██║╚██████╔╝██║ ╚═╝ ██║███████╗                                         \n"
 				         + "                               ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝                                         \n");
 	}
 
 	private void homeTimeline() {
-		Account userAccount = Whistler.getInstance().getAccount(this.userNickname);
-		ArrayList<String> followedAccount = userAccount.getFollowedAccounts();
+		Whistler.getInstance().updatePropertyListeners(); //useful for notifications to work properly
+		
+		ArrayList<String> followedAccount = this.userAccount.getFollowedAccounts();
 		ArrayList<Post> homeTimeline = new ArrayList<>();
 		
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");

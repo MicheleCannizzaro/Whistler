@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.aps.whistler.ui.text.command.CircleCommand;
+import it.aps.whistler.ui.text.command.ClearNotificationCommand;
 import it.aps.whistler.ui.text.command.Command;
 import it.aps.whistler.ui.text.command.CommentCommand;
 import it.aps.whistler.ui.text.command.ConfirmCommand;
@@ -24,6 +25,7 @@ import it.aps.whistler.ui.text.command.SearchAccountCommand;
 import it.aps.whistler.ui.text.command.SearchPostCommand;
 import it.aps.whistler.ui.text.command.SettingsCommand;
 import it.aps.whistler.ui.text.command.ShowCommentsCommand;
+import it.aps.whistler.ui.text.command.ShowNotificationsCommand;
 import it.aps.whistler.ui.text.command.SignUpCommand;
 import it.aps.whistler.ui.text.command.TurnBackCommand;
 import it.aps.whistler.ui.text.command.UnFollowCommand;
@@ -149,6 +151,10 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ProfileConsole");
 								command = new ProfileCommand();
 								break;
+							case SHOW_NOTIFICATIONS:
+								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ShowNotificationsConsole");
+								command = new ShowNotificationsCommand(Page.HOME_CONSOLE);
+								break;
 							case SEARCH_ACCOUNT:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to SearchAccountConsole");
 								command = new SearchAccountCommand(Page.HOME_CONSOLE);
@@ -250,6 +256,10 @@ public class Parser {
 							case SETTINGS:
 								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to SettingsConsole");
 								command = new SettingsCommand();
+								break;
+							case SHOW_NOTIFICATIONS:
+								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to ShowNotificationsConsole");
+								command = new ShowNotificationsCommand(Page.PROFILE_CONSOLE);
 								break;
 							case REMOVE_ACCOUNT:
 								logger.log(Level.INFO, "[Parser] - ProfileConsole takes to RemoveAccountConsole");
@@ -472,6 +482,27 @@ public class Parser {
 							case CONFIRM:
 								logger.log(Level.INFO,"[Parser] - EditCommentConsole takes to ConfirmCommand");
 								command = new ConfirmCommand(Page.EDIT_COMMENT_CONSOLE);
+								break;
+						}
+						break;
+					
+					case SHOW_NOTIFICATIONS_CONSOLE:
+						switch(PageCommands.ShowNotifications.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - ShowNotificationsConsole turn back to HomeConsole");
+								command = new TurnBackCommand(Page.SHOW_NOTIFICATIONS_CONSOLE);
+								break;
+							case CLEAR_NOTIFICATION:
+								logger.log(Level.INFO,"[Parser] - ShowNotificationsConsole clears notification with a given nid");
+								command = new ClearNotificationCommand(false); //isForAllNotifications? False
+								break;
+							case CLEAR_ALL_NOTIFICATIONS:
+								logger.log(Level.INFO,"[Parser] - ShowNotificationsConsole clears all account notifications");
+								command = new ClearNotificationCommand(true); //isForAllNotifications? True
+								break;
+							case UPDATE:
+								logger.log(Level.INFO, "[Parser] - ShowNotificationsConsole takes to ShowNotificationsConsole");
+								command = new UpdateCommand(Page.SHOW_NOTIFICATIONS_CONSOLE);
 								break;
 						}
 						break;

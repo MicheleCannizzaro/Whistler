@@ -1,6 +1,7 @@
 package it.aps.whistler.ui.text.console;
 
 import it.aps.whistler.domain.Comment;
+import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.Parser;
@@ -101,19 +102,26 @@ public class ShowPostCommentsConsole implements Console{
 		}
 		
 		while (!Whistler.getInstance().isPidPresentAndRelativeToPublicPost(postPid)) {    //while postPid is not present or it's not relative to a public post
-			String postOwner = Whistler.getInstance().getPost(postPid).getOwner();
+			Post p = Whistler.getInstance().getPost(postPid);
 			
-			if(this.userNickname.equals(postOwner)) {
-				System.out.println("<<Sorry, you have to make post ("+postPid+") PUBLIC to be able to show its comments!>>\n");
-			}else {
-			System.out.println("<<Sorry, PID:"+postPid+" is not present on Whistler!>>\n");
+			if(p!=null) {
+				String postOwner = p.getOwner();
+				
+				if(this.userNickname.equals(postOwner)) {
+					System.out.println("<<Sorry, you have to make post ("+postPid+") PUBLIC to be able to show its comments!>>\n");
+				}else {
+					System.out.println("<<Sorry, PID:"+postPid+" is not present on Whistler!>>\n");
+				}
 			}
+			
 			logger.log(Level.WARNING, "[getPidFromStandardInput] - The PID entered is not present on Whistler or it's relative to a Private Post");
+			System.out.println("<<Sorry, PID:"+postPid+" is not present on Whistler!>>\n");
 			
 			printAvailableCommandsCommentError(Page.SHOW_POST_COMMENTS_CONSOLE);
 			manageCommentErrorCommands();
 		}
 		return postPid;
+		
 	}
 	
 	private void manageCommentErrorCommands(){

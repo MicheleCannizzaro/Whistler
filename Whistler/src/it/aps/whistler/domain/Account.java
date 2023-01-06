@@ -3,16 +3,24 @@ package it.aps.whistler.domain;
 import it.aps.whistler.Visibility;
 import it.aps.whistler.persistence.dao.AccountDao;
 import it.aps.whistler.persistence.dao.CommentDao;
+import it.aps.whistler.persistence.dao.NotificationDao;
 import it.aps.whistler.persistence.dao.PostDao;
 import it.aps.whistler.util.AESUtil;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Account {
+@SuppressWarnings("serial")
+public class Account implements java.io.Serializable, PropertyChangeListener {
 	private final static Logger logger = Logger.getLogger(Account.class.getName());
 	
 	private String nickname;
@@ -25,12 +33,15 @@ public class Account {
 	private String encodedKey;
 	private String encodedIv;
 	
-	private ArrayList<String> followedAccounts;
-	private ArrayList<String> followers;
+	private ArrayList<String> followedAccounts;  //List of account nicknames that the account follow
+	private ArrayList<String> followers;		 //List of account nicknames that follow the account
 	
 	private Post currentPost;
 	private ArrayList<Post> posts;
 	private Comment currentComment;
+	
+	private Set<Notification> notifications = new HashSet<>(0);	 //necessary for one-to-many Hibernate relation mapping
+	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
 	public Account() {}
 	
@@ -51,6 +62,8 @@ public class Account {
 		this.followedAccounts = new ArrayList<>();
 		this.followers = new ArrayList<>();
 		this.posts = new ArrayList<>();
+		
+		this.notifications  = new HashSet<>(0);
 	}
 	
 	//UC2 
@@ -63,7 +76,7 @@ public class Account {
 			if(!followedAccounts.contains(nickname)) {
 				
 				followedAccounts.add(nickname);
-				AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+				AccountDao.getInstance().updateAccount(this);
 				
 				whistleblowerAccount.addFollower(this.nickname);       //adding the user to the whistleblower's followers
 				
@@ -87,7 +100,7 @@ public class Account {
 			if(followedAccounts.contains(nickname)) {
 				
 				followedAccounts.remove(nickname);
-				AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+				AccountDao.getInstance().updateAccount(this);
 				
 				whistleblowerAccount.removeFollower(this.nickname);		//removing the user to the whistleblower's followers
 			}else{
@@ -107,7 +120,8 @@ public class Account {
 			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
 		}
 		this.followers.add(Nickname);
-		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+		AccountDao.getInstance().updateAccount(this);
+		
 		
 	}
 	
@@ -116,7 +130,7 @@ public class Account {
 			this.followers = AccountDao.getInstance().getAccountByNickname(this.nickname).getFollowers();
 		}
 		this.followers.remove(Nickname);
-		AccountDao.getInstance().updateAccount(Whistler.getInstance().getAccount(this.nickname));
+		AccountDao.getInstance().updateAccount(this);
 		
 	}
 
@@ -147,6 +161,11 @@ public class Account {
 	//UC3
 	public void confirmPost() {
 		PostDao.getInstance().savePost(this.currentPost);
+		System.out.println(" wait ");
+		
+		//UC9
+		//Observer Pattern - fire notification of new post
+		support.firePropertyChange("post", null, this.currentPost);
 	}
 	
 	//UC3_1b
@@ -207,7 +226,82 @@ public class Account {
 		}
 		return false;
 	}
+	
+	//UC9 - Observer pattern implemented with PropertyChangeListener
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {	
+		if(evt.getPropertyName().equals("post")) {
+			Post p = (Post)evt.getNewValue();
+			
+			if(p.getPostVisibility().equals(Visibility.PUBLIC)) {
+				
+				if(this.followedAccounts.contains(p.getOwner())) {
+					System.out.println(" ... ");
+					
+					//create a permanent notification
+					Notification n = new Notification(p.getOwner(),p.getPid(),p.getTimestamp());
+					n.setAccount(this);
+					this.addNotification(n);
+					
+					//send notification mail if the address of the account provided it's reachable
+					Whistler.getInstance().sendEmailNotification(this.nickname, n);
+				}
+			}
+		}
+    }
+	
+	//UC9
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
 
+	//UC9
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        support.removePropertyChangeListener(pcl);
+    }
+    
+    //UC9
+    public void updatePropertyListeners(String nickname) {
+    	Account a = AccountDao.getInstance().getAccountByNickname(nickname);
+    	
+    	for (String followerNickname : a.followers) {
+    		Account flwr = AccountDao.getInstance().getAccountByNickname(followerNickname);
+    		support.addPropertyChangeListener(flwr); 
+    	}
+    }
+	
+	//UC9
+	public void addNotification(Notification notification) {
+		try {
+			NotificationDao.getInstance().saveNotification(notification);
+		}catch(javax.persistence.PersistenceException ex){
+			logger.logp(Level.SEVERE, Account.class.getSimpleName(),"addNotification","Duplicate entry: "+ex);
+			System.out.println("Sorry something went wrong in saving notification: post("+notification.getItemIdentifier()+")"); //itemIdentifier contains postPid
+		}
+	}
+	
+	//UC9_1a
+	public boolean clearNotification(String nid) {
+		if(NotificationDao.getInstance().deleteNotification(nid)) {
+			return true;
+		}
+		return false;
+	}
+	
+	//UC9_1b
+	public boolean clearAllNotifications() {
+		ArrayList<Boolean> results = new ArrayList<>();
+		boolean result;
+		
+		for(Notification n : this.getAllAccountNotifications()) {
+			result = this.clearNotification(n.getNid());
+			results.add(result);
+		}
+		
+		for(boolean b : results) if(!b) return false;
+		return true;
+	}
+	
 	//Getter and Setter
 	public String getNickname() {
 		return nickname;
@@ -328,6 +422,27 @@ public class Account {
 
 	public void setCurrentComment(Comment currentComment) {
 		this.currentComment = currentComment;
+	}
+	
+	public Set<Notification> getNotifications() { //necessary for one-to-many Hibernate relation mapping
+		return this.notifications;
+	}
+
+	public void setNotifications(Set<Notification> notifications) {
+		this.notifications = notifications;
+	}
+	
+	//UC9  -- useful for resolving Hibernate LazyInitializationException 
+	public Set<Notification> getAllAccountNotifications(){
+		this.notifications = NotificationDao.getInstance().getAllNotificationFromNickname(this.nickname);
+		return this.notifications;
+	}
+	
+	//----convenient methods----
+	public boolean isNidPresent(String notificationNid) {    //checks if NID exists on Whistler and it's relative to the account
+		Notification n = Whistler.getInstance().getNotification(notificationNid);
+		if (n!=null && n.getAccount().getNickname().equals(this.nickname)) return true;
+		return false;
 	}
 
 	@Override

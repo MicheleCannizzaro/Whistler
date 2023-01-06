@@ -13,6 +13,7 @@ import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Comment;
 import it.aps.whistler.domain.Keyword;
+import it.aps.whistler.domain.Notification;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 
@@ -324,6 +325,20 @@ public class Util {
 			System.out.println("         ║      "+Util.padRight(body.substring(210, body.length()), 73)+"║");
 			System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
 		}
+		
+	}
+	
+	public static void printDetailedNotification(Notification notification) {
+		Post p = Whistler.getInstance().getPost(notification.getItemIdentifier());  //itemIdentifier contains the postPid
+		
+		System.out.println("         ╔═══════════════════╗"+                 "═══════════════════╗"+                    "═══════════════════════════════════════╗");
+		System.out.println("         ║ "+Util.padRight(notification.getWhistleblowerNickname(), 18)+"║"+" NID: "+Util.padRight(notification.getNid(), 13)+"║"+"          "+Util.getTimeString(notification.getTimestamp())+"          ║");
+		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");  
+		
+		System.out.println("         ║   "+Util.padRight("I've posted a new post - PID("+p.getPid()+") with title:", 76)+"║");
+		System.out.println("         ║   "+Util.padRight("\""+p.getTitle()+"\"", 76)+"║");
+		System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝"); 
+		
 		
 	}
 }

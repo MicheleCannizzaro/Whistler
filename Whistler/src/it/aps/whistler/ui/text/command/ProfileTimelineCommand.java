@@ -17,10 +17,10 @@ public class ProfileTimelineCommand implements Command {
 		Console profileTimelineConsole;
 		
 		if (enteredInputs.isEmpty()) {
-																	//isOwner == true		
+																	//isOwner = true	whistleblowerNickname = null	
 			profileTimelineConsole= new ProfileTimelineConsole(userNickname,true, null); 
 		}else {			
-																		//isOwner == false
+																		//isOwner = false
 			profileTimelineConsole = new ProfileTimelineConsole(userNickname,false, enteredInputs.get(0)); //enteredInputs.get(0) is whistleblowerNickname
 		}
 		

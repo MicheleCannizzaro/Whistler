@@ -22,8 +22,8 @@ public class Post implements java.io.Serializable {
 	private Visibility postVisibility;
 	private LocalDateTime timestamp;
 	private String owner;
-	private Set<Keyword> postKeywords = new HashSet<>(0); //necessary for many-to-many Hibernate relation mapping
 	
+	private Set<Keyword> postKeywords = new HashSet<>(0); //necessary for many-to-many Hibernate relation mapping
 	private Set<Comment> comments  = new HashSet<>(0);   //necessary for one-to-many Hibernate relation mapping
 	
 	public Post() {}
@@ -57,7 +57,7 @@ public class Post implements java.io.Serializable {
 		this.postKeywords.add(keyword);
 		
 	}
-	
+
 	//UC3_1a
 	public void clearKeyword() {
 		this.postKeywords.clear();
@@ -133,6 +133,7 @@ public class Post implements java.io.Serializable {
 		this.comments = comments;
 	}
 	
+	//useful for resolving Hibernate LazyInitializationException 
 	public ArrayList<Comment> getAllPostComments(){
 		ArrayList<Comment> postComments = CommentDao.getInstance().getAllCommentsFromPost(this.pid);
 		return postComments;

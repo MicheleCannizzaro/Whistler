@@ -18,6 +18,7 @@ import it.aps.whistler.Visibility;
 import it.aps.whistler.domain.Account;
 import it.aps.whistler.domain.Comment;
 import it.aps.whistler.domain.Keyword;
+import it.aps.whistler.domain.Notification;
 import it.aps.whistler.domain.Post;
 import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.persistence.dao.CommentDao;
@@ -394,6 +395,37 @@ class AccountTest {
 			assertEquals(isCommentPresent==true,w.getComment(commentCid)!=null); //fakeAccount can't delete comment
 			
 		}
+		
+		@Test
+		void testNotification() { //CF
+			Whistler w = Whistler.getInstance();
+			
+			w.signUp("@kirchhoff", "Gustav Robert", "Kirchhoff", "Kirchhoff@gmail.com", "ciaociao22");
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount3 = w.getAccount("@kirchhoff");
+			
+			fakeAccount3.followAccount("@elonmsk");
+			fakeAccount.updatePropertyListeners(fakeAccount.getNickname());
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+																			//itemIdentifier
+			Notification expectedNotification = new Notification(p.getOwner(),p.getPid(),p.getTimestamp());		
+			expectedNotification.setAccount(fakeAccount3);
+			
+			ArrayList<Notification> actual = new ArrayList<>(fakeAccount3.getAllAccountNotifications());
+			
+			assertTrue(actual.contains(expectedNotification));
+		}
 	}
 	
 	@AfterEach
@@ -401,6 +433,7 @@ class AccountTest {
 		Whistler w = Whistler.getInstance();
 		Account fakeAccount1 = w.getAccount("@elonmsk");
 		Account fakeAccount2 = w.getAccount("@alanturing");
+		Account fakeAccount3 = w.getAccount("@kirchhoff");
 		
 		//removing fake account from whistler_db and cache
 		if (w.getWhistlerAccounts().contains(fakeAccount1)) {
@@ -408,6 +441,10 @@ class AccountTest {
 		}
 		if (w.getWhistlerAccounts().contains(fakeAccount2)) {
 			w.removeAccount("@alanturing");
+		}
+		if (w.getWhistlerAccounts().contains(fakeAccount3)) {
+			fakeAccount3.clearAllNotifications();
+			w.removeAccount("@kirchhoff");
 		}
 	}
 	

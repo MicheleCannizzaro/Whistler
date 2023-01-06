@@ -23,7 +23,7 @@
 		<!--<property name="connection.pool_size">5</property>-->
 		
 		<property name="hibernate.c3p0.min_size">5</property>
-		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.max_size">30</property>
 		<property name="hibernate.c3p0.acquire_increment">5</property>
 		<property name="hibernate.c3p0.timeout">300</property>
 		<property name="c3p0.max_statement">50</property>
@@ -46,5 +46,6 @@
 		<mapping resource="/it/aps/whistler/util/Post.hbm.xml" />
 		<mapping resource="/it/aps/whistler/util/Keyword.hbm.xml" />
 		<mapping resource="/it/aps/whistler/util/Comment.hbm.xml" />
+		<mapping resource="/it/aps/whistler/util/Notification.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

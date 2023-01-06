@@ -17,28 +17,28 @@ public class CircleConsole implements Console {
 	
 	private ArrayList<String> userInputs;
 	private String userNickname;
+	private Account userAccount;
 	
 	public CircleConsole(String userNickname) {
 		this.userInputs = new ArrayList<>();
 		this.userNickname = userNickname;
+		this.userAccount = Whistler.getInstance().getAccount(this.userNickname);
 	}
 	
 	public void start() {
 		welcomePage();
 		
-		Account userAccount = Whistler.getInstance().getAccount(userNickname);
-		
-		ArrayList<String> followedAccount = userAccount.getFollowedAccounts();
+		ArrayList<String> followedAccount = this.userAccount.getFollowedAccounts();
 		
 		if (followedAccount.isEmpty()) {
 			System.out.println(Util.padLeft("Your Circle of Interests is empty, follow someone!", 79));
 		}
 		
 		//Suggestions							//toFollow=true
-		if (!Util.randomSuggestions(userNickname, true).isEmpty()){
+		if (!Util.randomSuggestions(this.userNickname, true).isEmpty()){
 			System.out.println(Util.padLeft("\n These are some random suggestions:", 79));
 			
-			for (String suggestion : Util.randomSuggestions(userNickname, true)) {
+			for (String suggestion : Util.randomSuggestions(this.userNickname, true)) {
 				System.out.println("  "+suggestion);
 			}
 		}

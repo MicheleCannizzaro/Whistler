@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.aps.whistler.domain.Whistler;
 import it.aps.whistler.ui.text.Page;
 import it.aps.whistler.ui.text.Parser;
 import it.aps.whistler.ui.text.PageCommands;
@@ -23,6 +24,8 @@ public class PublishConsole implements Console {
 	}
 	
 	public void start() {
+		Whistler.getInstance().updatePropertyListeners(); //useful for notifications to work properly
+		
 		welcomePage();
 		
 		String title = getTitleFromStandardInput();
@@ -35,11 +38,11 @@ public class PublishConsole implements Console {
 	
 	private void managePostConsoleCommand(String title, String body, String postVisibility, ArrayList<String> postKeywordsFromInput) {
 		Command command;
-		userInputs.clear();			//Cleans the inputs of the various retries maintaining the current one
-		userInputs.add(title);
-		userInputs.add(body);
-		userInputs.add(postVisibility);
-		userInputs.addAll(postKeywordsFromInput);
+		this.userInputs.clear();			//Cleans the inputs of the various retries maintaining the current one
+		this.userInputs.add(title);
+		this.userInputs.add(body);
+		this.userInputs.add(postVisibility);
+		this.userInputs.addAll(postKeywordsFromInput);
 		
 		Util.postPreview(title, body, postKeywordsFromInput, postVisibility);
 		
@@ -47,7 +50,7 @@ public class PublishConsole implements Console {
 		
 		try {
 			command= Parser.getInstance().getCommand(Page.PUBLISH_CONSOLE);
-			command.run(userInputs,this.userNickname,null);
+			command.run(this.userInputs,this.userNickname,null);
 		}catch(java.lang.NullPointerException ex){
 			logger.logp(Level.WARNING, PublishConsole.class.getSimpleName(),"start","NullPointerException: "+ex);
 			throw new java.lang.NullPointerException("Throwing java.lang.NullPointerException PublishConsole "+ex);
@@ -149,7 +152,7 @@ public class PublishConsole implements Console {
 				case EXIT: 
 						logger.log(Level.INFO, "[managePostErrorCommands] - PublishConsole turn back to HomeConsole");
 						command = new TurnBackCommand(Page.PUBLISH_CONSOLE);
-						command.run(userInputs, this.userNickname,null);
+						command.run(this.userInputs, this.userNickname,null);
 						break;
 				case RETRY: 
 						logger.log(Level.INFO, "[managePostErrorCommands] - PublishConsole (Retry)");

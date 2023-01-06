@@ -73,7 +73,7 @@ public class Comment implements java.io.Serializable{
 	public void setPost(Post post) {
 		this.post = post;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;			//self check
