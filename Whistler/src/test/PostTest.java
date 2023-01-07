@@ -62,7 +62,7 @@ class PostTest {
 		}
 		
 		@Test
-		void testAddLike_likeNotPresent() {	
+		void testAddLike_likeNotPresent() {	//CE //CF
 			Whistler w = Whistler.getInstance();
 			
 			Account fakeAccount = w.getAccount("@elonmsk");
@@ -87,7 +87,7 @@ class PostTest {
 		}
 		
 		@Test
-		void testAddLike_likePresent() {	
+		void testAddLike_likePresent() {	//CE //CF
 			Whistler w = Whistler.getInstance();
 			
 			Account fakeAccount = w.getAccount("@elonmsk");
@@ -115,7 +115,7 @@ class PostTest {
 		}
 		
 		@Test
-		void testRemoveLike_likePresent() {	
+		void testRemoveLike_likePresent() {	//CE //CF
 			Whistler w = Whistler.getInstance();
 			
 			Account fakeAccount = w.getAccount("@elonmsk");
@@ -142,7 +142,7 @@ class PostTest {
 		}
 		
 		@Test
-		void testRemoveLike_likeNotPresent() {	
+		void testRemoveLike_likeNotPresent() {	//CE //CF
 			Whistler w = Whistler.getInstance();
 			
 			Account fakeAccount = w.getAccount("@elonmsk");

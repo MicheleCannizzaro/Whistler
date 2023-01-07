@@ -142,8 +142,8 @@ public class CommentConsole implements Console {
 		System.out.println(" Commands:");
 		System.out.println(
 				" ╔════════════════════════════════╗        \n"
-			   +" ║  "+Util.padRight(commands[0],30)+"║    \n"
-			   +" ║  "+Util.padRight(commands[1],30)+"║    \n"
+			   +" ║  "+Util.padRight(commands[0],30)+"║     \n"
+			   +" ║  "+Util.padRight(commands[1],30)+"║     \n"
 			   +" ╚════════════════════════════════╝        \n");
 	}
 	
@@ -160,7 +160,8 @@ public class CommentConsole implements Console {
 	
 
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+				  " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
 				  "                            ╦╔╗╔╔═╗╔═╗╦═╗╔╦╗  ╔╗╔╔═╗╦ ╦  ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗                                       \n"
 				+ "                            ║║║║╚═╗║╣ ╠╦╝ ║   ║║║║╣ ║║║  ║  ║ ║║║║║║║║╣ ║║║ ║                                        \n"

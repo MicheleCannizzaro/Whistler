@@ -44,12 +44,13 @@ public class FollowConsole implements Console {
 	}
 
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
-				  "                                           ╔═╗╔═╗╦  ╦  ╔═╗╦ ╦                                                        \n"
-				+ "                                           ╠╣ ║ ║║  ║  ║ ║║║║                                                        \n"
-			    + "                                           ╚  ╚═╝╩═╝╩═╝╚═╝╚╩╝                                                        \n"
-				+ "                                          ╚══════════════════╝                                                       \n");
+				  " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+				  "                                            ╔═╗╔═╗╦  ╦  ╔═╗╦ ╦                                              \n"
+				+ "                                            ╠╣ ║ ║║  ║  ║ ║║║║                                              \n"
+			    + "                                            ╚  ╚═╝╩═╝╩═╝╚═╝╚╩╝                                              \n"
+				+ "                                           ╚══════════════════╝                                             \n");
 	}
 	
 	public void printAvailableCommands(Page page) {
@@ -57,9 +58,9 @@ public class FollowConsole implements Console {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
 		System.out.println(
-				" ╔════════════════════════════════╗       \n"
-			   +" ║  "+Util.padRight(commands[0],30)+"║    \n"
-			   +" ║  "+Util.padRight(commands[1],30)+"║    \n"
-			   +" ╚════════════════════════════════╝       \n");
+				" ╔════════════════════════════════╗     \n"
+			   +" ║  "+Util.padRight(commands[0],30)+"║  \n"
+			   +" ║  "+Util.padRight(commands[1],30)+"║  \n"
+			   +" ╚════════════════════════════════╝     \n");
 	}
 }

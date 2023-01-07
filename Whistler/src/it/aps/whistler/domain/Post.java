@@ -78,7 +78,7 @@ public class Post implements java.io.Serializable {
 		return false;
 	}
 	
-	//UC10
+	//UC10_1a
 	public boolean removeLike(String owner) {
 		if (this.likes.contains(owner)) {
 			this.likes.remove(owner);

@@ -117,7 +117,7 @@ public class EditPostConsole implements Console {
 		
 		try {
 			int fieldToEdit = Integer.parseInt(Parser.getInstance().readCommand("\n Which Field you want to modify?"));
-			fields.add(String.valueOf(fieldToEdit));  //adding choice made to store the field to edit
+			fields.add(String.valueOf(fieldToEdit));  //adding "choice made" to store the field to edit
 			
 			switch(editPostField.values()[fieldToEdit]) {
 				case EXIT: 
@@ -230,12 +230,13 @@ public class EditPostConsole implements Console {
 	}
 
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
-				  "                                        ╔═╗╔╦╗╦╔╦╗  ╔═╗╔═╗╔═╗╔╦╗                                                     \n"
-				+ "                                        ║╣  ║║║ ║   ╠═╝║ ║╚═╗ ║                                                      \n"
-			    + "                                        ╚═╝═╩╝╩ ╩   ╩  ╚═╝╚═╝ ╩                                                      \n"
-				+ "                                       ╚════════════════════════╝                                                    \n");
+				  " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+				  "                                        ╔═╗╔╦╗╦╔╦╗  ╔═╗╔═╗╔═╗╔╦╗                                            \n"
+				+ "                                        ║╣  ║║║ ║   ╠═╝║ ║╚═╗ ║                                             \n"
+			    + "                                        ╚═╝═╩╝╩ ╩   ╩  ╚═╝╚═╝ ╩                                             \n"
+				+ "                                       ╚════════════════════════╝                                           \n");
 	}
 	
 	public void printAvailableCommands(Page page) {
@@ -243,10 +244,10 @@ public class EditPostConsole implements Console {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
 		System.out.println(
-				" ╔════════════════════════════════════╗       \n"
-			   +" ║  "+Util.padRight(commands[0],34)+"║    \n"
-			   +" ║  "+Util.padRight(commands[1],34)+"║    \n"
-			   +" ╚════════════════════════════════════╝       \n");
+				" ╔════════════════════════════════════╗ \n"
+			   +" ║  "+Util.padRight(commands[0],34)+"║  \n"
+			   +" ║  "+Util.padRight(commands[1],34)+"║  \n"
+			   +" ╚════════════════════════════════════╝ \n");
 	}
 	
 	private void printAvailableCommandsEditPostError(Page page) {
@@ -254,9 +255,9 @@ public class EditPostConsole implements Console {
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("  Commands:");
 		System.out.println(
-				" ╔════════════════════════════════════╗   \n"
+				" ╔════════════════════════════════════╗ \n"
 			   +" ║  "+Util.padRight(commands[0],34)+"║  \n"
 			   +" ║  "+Util.padRight("1:Retry",34)+  "║  \n"
-			   +" ╚════════════════════════════════════╝   \n");
+			   +" ╚════════════════════════════════════╝ \n");
 	}
 }

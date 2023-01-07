@@ -312,7 +312,7 @@ public class Account implements java.io.Serializable, PropertyChangeListener {
 		return false;
 	}
 	
-	//UC10
+	//UC10_1a
 	public boolean removeLike(String postPid) {
 		Post p = Whistler.getInstance().getPost(postPid);
 		

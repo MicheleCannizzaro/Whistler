@@ -396,7 +396,7 @@ class AccountTest {
 			
 		}
 		
-		@Test
+		@Test  //this test is about tests: propertyChange, addPropertyChangeListener, updatePropertyListeners, addNotification methods.
 		void testNotification() { //CF
 			Whistler w = Whistler.getInstance();
 			
@@ -406,7 +406,7 @@ class AccountTest {
 			Account fakeAccount3 = w.getAccount("@kirchhoff");
 			
 			fakeAccount3.followAccount("@elonmsk");
-			fakeAccount.updatePropertyListeners(fakeAccount.getNickname());
+			fakeAccount.updatePropertyListeners(fakeAccount.getNickname()); //fakeAccount updates its own PropertyListeners
 			
 			fakeAccount.enterNewPost("title", "body"); 
 			String postPid = fakeAccount.getCurrePostPid();
@@ -425,6 +425,75 @@ class AccountTest {
 			ArrayList<Notification> actual = new ArrayList<>(fakeAccount3.getAllAccountNotifications());
 			
 			assertTrue(actual.contains(expectedNotification));
+		}
+		
+		@Test 
+		void testClearNotification() { //CF
+			Whistler w = Whistler.getInstance();
+			w.signUp("@kirchhoff", "Gustav Robert", "Kirchhoff", "Kirchhoff@gmail.com", "ciaociao22");
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			Account fakeAccount2 = w.getAccount("@kirchhoff");
+			
+			fakeAccount1.followAccount("@elonmsk");
+			fakeAccount1.followAccount("@kirchhoff");
+			fakeAccount.updatePropertyListeners(fakeAccount.getNickname());  //fakeAccount updates its own PropertyListeners
+			fakeAccount2.updatePropertyListeners(fakeAccount2.getNickname());  //fakeAccount2 updates its own PropertyListeners
+			
+			fakeAccount.enterNewPost("title", "body");
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();						//fakeAccount1 notifications n°=1
+			
+			fakeAccount2.enterNewPost("title", "body");
+			fakeAccount2.addPostKeyword("#Keyword1");
+			fakeAccount2.addPostKeyword("#Keyword2");
+			fakeAccount2.setPostOwner();
+			fakeAccount2.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount2.confirmPost();						//fakeAccount1 notifications n°=2
+			
+			ArrayList<Notification> notifications = new ArrayList<>(fakeAccount1.getAllAccountNotifications());
+			int oldNotificationsSize = notifications.size();
+			
+			fakeAccount1.clearAllNotifications(); //clearing All notifications
+			
+			int expectedNotificationsSize = 0;
+			int actualNotificationsSize = fakeAccount1.getAllAccountNotifications().size();
+			
+			assertEquals(oldNotificationsSize,2);
+			assertEquals(expectedNotificationsSize,actualNotificationsSize);
+		}
+		
+		@Test 
+		void testClearAllNotifications() { //CF
+			Whistler w = Whistler.getInstance();
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			fakeAccount1.followAccount("@elonmsk");
+			fakeAccount.updatePropertyListeners(fakeAccount.getNickname());  //fakeAccount updates its own PropertyListeners
+			
+			fakeAccount.enterNewPost("title", "body");
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();						//fakeAccount1 notifications n°=1
+			
+			ArrayList<Notification> notifications = new ArrayList<>(fakeAccount1.getAllAccountNotifications());
+			int oldNotificationsSize = notifications.size();
+			Notification n = notifications.get(0);  //there is only one notification
+			
+			fakeAccount1.clearNotification(n.getNid()); //clearing the specific notification
+			
+			int expectedNotificationsSize = 0;
+			int actualNotificationsSize = fakeAccount1.getAllAccountNotifications().size();
+			
+			assertEquals(oldNotificationsSize,1);
+			assertEquals(expectedNotificationsSize,actualNotificationsSize);
 		}
 		
 		@Test

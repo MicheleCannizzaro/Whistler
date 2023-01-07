@@ -117,7 +117,7 @@ public class CommentDao {
 			// start the transaction 
 			transaction = session.beginTransaction();
 			
-			// get comment object by word
+			// get comment object by cid
 			comment = session.get(Comment.class, cid);
 			
 			// commit transaction

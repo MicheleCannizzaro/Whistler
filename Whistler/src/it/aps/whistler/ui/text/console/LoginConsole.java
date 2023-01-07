@@ -109,10 +109,10 @@ public class LoginConsole implements Console{
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println("  Commands:");
 		System.out.println(
-				 " ╔════════════════════════╗               \n"
-				+" ║  "+Util.padRight(commands[0],22)+"║    \n"
-				+" ║  "+Util.padRight(commands[1],22)+"║    \n"
-				+" ╚════════════════════════╝               \n");
+				 " ╔════════════════════════╗             \n"
+				+" ║  "+Util.padRight(commands[0],22)+"║  \n"
+				+" ║  "+Util.padRight(commands[1],22)+"║  \n"
+				+" ╚════════════════════════╝             \n");
 	}
 	
 	private void printAvailableCommandsLoginError(Page page) {
@@ -128,11 +128,12 @@ public class LoginConsole implements Console{
 	}
 	
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
-				  "                                           ╦  ╔═╗╔═╗╦╔╗╔                                     \n"
-				+ "                                           ║  ║ ║║ ╦║║║║                                     \n"
-			    + "                                           ╩═╝╚═╝╚═╝╩╝╚╝                                     \n"
-				+ "                                         ╚═══════════════╝                                   \n");
+				  " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+				  "                                            ╦  ╔═╗╔═╗╦╔╗╔                                                   \n"
+				+ "                                            ║  ║ ║║ ╦║║║║                                                   \n"
+			    + "                                            ╩═╝╚═╝╚═╝╩╝╚╝                                                   \n"
+				+ "                                          ╚═══════════════╝                                                 \n");
 	}
 }

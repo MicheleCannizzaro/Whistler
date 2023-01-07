@@ -46,10 +46,10 @@ public class RemoveAccountConsole implements Console{
 		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(" Commands:");
 		System.out.println(
-				" ╔════════════════════════════════════╗       \n"
+				" ╔════════════════════════════════════╗   \n"
 			   +" ║  "+Util.padRight(commands[0],34)+"║    \n"
 			   +" ║  "+Util.padRight(commands[1],34)+"║    \n"
-			   +" ╚════════════════════════════════════╝       \n");
+			   +" ╚════════════════════════════════════╝   \n");
 	}
 	
 	public void welcomePage() {

@@ -9,7 +9,7 @@ import it.aps.whistler.ui.text.console.FollowConsole;
 public class FollowCommand implements Command{
 
 	public String getCommandDescription() {
-		String descripition = "FollowCommand takes you to FollowConsole where you can decide which other account to follow";
+		String descripition = "FollowCommand takes you to FollowConsole where you can decide which account to follow";
 		return descripition;
 	}
 	

@@ -79,15 +79,16 @@ public class SignUpConsole implements Console {
 	}
 	
 	public void welcomePage() {
-		System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
-				  "                                           ╔═╗╦╔═╗╔╗╔╦ ╦╔═╗                                  \n"
-				+ "                                           ╚═╗║║ ╦║║║║ ║╠═╝                                  \n"
-			    + "                                           ╚═╝╩╚═╝╝╚╝╚═╝╩                                    \n"
-				+ "                                         ╚══════════════════╝                                \n");
+				  		   " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+		System.out.println(
+						   "                                              ╔═╗╦╔═╗╔╗╔╦ ╦╔═╗                                              \n"
+				         + "                                              ╚═╗║║ ╦║║║║ ║╠═╝                                              \n"
+			             + "                                              ╚═╝╩╚═╝╝╚╝╚═╝╩                                                \n"
+				         + "                                              ╚══════════════╝                                              \n");
 		
-		System.out.println("                       WELCOME TO WHISTLER! Are you ready to make this a better world?!");
-		System.out.println("              Whistler will ask you some questions to get your account fully set up. Let's GO!\n");
+		System.out.println("                         WELCOME TO WHISTLER! Are you ready to make this a better world?!");
+		System.out.println("                 Whistler will ask you some questions to get your account fully set up. Let's GO!\n");
 	}
 
 }
