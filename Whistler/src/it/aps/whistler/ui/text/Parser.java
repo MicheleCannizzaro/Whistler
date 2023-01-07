@@ -14,6 +14,7 @@ import it.aps.whistler.ui.text.command.EditCommentCommand;
 import it.aps.whistler.ui.text.command.EditPostCommand;
 import it.aps.whistler.ui.text.command.ExploreCommand;
 import it.aps.whistler.ui.text.command.FollowCommand;
+import it.aps.whistler.ui.text.command.LikeCommand;
 import it.aps.whistler.ui.text.command.LoginCommand;
 import it.aps.whistler.ui.text.command.ProfileCommand;
 import it.aps.whistler.ui.text.command.ProfileTimelineCommand;
@@ -146,6 +147,14 @@ public class Parser {
 							case SHOW_POST_COMMENT:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ShowPostCommentConsole");
 								command = new ShowCommentsCommand(Page.HOME_CONSOLE);
+								break;
+							case LIKE:
+								logger.log(Level.INFO,"[Parser] - HomeConsole takes to LikeConsole");
+								command = new LikeCommand(true, Page.HOME_CONSOLE);	  //isLike = true previousPage = Home
+								break;
+							case DISLIKE:
+								logger.log(Level.INFO,"[Parser] - HomeConsole takes to DislikeConsole");
+								command = new LikeCommand(false, Page.HOME_CONSOLE);  //isLike = false previousPage = Home
 								break;
 							case PROFILE:
 								logger.log(Level.INFO, "[Parser] - HomeConsole takes to ProfileConsole");
@@ -303,6 +312,14 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to ShowPostCommentConsole");
 								command = new ShowCommentsCommand(Page.PROFILE_TIMELINE_CONSOLE);
 								break;
+							case LIKE:
+								logger.log(Level.INFO,"[Parser] - HomeConsole takes to LikeConsole");
+								command = new LikeCommand(true, Page.PROFILE_TIMELINE_CONSOLE);	  //isLike = true previousPage = ProfileTimelineConsole
+								break;
+							case DISLIKE:
+								logger.log(Level.INFO,"[Parser] - HomeConsole takes to DislikeConsole");
+								command = new LikeCommand(false, Page.PROFILE_TIMELINE_CONSOLE);  //isLike = false previousPage = ProfileTimelineConsole
+								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - ProfileTimelineConsole takes to ProfileTimelineConsole");
 								command = new UpdateCommand(Page.PROFILE_TIMELINE_CONSOLE);
@@ -389,6 +406,14 @@ public class Parser {
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ShowPostCommentConsole");
 								command = new ShowCommentsCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
 								break;
+							case LIKE:
+								logger.log(Level.INFO,"[Parser] - AccountTimelineConsole takes to LikeConsole");
+								command = new LikeCommand(true, Page.ACCOUNT_TIMELINE_CONSOLE);	  //isLike = true previousPage = AccountTimelineConsole
+								break;
+							case DISLIKE:
+								logger.log(Level.INFO,"[Parser] - AccountTimelineConsole takes to DislikeConsole");
+								command = new LikeCommand(false, Page.ACCOUNT_TIMELINE_CONSOLE);  //isLike = false previousPage = AccountTimelineConsole
+								break;
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - AccountTimelineConsole takes to ProfileTimelineConsole");
 								command = new UpdateCommand(Page.ACCOUNT_TIMELINE_CONSOLE);
@@ -426,6 +451,14 @@ public class Parser {
 							case SHOW_POST_COMMENT:
 								logger.log(Level.INFO, "[Parser] - ShowResultConsole takes to ShowPostCommentConsole");
 								command = new ShowCommentsCommand(Page.SHOW_RESULTS_CONSOLE);
+								break;
+							case LIKE:
+								logger.log(Level.INFO,"[Parser] - ShowResultConsole takes to LikeConsole");
+								command = new LikeCommand(true, Page.SHOW_RESULTS_CONSOLE);	  //isLike = true previousPage = ShowResultConsole
+								break;
+							case DISLIKE:
+								logger.log(Level.INFO,"[Parser] - ShowResultConsole takes to DislikeConsole");
+								command = new LikeCommand(false, Page.SHOW_RESULTS_CONSOLE);  //isLike = false previousPage = ShowResultConsole
 								break;
 						}
 						break;
@@ -503,6 +536,32 @@ public class Parser {
 							case UPDATE:
 								logger.log(Level.INFO, "[Parser] - ShowNotificationsConsole takes to ShowNotificationsConsole");
 								command = new UpdateCommand(Page.SHOW_NOTIFICATIONS_CONSOLE);
+								break;
+						}
+						break;
+					
+					case LIKE_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - LikeConsole turn back");
+								command = new TurnBackCommand(Page.LIKE_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - LikeConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.LIKE_CONSOLE);
+								break;
+						}
+						break;
+					
+					case DISLIKE_CONSOLE:	
+						switch(PageCommands.ConfirmOrNot.values()[inputCommand]) {
+							case EXIT_BACK:
+								logger.log(Level.INFO,"[Parser] - DislikeConsole turn back");
+								command = new TurnBackCommand(Page.DISLIKE_CONSOLE);
+								break;
+							case CONFIRM:
+								logger.log(Level.INFO,"[Parser] - DislikeConsole takes to ConfirmCommand");
+								command = new ConfirmCommand(Page.DISLIKE_CONSOLE);
 								break;
 						}
 						break;

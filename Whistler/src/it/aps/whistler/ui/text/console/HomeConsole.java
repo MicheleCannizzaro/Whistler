@@ -63,6 +63,8 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[8], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[9], 23)+"║  \n"
 				+" ║  "+Util.padRight(commands[10], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[11], 23)+"║  \n"
+				+" ║  "+Util.padRight(commands[12], 23)+"║  \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	
@@ -99,7 +101,7 @@ public class HomeConsole implements Console {
 		Collections.sort(homeTimeline, Comparator.comparing(Post::getTimestamp).reversed());
 		
 		//printing post of homeTimeline
-		for (Post p : homeTimeline) {	
+		for (Post p : homeTimeline) {
 			Util.printDetailedPost(p);
 		}
 	}

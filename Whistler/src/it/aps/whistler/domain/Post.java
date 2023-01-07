@@ -26,6 +26,9 @@ public class Post implements java.io.Serializable {
 	private Set<Keyword> postKeywords = new HashSet<>(0); //necessary for many-to-many Hibernate relation mapping
 	private Set<Comment> comments  = new HashSet<>(0);   //necessary for one-to-many Hibernate relation mapping
 	
+	private ArrayList<String> likes;		
+	
+	
 	public Post() {}
 	
 	public Post(String title, String body) {
@@ -35,6 +38,8 @@ public class Post implements java.io.Serializable {
 		this.timestamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		this.postKeywords = new HashSet<>(0);
 		this.comments = new HashSet<Comment>(0);
+		
+		this.likes = new ArrayList<>();
 	}
 	
 	//UC3
@@ -61,6 +66,26 @@ public class Post implements java.io.Serializable {
 	//UC3_1a
 	public void clearKeyword() {
 		this.postKeywords.clear();
+	}
+	
+	//UC10
+	public boolean addLike(String owner) {
+		if (!this.likes.contains(owner)) {
+			this.likes.add(owner);
+			Whistler.getInstance().updatePost(this);
+			return true;
+		}
+		return false;
+	}
+	
+	//UC10
+	public boolean removeLike(String owner) {
+		if (this.likes.contains(owner)) {
+			this.likes.remove(owner);
+			Whistler.getInstance().updatePost(this);
+			return true;
+		}
+		return false;
 	}
 		 
 	// Getter and Setter
@@ -139,6 +164,17 @@ public class Post implements java.io.Serializable {
 		return postComments;
 	}
 	
+	public ArrayList<String> getLikes() {
+		if(this.likes == null) {
+			this.likes = PostDao.getInstance().getPostByPid(this.pid).getLikes();
+		}
+		return likes;
+	}
+
+	public void setLikes(ArrayList<String> likes) {
+		this.likes = likes;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;			//self check

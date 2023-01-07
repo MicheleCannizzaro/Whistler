@@ -302,6 +302,26 @@ public class Account implements java.io.Serializable, PropertyChangeListener {
 		return true;
 	}
 	
+	//UC10
+	public boolean like(String postPid) {
+		Post p = Whistler.getInstance().getPost(postPid);
+		
+		if(p!=null) {
+			if(p.addLike(this.nickname)) return true;
+		}
+		return false;
+	}
+	
+	//UC10
+	public boolean removeLike(String postPid) {
+		Post p = Whistler.getInstance().getPost(postPid);
+		
+		if(p!=null) {
+			if(p.removeLike(this.nickname)) return true;
+		}
+		return false;
+	}
+	
 	//Getter and Setter
 	public String getNickname() {
 		return nickname;

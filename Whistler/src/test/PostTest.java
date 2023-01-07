@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,107 @@ class PostTest {
 			Collections.sort(keywords, Comparator.comparing(Keyword::getWord));
 			
 			assertEquals(expecetdKeywords,keywords);
+		}
+		
+		@Test
+		void testAddLike_likeNotPresent() {	
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			p.addLike(fakeAccount.getNickname());
+			
+			int expectedLikes = 1;
+			int actualLikes = p.getLikes().size();
+			
+			assertEquals(expectedLikes,actualLikes);
+		}
+		
+		@Test
+		void testAddLike_likePresent() {	
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			p.addLike(fakeAccount.getNickname());
+			
+			p.addLike(fakeAccount.getNickname()); //secont time post add the like of the same account
+			
+			int expectedLikes = 1;
+			int actualLikes = p.getLikes().size();
+			
+			assertEquals(expectedLikes,actualLikes);
+			
+		}
+		
+		@Test
+		void testRemoveLike_likePresent() {	
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			p.addLike(fakeAccount.getNickname());   //Likes = 1
+			
+			p.removeLike(fakeAccount.getNickname()); //Likes = 0
+			
+			int expectedLikes = 0;
+			int actualLikes = p.getLikes().size();
+			
+			assertEquals(expectedLikes,actualLikes);
+		}
+		
+		@Test
+		void testRemoveLike_likeNotPresent() {	
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.addPostKeyword("#Keyword3");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			
+			assertFalse(p.removeLike(fakeAccount.getNickname()));
 		}
 		
 	}

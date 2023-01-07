@@ -90,6 +90,12 @@ public class ConfirmCommand implements Command{
 			case EDIT_COMMENT_CONSOLE:
 				confirmEditCommentConsole(enteredInputs,userNickname, previousPage);
 				break;
+			case LIKE_CONSOLE:
+				confirmLikeConsole(enteredInputs,userNickname, previousPage);
+				break;
+			case DISLIKE_CONSOLE:
+				confirmDislikeConsole(enteredInputs,userNickname, previousPage);
+				break;
 			default:
 				break;
 		}	
@@ -401,5 +407,71 @@ public class ConfirmCommand implements Command{
 		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
 		showPostCommentsConsole.start();
 		
+	}
+	
+	private void confirmLikeConsole(ArrayList<String> enteredInputs, String userNickname, Page previousPage){
+		Whistler whistler = Whistler.getInstance();
+		Account userAccount = whistler.getAccount(userNickname);
+		
+		String postPid = enteredInputs.get(0);
+		
+		if (userAccount.like(postPid)) {
+			System.out.println("<< Liked!>>");
+		}else {
+			System.out.println("<< You already Like this post!>>");
+		}
+		
+		if(previousPage == Page.HOME_CONSOLE) {
+			Console homeConsole = new HomeConsole(userNickname);
+			homeConsole.start();
+		}
+		
+		if (previousPage == Page.PROFILE_TIMELINE_CONSOLE) {					//whistleblowerNickname = null
+			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
+			profileTimelineConsole.start();
+		}
+		
+		if (previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {			//enteredInputs.get(1) = whistleblowerNickname
+			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,false,enteredInputs.get(1)); //isOwner == false
+			profileTimelineConsole.start();
+		}
+		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE) {
+			Console showResultsConsole = new ShowResultsConsole(userNickname, enteredInputs.get(1)); //enteredInputs.get(1) = searchedKeyword
+			showResultsConsole.start();
+		}
+	}
+	
+	private void confirmDislikeConsole(ArrayList<String> enteredInputs, String userNickname, Page previousPage){
+		Whistler whistler = Whistler.getInstance();
+		Account userAccount = whistler.getAccount(userNickname);
+		
+		String postPid = enteredInputs.get(0);
+		
+		if (userAccount.removeLike(postPid)) {
+			System.out.println("<< Like removed!>>");
+		}else {
+			System.out.println("<< No Like to remove!>>");
+		}
+		
+		if(previousPage == Page.HOME_CONSOLE) {
+			Console homeConsole = new HomeConsole(userNickname);
+			homeConsole.start();
+		}
+		
+		if (previousPage == Page.PROFILE_TIMELINE_CONSOLE) {						   //whistleblowerNickname = null
+			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
+			profileTimelineConsole.start();
+		}
+		
+		if (previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {					//enteredInputs.get(1) = whistleblowerNickname
+			Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,false,enteredInputs.get(1)); //isOwner == false
+			profileTimelineConsole.start();
+		}
+		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE) {
+			Console showResultsConsole = new ShowResultsConsole(userNickname, enteredInputs.get(1)); //enteredInputs.get(1) = searchedKeyword
+			showResultsConsole.start();
+		}
 	}
 }

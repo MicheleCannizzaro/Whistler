@@ -4,7 +4,6 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 	<class name="it.aps.whistler.domain.Post" table="post">
-		
 		<id name="pid"  type="string">
 			<column name="pid" unique="true"/>
 			<generator class="assigned"/> 
@@ -37,6 +36,9 @@
 			  <column name="pid"  not-null="true"/>
 		  </key>   
           <one-to-many class="it.aps.whistler.domain.Comment"/> 
-         </set>
+        </set>
+        
+        <property name="likes" column="likes"/>
+        
 	</class>
 </hibernate-mapping>

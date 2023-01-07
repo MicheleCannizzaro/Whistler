@@ -186,10 +186,9 @@ public class Util {
 		//Sorting Keywords in Alphabetical Order
 		Collections.sort(keywords, Comparator.comparing(Keyword::getWord));
 		
-		
 		System.out.println("         ║ Keywords:"+Util.padRight(keywords.toString(), 69)+"║");
 		System.out.println("         ║═══════════════════════════════════════════════════════════════════════════════║");
-		System.out.println("         ║ "+Util.padLeft(+p.getAllPostComments().size()+"      Comments     ",37)+"║ "+Util.padLeft("",39)+"║");
+		System.out.println("         ║ "+Util.padLeft(p.getAllPostComments().size()+"      Comments     ",37)+"║ "+Util.padLeft(p.getLikes().size()+"        Likes     ",39)+"║");
 		System.out.println("         ╚═══════════════════════════════════════════════════════════════════════════════╝");
 	}
 	

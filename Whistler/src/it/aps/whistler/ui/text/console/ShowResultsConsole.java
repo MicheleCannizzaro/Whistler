@@ -58,6 +58,8 @@ public class ShowResultsConsole implements Console{
 				+" ║  "+Util.padRight(commands[1], 30)+"║  \n"
 				+" ║  "+Util.padRight(commands[2], 30)+"║  \n"
 				+" ║  "+Util.padRight(commands[3], 30)+"║  \n"
+				+" ║  "+Util.padRight(commands[4], 30)+"║  \n"
+				+" ║  "+Util.padRight(commands[5], 30)+"║  \n"
 				+" ╚════════════════════════════════╝      \n");
 	}
 	

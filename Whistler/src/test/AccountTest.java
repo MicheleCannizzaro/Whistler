@@ -426,6 +426,104 @@ class AccountTest {
 			
 			assertTrue(actual.contains(expectedNotification));
 		}
+		
+		@Test
+		void testLike_likeNotPresent() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			fakeAccount1.like(postPid);
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			
+			assertTrue(p.getLikes().contains(fakeAccount1.getNickname()));
+		}
+		
+		@Test
+		void testLike_likeAlreadyPresent() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			fakeAccount1.like(postPid); //the like is present on post
+			
+			assertFalse(fakeAccount1.like(postPid)); //fakeAccount1 tries to like the post twice
+		}
+		
+		@Test
+		void testRemoveLike_likePresent() {  //CE //CF
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			fakeAccount1.like(postPid);
+			fakeAccount.like(postPid);
+			
+			fakeAccount1.removeLike(postPid);
+			
+			Post p = Whistler.getInstance().getPost(postPid);
+			
+			int expectedLikes = 1;
+			int actualLikes = p.getLikes().size();
+			
+			assertFalse(p.getLikes().contains(fakeAccount1.getNickname()));
+			assertEquals(actualLikes,expectedLikes);
+		}
+		
+		@Test
+		void testRemoveLike_likeNotPresent() { //CE //CF
+			Whistler w = Whistler.getInstance();
+			
+			Account fakeAccount = w.getAccount("@elonmsk");
+			Account fakeAccount1 = w.getAccount("@alanturing");
+			
+			
+			fakeAccount.enterNewPost("title", "body"); 
+			String postPid = fakeAccount.getCurrePostPid();
+			
+			fakeAccount.addPostKeyword("#Keyword1");
+			fakeAccount.addPostKeyword("#Keyword2");
+			fakeAccount.setPostOwner();
+			fakeAccount.setPostVisibility(Visibility.PUBLIC); 
+			fakeAccount.confirmPost();
+			
+			//no previous fakeAccount's like on post with pid=postPid
+			assertFalse(fakeAccount1.removeLike(postPid));
+		}
 	}
 	
 	@AfterEach

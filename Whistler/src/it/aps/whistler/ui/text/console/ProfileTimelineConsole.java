@@ -74,6 +74,8 @@ public class ProfileTimelineConsole implements Console{
 					+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[4], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[5], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[6], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[7], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 		if (page.equals(Page.ACCOUNT_TIMELINE_CONSOLE)){
@@ -86,6 +88,8 @@ public class ProfileTimelineConsole implements Console{
 					+" ║  "+Util.padRight(commands[1], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[2], 23)+"║  \n"
 					+" ║  "+Util.padRight(commands[3], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[4], 23)+"║  \n"
+					+" ║  "+Util.padRight(commands[5], 23)+"║  \n"
 					+" ╚═════════════════════════╝             \n");
 		}
 	}

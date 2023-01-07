@@ -96,6 +96,50 @@ public class TurnBackCommand implements Command{
 				profileConsole.start();
 			}
 		}
+		
+		if(this.page == Page.LIKE_CONSOLE) {
+			if (previousPage == Page.HOME_CONSOLE) {
+				Console homeConsole = new HomeConsole(userNickname);
+				homeConsole.start();
+			}
+			
+			if (previousPage == Page.PROFILE_TIMELINE_CONSOLE) {
+				Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
+				profileTimelineConsole.start();
+			}
+			
+			if (previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+				Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,false,enteredInputs.get(0)); //isOwner == false enteredInputs.get(0) = whistleblowerNickname
+				profileTimelineConsole.start();
+			}
+			
+			if (previousPage == Page.SHOW_RESULTS_CONSOLE) {
+				Console showResultsConsole = new ShowResultsConsole(userNickname, enteredInputs.get(0)); //enteredInputs.get(1) = searchedKeyword
+				showResultsConsole.start();
+			}
+		}
+		
+		if(this.page == Page.DISLIKE_CONSOLE) {
+			if (previousPage == Page.HOME_CONSOLE) {
+				Console homeConsole = new HomeConsole(userNickname);
+				homeConsole.start();
+			}
+			
+			if (previousPage == Page.PROFILE_TIMELINE_CONSOLE) {
+				Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,true,null); //isOwner == true
+				profileTimelineConsole.start();
+			}
+			
+			if (previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+				Console profileTimelineConsole = new ProfileTimelineConsole(userNickname,false,enteredInputs.get(0)); //isOwner == false enteredInputs.get(0) = whistleblowerNickname
+				profileTimelineConsole.start();
+			}
+			
+			if (previousPage == Page.SHOW_RESULTS_CONSOLE) {
+				Console showResultsConsole = new ShowResultsConsole(userNickname, enteredInputs.get(0)); //enteredInputs.get(0) = searchedKeyword
+				showResultsConsole.start();
+			}
+		}
 	}
 
 }
