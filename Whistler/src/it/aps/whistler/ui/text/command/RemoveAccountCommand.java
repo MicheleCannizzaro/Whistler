@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.RemoveAccountConsole;
 
 public class RemoveAccountCommand implements Command {
 	
+	public RemoveAccountCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "RemoveAccountCommand takes to RemoveAccountConsole which guides you to remove your Whistler Account!";
+		String descripition = "\"Remove Account\" - RemoveAccountCommand takes to RemoveAccountConsole which guides you to remove your\n     Whistler Account!";
 		return descripition;
 	}
 	

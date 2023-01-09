@@ -9,12 +9,14 @@ import it.aps.whistler.ui.text.console.SearchAccountConsole;
 public class SearchAccountCommand implements Command {
 	private Page page;
 	
+	public SearchAccountCommand(){}
+	
 	public SearchAccountCommand(Page page){
 		this.page=page;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "SearchAccountCommand takes to SearchAccountConsole which then takes to searched account public profile.";
+		String descripition = "\"Search Account\" - SearchAccountCommand takes to SearchAccountConsole which then takes to searched\n     account public profile.";
 		return descripition;
 	}
 	

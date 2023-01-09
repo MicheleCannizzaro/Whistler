@@ -66,7 +66,7 @@ public class LikeConsole implements Console {
 		}
 	}
 	
-	public String getPidFromStandardInput() {
+	private String getPidFromStandardInput() {
 		String postPid = Parser.getInstance().readCommand("\n Enter the PID of the post you want to comment:");
 		
 		//UI preventive checks for better user experience

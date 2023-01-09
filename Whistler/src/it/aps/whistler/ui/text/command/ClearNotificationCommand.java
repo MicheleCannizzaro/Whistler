@@ -9,12 +9,14 @@ import it.aps.whistler.ui.text.console.Console;
 public class ClearNotificationCommand implements Command {
 	private boolean isForAllNotifications;
 	
+	public ClearNotificationCommand(){}
+	
 	public ClearNotificationCommand(boolean isForAllNotifications){
 		this.isForAllNotifications=isForAllNotifications;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "ClearNotificationCommand takes to ClearNotificationConsole which delete a notification by nid or all notifications!";
+		String descripition = "\"Clear Notification \\ Clear All Notifications\" -  ClearNotificationCommand takes to\n     ClearNotificationConsole which delete a notification by nid or all notifications!";
 		return descripition;
 	}
 	

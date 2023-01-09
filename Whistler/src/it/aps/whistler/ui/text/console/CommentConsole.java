@@ -53,7 +53,7 @@ public class CommentConsole implements Console {
 		}
 	}
 	
-	public String getPidFromStandardInput() {
+	private String getPidFromStandardInput() {
 		String postPid = Parser.getInstance().readCommand("\n Enter the PID of the post you want to comment:");
 		
 		//UI preventive checks for better user experience
@@ -87,7 +87,7 @@ public class CommentConsole implements Console {
 		return postPid;
 	}
 	
-	public String getBodyFromStandardInput() {
+	private String getBodyFromStandardInput() {
 		String body = Parser.getInstance().readCommand("\n Enter comment's Body:");
 		
 		//UI preventive checks for better user experience

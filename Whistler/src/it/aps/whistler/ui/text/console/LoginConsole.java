@@ -83,7 +83,7 @@ public class LoginConsole implements Console{
         	}
 	}		
 	
-	public String getNicknameFromStandardInput() {
+	private String getNicknameFromStandardInput() {
 		Whistler whistler = Whistler.getInstance();
 		String nickname = Parser.getInstance().readCommand(" Enter your Nickname:");
 		

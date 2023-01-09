@@ -21,12 +21,14 @@ public class EditCommentConsole implements Console {
 	private String userNickname;
 	private String postPid;
 	private Page previousPage;
-	
-	public EditCommentConsole(String userNickname, String postPid, Page previousPage) {
-		this.userInputs = new ArrayList<String>();
+	private String userInputPreviousPage;
+																					
+	public EditCommentConsole(String userNickname, String postPid, Page previousPage, String userInputPreviousPage) {
+		this.userInputs = new ArrayList<>();
 		this.userNickname = userNickname;
 		this.postPid = postPid;
 		this.previousPage = previousPage;
+		this.userInputPreviousPage = userInputPreviousPage;
 	}
 	
 	public void start() {
@@ -46,6 +48,10 @@ public class EditCommentConsole implements Console {
 		userInputs.add(this.postPid);
 		userInputs.add(commentCid);
 		userInputs.add(body);
+		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+			userInputs.add(userInputPreviousPage);
+		}
 		
 		printAvailableCommands(Page.EDIT_COMMENT_CONSOLE);
 		
@@ -73,6 +79,11 @@ public class EditCommentConsole implements Console {
 				case EXIT:
 						logger.log(Level.INFO, "[manageEditCommentConsoleCommandError] - EditCommentConsole turn back to HomeConsole");
 						userInputs.add(this.postPid);
+						
+						if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+							userInputs.add(userInputPreviousPage);
+						}
+						
 						command = new TurnBackCommand(Page.EDIT_COMMENT_CONSOLE);
 						command.run(userInputs,this.userNickname,this.previousPage);
 						break;
@@ -144,10 +155,10 @@ public class EditCommentConsole implements Console {
 		System.out.println(
 				  " ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 		System.out.println(
-				  "                                     ╔═╗╔╦╗╦╔╦╗  ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗                                      \n"
-				+ "                                     ║╣  ║║║ ║   ║  ║ ║║║║║║║║╣ ║║║ ║                                       \n"
-			    + "                                     ╚═╝═╩╝╩ ╩   ╚═╝╚═╝╩ ╩╩ ╩╚═╝╝╚╝ ╩                                       \n"
-				+ "                                     ╚═══════════════════════════════╝                                      \n");
+				  "                                    ╔═╗╔╦╗╦╔╦╗  ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗                                       \n"
+				+ "                                    ║╣  ║║║ ║   ║  ║ ║║║║║║║║╣ ║║║ ║                                        \n"
+			    + "                                    ╚═╝═╩╝╩ ╩   ╚═╝╚═╝╩ ╩╩ ╩╚═╝╝╚╝ ╩                                        \n"
+				+ "                                    ╚═══════════════════════════════╝                                       \n");
 	}
 	
 	public void printAvailableCommands(Page page) {

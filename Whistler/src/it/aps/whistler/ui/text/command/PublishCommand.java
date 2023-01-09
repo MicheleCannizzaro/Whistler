@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.PublishConsole;
 
 public class PublishCommand implements Command{
 	
+	public PublishCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "PublishCommand takes you to PublishConsole where you can write your posts on Whistler.";
+		String descripition = "\"Publish\" - PublishCommand takes you to PublishConsole where you can write your posts on Whistler.";
 		return descripition;
 	}
 	

@@ -21,12 +21,14 @@ public class RemoveCommentConsole implements Console {
 	private String userNickname;
 	private String postPid;
 	private Page previousPage;
+	private String userInputPreviousPage;
 	
-	public RemoveCommentConsole(String userNickname, String postPid, Page previousPage) { 
+	public RemoveCommentConsole(String userNickname, String postPid, Page previousPage,String userInputPreviousPage) { 
 		this.userInputs = new ArrayList<>();
 		this.userNickname = userNickname;
 		this.postPid = postPid;
 		this.previousPage = previousPage;
+		this.userInputPreviousPage = userInputPreviousPage;
 	}
 	
 	public void start() {
@@ -64,6 +66,10 @@ public class RemoveCommentConsole implements Console {
 		userInputs.add(this.postPid);
 		userInputs.add(commentCid);
 		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+			userInputs.add(userInputPreviousPage);
+		}
+		
 		printAvailableCommands(Page.REMOVE_COMMENT_CONSOLE);
 		
 		try {
@@ -88,6 +94,10 @@ public class RemoveCommentConsole implements Console {
 				case EXIT: 
 						logger.log(Level.INFO, "[manageRemoveCommentConsoleCommandError] - RemoveCommentConsole turn back to HomeConsole");
 						userInputs.add(this.postPid);
+						
+						if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+							userInputs.add(userInputPreviousPage);
+						}
 						command = new TurnBackCommand(Page.REMOVE_COMMENT_CONSOLE);
 						command.run(userInputs,this.userNickname,this.previousPage);
 						break;

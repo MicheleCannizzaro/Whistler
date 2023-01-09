@@ -45,9 +45,9 @@ public class CircleConsole implements Console {
 		
 		for(String nickname : followedAccount) {
 			System.out.println(
-					 		   Util.padRight("",43)+"╔════════════════════╗            \n"                    
-					 		  +Util.padRight("",43)+"║ "+Util.padRight(nickname, 19)+"║\n"
-					 		  +Util.padRight("",43)+"╚════════════════════╝            \n");
+			 		   			Util.padRight("",43)+"╔════════════════════════╗        \n"                    
+			 		   		   +Util.padRight("",43)+"║ "+Util.padRight(nickname, 23)+"║\n"
+			 		   		   +Util.padRight("",43)+"╚════════════════════════╝        \n");
 		}
 		
 		

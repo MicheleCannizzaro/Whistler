@@ -10,12 +10,14 @@ public class ShowCommentsCommand implements Command {
 	
 	private Page previousPage;
 	
+	public ShowCommentsCommand(){}
+	
 	public ShowCommentsCommand(Page previousPage){
 		this.previousPage=previousPage;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "ShowCommentsCommand takes to ShowPostCommentsConsole where you can see all comments of a post";
+		String descripition = "\"Show Comments \" - ShowCommentsCommand takes to ShowPostCommentsConsole where you can see all comments\n     of a post";
 		return descripition;
 	}
 	

@@ -10,13 +10,15 @@ public class LikeCommand implements Command{
 	private Page previousPage;
 	private boolean isLike;
 	
+	public LikeCommand(){}
+	
 	public LikeCommand(boolean isLike, Page previousPage){
 		this.isLike = isLike;
 		this.previousPage = previousPage;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "LikeCommand allows you to Like the selected post or Dislike it.";
+		String descripition = "\"Like \\ Dislike \" - LikeCommand allows you to Like the selected post or Dislike it.";
 		return descripition;
 	}
 	
@@ -26,7 +28,7 @@ public class LikeCommand implements Command{
 			
 			 // if Page.SHOW_RESULTS_CONSOLE ->  enteredInputs.get(0) = searchedKeyword
 			 // if Page.ACCOUNT_TIMELINE_CONSOLE ->  enteredInputs.get(0) = whistleblowerNickaname
-			
+																								//userInputPreviousPage
 			Console likeConsole= new LikeConsole(userNickname, this.previousPage, this.isLike, enteredInputs.get(0));
 			likeConsole.start();
 			

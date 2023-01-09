@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.ExploreConsole;
 
 public class ExploreCommand implements Command {
 	
+	public ExploreCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "ExploreCommand takes to ExploreConsole which shows you Trending Keywords on Whistler";
+		String descripition = "\"Explore\" - ExploreCommand takes to ExploreConsole which shows you Trending Keywords on Whistler";
 		return descripition;
 	}
 	

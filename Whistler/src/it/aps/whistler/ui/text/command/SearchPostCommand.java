@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.SearchPostConsole;
 
 public class SearchPostCommand implements Command {
 	
+	public SearchPostCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "SearchPostCommand takes to SearchPostConsole where you can search posts by keyword";
+		String descripition = "\"Search Post\" - SearchPostCommand takes to SearchPostConsole where you can search posts by keyword";
 		return descripition;
 	}
 	

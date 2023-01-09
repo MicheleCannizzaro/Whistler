@@ -47,7 +47,7 @@ public class SearchPostConsole implements Console {
 		}
 	}
 	
-	public String getKeywordFromStandardInput() {
+	private String getKeywordFromStandardInput() {
 		String searchedKeyword = Parser.getInstance().readCommand(" Enter #keyword to search:");
 		
 		if (searchedKeyword.charAt(0)!='#') {

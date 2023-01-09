@@ -14,12 +14,14 @@ public class UpdateCommand implements Command{
 	
 	private Page page;
 	
+	public UpdateCommand(){}
+	
 	public UpdateCommand(Page page){
 		this.page=page;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "UpdateCommand let you update the console";
+		String descripition = "\"Update\" - UpdateCommand let you update the console";
 		return descripition;
 	}
 	

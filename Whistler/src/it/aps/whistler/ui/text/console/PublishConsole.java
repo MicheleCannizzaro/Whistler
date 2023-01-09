@@ -57,7 +57,7 @@ public class PublishConsole implements Console {
 		}
 	}
 	
-	public String getTitleFromStandardInput() {
+	private String getTitleFromStandardInput() {
 		String title = Parser.getInstance().readCommand(" Enter post's Title:");
 		
 		//UI preventive checks for better user experience
@@ -76,7 +76,7 @@ public class PublishConsole implements Console {
 		return title;
 	}
 	
-	public String getBodyFromStandardInput() {
+	private String getBodyFromStandardInput() {
 		String body = Parser.getInstance().readCommand("\n Enter post's Body:");
 		
 		//UI preventive checks for better user experience
@@ -99,7 +99,7 @@ public class PublishConsole implements Console {
 		return body;
 	}
 	
-	public ArrayList<String> getPostKeywordsFromStandardInput(){
+	private ArrayList<String> getPostKeywordsFromStandardInput(){
 		ArrayList<String> postKeywordsFromInput = new ArrayList<>();
 		
 		//Gather maximum 3 keywords
@@ -123,7 +123,7 @@ public class PublishConsole implements Console {
 		return postKeywordsFromInput;
 	}
 	
-	public String getPostVisibility() {
+	private String getPostVisibility() {
 		String postVisibility = null;
 		
 		System.out.println("\n<<Your post is almost ready to be published!>>");

@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.SettingsConsole;
 
 public class SettingsCommand implements Command {
 	
+	public SettingsCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "SettingsCommand takes to SettingsConsole where you can edit your personal info!";
+		String descripition = "\"Settings\" - SettingsCommand takes to SettingsConsole where you can edit your personal info!";
 		return descripition;
 	}
 	

@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.ProfileTimelineConsole;
 
 public class ProfileTimelineCommand implements Command {
 	
+	public ProfileTimelineCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "ProfileTimelineCommand takes to ProfileTimelineConsole which shows all user's public and private posts!";
+		String descripition = "\"ProfileTimeline \\ Account Timeline\" - ProfileTimelineCommand takes to ProfileTimelineConsole which\n     shows all user's public and private posts!";
 		return descripition;
 	}
 	

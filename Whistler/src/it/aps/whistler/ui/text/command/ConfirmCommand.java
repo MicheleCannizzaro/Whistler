@@ -36,12 +36,14 @@ public class ConfirmCommand implements Command{
 	
 	private Page page;
 	
+	public ConfirmCommand(){}
+	
 	public ConfirmCommand(Page page){
 		this.page=page;
 	}
 		
 	public String getCommandDescription() {
-		String descripition = "ConfirmCommand is a command that satisfies different requests based on the page in which it is located";
+		String descripition = "\"Confirm\" - ConfirmCommand is a command that satisfies different requests based on the page in which it\n     is located";
 		return descripition;
 	}
 	
@@ -390,6 +392,17 @@ public class ConfirmCommand implements Command{
 			System.out.println("\n<<Sorry something went wrong! Comment with CID:"+commentCid+" was not removed\n");
 		}
 		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+			String postPid = enteredInputs.get(0);
+			String userInputPreviousPage = enteredInputs.get(2);	//searchedKeyword or whisleblowerNickname
+			
+			enteredInputs.clear();
+			enteredInputs.add(postPid);
+			enteredInputs.add(userInputPreviousPage);
+
+			
+		}
+		
 		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
 		showPostCommentsConsole.start();
 	}
@@ -403,6 +416,17 @@ public class ConfirmCommand implements Command{
 		commentToEdit.setBody(enteredInputs.get(2)); //enteredInputs.get(2) - contains the body
 		whistler.updateComment(commentToEdit);
 		logger.logp(Level.INFO, ConfirmCommand.class.getSimpleName(),"confirmEditCommentConsole",userNickname+" edits comments's Body ("+commentCid+")");
+		
+		if (previousPage == Page.SHOW_RESULTS_CONSOLE || previousPage == Page.ACCOUNT_TIMELINE_CONSOLE) {
+			String postPid = enteredInputs.get(0);
+			String userInputPreviousPage = enteredInputs.get(3);  //searchedKeyword or whisleblowerNickname
+			
+			enteredInputs.clear();
+			enteredInputs.add(postPid);
+			enteredInputs.add(userInputPreviousPage);
+
+			
+		}
 		
 		Console showPostCommentsConsole= new ShowPostCommentsConsole(userNickname,enteredInputs, previousPage);
 		showPostCommentsConsole.start();

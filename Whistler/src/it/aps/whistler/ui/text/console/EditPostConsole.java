@@ -187,7 +187,7 @@ public class EditPostConsole implements Console {
 		return fields;
 	} 
 	
-	public String getTitleFromStandardInput() {
+	private String getTitleFromStandardInput() {
 		String title = Parser.getInstance().readCommand(" Enter post's Title:");
 		
 		//UI preventive checks for better user experience
@@ -206,7 +206,7 @@ public class EditPostConsole implements Console {
 		return title;
 	}
 	
-	public String getBodyFromStandardInput() {
+	private String getBodyFromStandardInput() {
 		String body = Parser.getInstance().readCommand("\n Enter post's Body:");
 		
 		//UI preventive checks for better user experience

@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.ProfileConsole;
 
 public class ProfileCommand implements Command {
 	
+	public ProfileCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "ProfileCommand takes to ProfileConsole which shows account's infos and posts!";
+		String descripition = "\"Profile\" - ProfileCommand takes to ProfileConsole which shows account's infos and posts!";
 		return descripition;
 	}
 	

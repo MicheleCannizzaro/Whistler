@@ -60,6 +60,7 @@ public class ShowResultsConsole implements Console{
 				+" ║  "+Util.padRight(commands[3], 30)+"║  \n"
 				+" ║  "+Util.padRight(commands[4], 30)+"║  \n"
 				+" ║  "+Util.padRight(commands[5], 30)+"║  \n"
+				+" ║  "+Util.padRight(commands[6], 30)+"║  \n"
 				+" ╚════════════════════════════════╝      \n");
 	}
 	
@@ -70,7 +71,7 @@ public class ShowResultsConsole implements Console{
 				     	 + "                               ╚═╝╚═╝╩ ╩╩╚═╚═╝╩ ╩  ╩╚═╚═╝╚═╝╚═╝╩═╝╩ ╚═╝                                     \n"
 				         + "                                                                                                            \n"
 				         + "        Updated until: "+Util.getTimeString(LocalDateTime.now())+"                                          \n"
-				         + "                                                                                                            \n");
+				         + "        Searched Keyword: "+searchedKeyword+"                                                               \n");
 	}
 
 	private void showResults() {

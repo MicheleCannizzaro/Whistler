@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.Console;
 
 public class CircleCommand implements Command {
 	
+	public CircleCommand() {};
+	
 	public String getCommandDescription() {
-		String descripition = "CircleCommand takes to CircleConsole which shows you all the Whistleblowers you follow!";
+		String descripition = "\"Circle of Interests\" - CircleCommand takes to CircleConsole which shows you all the Whistleblowers\n     you follow!";
 		return descripition;
 	}
 	

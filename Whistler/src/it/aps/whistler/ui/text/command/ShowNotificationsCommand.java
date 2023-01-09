@@ -10,12 +10,14 @@ public class ShowNotificationsCommand implements Command {
 	
 	private Page previousPage;
 	
+	public ShowNotificationsCommand(){}
+	
 	public ShowNotificationsCommand(Page previousPage){
 		this.previousPage=previousPage;
 	}
 	
 	public String getCommandDescription() {
-		String descripition = "ShowNotificationsCommand takes to ShowNotificationsConsole which shows all your notifications!";
+		String descripition = "\"Show Notifications\" - ShowNotificationsCommand takes to ShowNotificationsConsole which shows all your\n     notifications!";
 		return descripition;
 	}
 	

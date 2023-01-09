@@ -65,6 +65,8 @@ public class HomeConsole implements Console {
 				+" ║  "+Util.padRight(commands[10], 23)+"║ \n"
 				+" ║  "+Util.padRight(commands[11], 23)+"║ \n"
 				+" ║  "+Util.padRight(commands[12], 23)+"║ \n"
+				+" ║  "+Util.padRight(commands[13], 23)+"║ \n"
+				+" ║  "+Util.padRight(commands[14], 23)+"║ \n"
 				+" ╚═════════════════════════╝             \n");
 	}
 	

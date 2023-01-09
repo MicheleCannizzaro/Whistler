@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.LoginConsole;
 
 public class LoginCommand implements Command{
 	
+	public LoginCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "LoginCommand takes you to the LoginConsole";
+		String descripition = "\"Login\" - LoginCommand takes you to the LoginConsole";
 		return descripition;
 	}
 	

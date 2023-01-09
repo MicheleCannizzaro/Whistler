@@ -26,6 +26,7 @@ public class ShowPostCommentsConsole implements Console{
 	private String userNickname;
 	private String postPid;
 	private Page previousPage;
+	private String userInputPreviousPage;
 	private ArrayList<Comment> comments = new ArrayList<>();
 	
 	public ShowPostCommentsConsole(String userNickname, ArrayList<String> userInputs, Page previousPage) {
@@ -37,14 +38,29 @@ public class ShowPostCommentsConsole implements Console{
 	public void start() {
 		welcomePage();
 		
+		if (this.previousPage == Page.ACCOUNT_TIMELINE_CONSOLE || this.previousPage == Page.SHOW_RESULTS_CONSOLE) {
+		     
+			if(userInputs.size()>1) {
+
+		    	 if(userInputs.size()==2) {
+		    		 this.userInputPreviousPage = userInputs.get(1);
+		    	 }
+
+		     }else {
+		    	 this.userInputPreviousPage = userInputs.get(0);
+				 this.userInputs = new ArrayList<>();
+		     }
+		}
+		
+		
 		try {
-			if(!userInputs.get(0).isEmpty()) {
+			if(!userInputs.get(0).isEmpty()) {	//userInputs.get(0) -> "postPid"
 				this.postPid = userInputs.get(0);
 			}
 		}catch(java.lang.IndexOutOfBoundsException ex) {
 			this.postPid = getPidFromStandardInput();
 		}
-		
+			
 		showComments();
 		
 		manageCommentConsoleCommand();
@@ -68,10 +84,23 @@ public class ShowPostCommentsConsole implements Console{
 				}
 			}
 			
+			
 			if(command.getClass().equals(TurnBackCommand.class)) {
+				if (this.previousPage == Page.ACCOUNT_TIMELINE_CONSOLE || this.previousPage == Page.SHOW_RESULTS_CONSOLE) {
+				     
+					if(userInputs.size()>1) {
+				    	 userInputs.clear();
+				    	 userInputs.add(this.userInputPreviousPage);
+				    }else {
+				    	 userInputs.add(this.userInputPreviousPage);
+				    }
+				}
 				command.run(userInputs,this.userNickname, this.previousPage);
 			}else {
+				
 				userInputs.add(this.postPid);
+				userInputs.add(this.userInputPreviousPage);
+				
 				command.run(userInputs,this.userNickname,this.previousPage);
 			}
 			
@@ -83,13 +112,13 @@ public class ShowPostCommentsConsole implements Console{
 		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
 			
 			System.out.println ("\n<<You must enter a command in the list \"Commands\" [digit format]>>");
-        	logger.logp(Level.WARNING, ShowPostCommentsConsole.class.getSimpleName(),"manageCommentErrorCommands","(OnlyExit) Command entered not in digit format or out of bounds: "+ex);
+        	logger.logp(Level.WARNING, ShowPostCommentsConsole.class.getSimpleName(),"manageCommentConsoleCommands","(OnlyExit) Command entered not in digit format or out of bounds: "+ex);
         	
         	manageCommentConsoleCommand();
 		}
 	}
 	
-	public String getPidFromStandardInput() {
+	private String getPidFromStandardInput() {
 		String postPid = Parser.getInstance().readCommand("\n Enter the PID of the post you want Whistler to show comments:");
 		
 		//UI preventive checks for better user experience
@@ -133,7 +162,16 @@ public class ShowPostCommentsConsole implements Console{
 			switch (PageCommands.Error.values()[choice]) {
 				case EXIT: 
 						logger.log(Level.INFO, "[manageCommentErrorCommands] - ShowPostCommentsConsole turn back to HomeConsole");
+						
 						command = new TurnBackCommand(Page.SHOW_POST_COMMENTS_CONSOLE);
+						
+						if (this.previousPage == Page.ACCOUNT_TIMELINE_CONSOLE || this.previousPage == Page.SHOW_RESULTS_CONSOLE) {
+							
+						     if(userInputs.size()<=1) { 
+						    	 userInputs.add(this.userInputPreviousPage);
+						     }
+						}
+						
 						command.run(userInputs, this.userNickname,this.previousPage);
 						break;
 				case RETRY: 
@@ -210,7 +248,7 @@ public class ShowPostCommentsConsole implements Console{
 			
 		}else {
 			System.out.println(" ═══════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-			System.out.println(Util.padLeft("This post does not contain any comments yet\n", 65));
+			System.out.println(Util.padLeft("This post does not contain any comment yet\n", 65));
 		}
 	}
 	

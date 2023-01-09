@@ -55,7 +55,7 @@ public class ClearNotificationConsole implements Console {
 		
 	}
 	
-	public String getNidFromStandardInput() {
+	private String getNidFromStandardInput() {
 		String nid = Parser.getInstance().readCommand(" Enter Notification's NID to clear :");
 		
 		//UI preventive checks for better user experience

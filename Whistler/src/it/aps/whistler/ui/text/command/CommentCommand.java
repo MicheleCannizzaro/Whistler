@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.Console;
 
 public class CommentCommand implements Command{
 	
+	public CommentCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "CommentCommand takes you to CommentConsole where you can write your comment on a post.";
+		String descripition = "\"Comment\" - CommentCommand takes you to CommentConsole where you can write your comment on a post.";
 		return descripition;
 	}
 	

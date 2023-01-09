@@ -49,7 +49,7 @@ public class SearchAccountConsole implements Console {
 		}
 	}
 	
-	public String getWhistleblowerNicknameFromStandardInput() {
+	private String getWhistleblowerNicknameFromStandardInput() {
 		String whistleblowerNickname = Parser.getInstance().readCommand(" Enter @nickname of the whistleblower account you want to search:");
 		
 		if (whistleblowerNickname.charAt(0)!='@') {

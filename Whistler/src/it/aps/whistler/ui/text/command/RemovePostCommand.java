@@ -8,8 +8,10 @@ import it.aps.whistler.ui.text.console.RemovePostConsole;
 
 public class RemovePostCommand implements Command {
 	
+	public RemovePostCommand(){}
+	
 	public String getCommandDescription() {
-		String descripition = "RemovePostCommand takes to RemovePostConsole which allows you to delete the post based on the pid!";
+		String descripition = "\"Remove Post\" - RemovePostCommand takes to RemovePostConsole which allows you to delete the post based\n     on the pid!";
 		return descripition;
 	}
 	
